@@ -1,0 +1,157 @@
+# Reprise.md — Suivi du travail de Claude (Cody Code)
+
+> Fiche écrite et mise à jour par **Claude**, en continu.
+> **Règle n°1 :** quand Cheikh écrit **« Continue »**, je lis ce fichier en premier, puis je reprends exactement où on s'est arrêté.
+> Je mets ce fichier à jour **après chaque étape terminée** (et avant d'en commencer une nouvelle), car le plan gratuit peut couper mon travail à tout moment.
+
+---
+
+## 1. État actuel (à lire en premier)
+
+| Élément | Valeur |
+|---|---|
+| Dernière mise à jour | 2026-10-21 (soir) |
+| Phase en cours | **Phase 1 — Base qui tourne** |
+| Étape en cours | 1.1 — Installer les dépendances (⛔ BLOQUÉE, voir ci-dessous) |
+| Dernière étape terminée et vérifiée | Phase 0 entière (0.1 à 0.6) |
+| Bloqué ? | **OUI** — la compilation est impossible dans cet environnement |
+
+**⛔ Blocage :** l'installation (`npm ci`) doit compiler des modules natifs. Pour cela elle télécharge des fichiers sur `electronjs.org` (et `nodejs.org`), deux sites **refusés (403) par le filtre réseau de cet environnement**. Essayé 4 fois (Electron, Node avec fichiers locaux, modules précompilés) : même résultat. Je ne contourne pas ce filtre. Rien d'autre n'est en cause (les bibliothèques système sont installées, Node 24 est prêt).
+
+**Solution prévue :** compiler sur **GitHub Actions** (serveurs gratuits de GitHub, accès internet complet). Il faut un dépôt GitHub appartenant à Cheikh, auquel Claude peut envoyer le code. Dès que c'est possible : ajouter un fichier de workflow dans `.github/workflows/` qui fait `npm ci`, la compilation et un test de démarrage, puis lire les résultats.
+
+**Mise à jour (19h50) :** Cheikh a collé un token GitHub dans le chat, mais l'environnement le refuse (« No linked GitHub account » ; seuls les dépôts liés au compte Claude sont autorisés). La bonne méthode : Cheikh relie GitHub dans Claude (Réglages → Connecteurs → GitHub), puis donne le nom exact du dépôt (`propriétaire/cody-code`) ; j'utilise alors l'outil `add_repo` en mode « push ». Ne jamais enregistrer ce token nulle part (il est exposé dans le chat : Cheikh doit le supprimer sur GitHub).
+
+**Prochaine action exacte :** attendre que Cheikh relie GitHub et donne le nom du dépôt. Entre-temps, ne rien modifier au code sans pouvoir le compiler/vérifier. Quand le dépôt est disponible : étape 1.1 via GitHub Actions.
+
+**Où est quoi :**
+- Code de Cody Code : `/home/claude/cody-code` (branche `cody-main`, source officielle gardée sous le nom `upstream`)
+- Node 24.22.0 : `/home/claude/tools/node_modules/.bin/node` (le Node par défaut est 22, trop ancien)
+- Version de VS Code utilisée comme base : 1.144.0 (commit `5b7277ed`)
+
+---
+
+## 2. Rappel du projet
+- **Cody Code** = éditeur basé sur le code libre de VS Code (Code - OSS, licence MIT), avec **toutes** les fonctionnalités de VS Code.
+- **Design** : exactement comme la capture `Espace_de_développement_Cody_Code_en_français.png` (thème sombre, panneau « Cody Assistant » à droite).
+- **Nom** : Cody Code (nom, logo et icônes propres, rien de Microsoft).
+- **Extensions** : magasin libre **Open VSX** + autres services similaires si possible (pas le magasin Microsoft).
+- **Propriétaire** : Cheikh.
+
+## 3. Façon de travailler (obligatoire)
+- Découper chaque phase en **petites étapes**.
+- Enchaîner **automatiquement** : faire → vérifier → si OK, étape suivante.
+- **Pas de rapport** à Cheikh tant que **toutes les étapes de la phase** ne sont pas finies.
+- Rapports **courts, simples, sans jargon**.
+- Après toutes les étapes : **test complet + recherche d'erreurs et de failles de sécurité**.
+- Mettre à jour **ce fichier** après chaque étape, et `FEATURES.md` quand une fonctionnalité est vérifiée.
+
+## 4. Contraintes à ne pas oublier
+- PC de Cheikh : **Acer TravelMate (2010-2013), i3, 4 Go de RAM, disque dur HDD 500 Go**. Très modeste.
+- **Aucune compilation sur son PC** : tout se fait dans le cloud.
+- Cheikh est sur le **plan gratuit** : le travail peut être coupé à tout moment par la limite d'usage → toujours laisser ce fichier à jour.
+- Pas de budget pour du matériel ou de l'hébergement payant.
+
+---
+
+## 5. Plan détaillé par phase
+
+Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
+
+### Phase 0 — Préparation
+- ✅ 0.1 Récupérer le code de VS Code OSS (GitHub `microsoft/vscode`)
+- ✅ 0.2 Vérifier que le code est complet et que le fichier de licence MIT est présent
+- ✅ 0.3 Créer le dépôt de travail « Cody Code » et copier le code dedans
+- ✅ 0.4 Ajouter `WORKFLOW.md`, `FEATURES.md`, `Reprise.md` à la racine
+- ✅ 0.5 Vérifier les outils nécessaires dans l'environnement (Node.js, Git, etc.)
+- ⬜ 0.6 Vérification finale de la phase 0 + rapport court à Cheikh
+
+### Phase 1 — Base qui tourne
+- ⬜ 1.1 Installer les dépendances
+- ⬜ 1.2 Compiler l'éditeur tel quel
+- ⬜ 1.3 Le lancer (version web ou bureau selon ce que permet l'environnement)
+- ⬜ 1.4 Tester : ouvrir, écrire, sauvegarder un fichier
+- ⬜ 1.5 Vérification finale de la phase 1 + rapport court
+
+### Phase 2 — Identité Cody Code
+- ⬜ 2.1 Lister tous les endroits où apparaît « Visual Studio Code » / « Code - OSS »
+- ⬜ 2.2 Remplacer le nom par « Cody Code »
+- ⬜ 2.3 Créer le logo et les icônes de Cody Code
+- ⬜ 2.4 Remplacer les textes et fenêtres « À propos »
+- ⬜ 2.5 Vérifier qu'il ne reste aucune trace visible de Microsoft / VS Code
+- ⬜ 2.6 Vérification finale + rapport court
+
+### Phase 3 — Design (identique à la capture)
+- ⬜ 3.1 Relever les couleurs, polices et espacements de la capture
+- ⬜ 3.2 Thème sombre Cody (couleurs de l'éditeur et du code)
+- ⬜ 3.3 Barre de titre (nom du projet, recherche, notifications, compte)
+- ⬜ 3.4 Barre d'activités à gauche et explorateur en arbre avec icônes colorées
+- ⬜ 3.5 Onglets, fil d'Ariane, zone de code
+- ⬜ 3.6 Panneau du bas (Terminal, Problèmes, Sortie, Débogage, Console)
+- ⬜ 3.7 Barre d'état
+- ⬜ 3.8 Basculement thème clair / sombre
+- ⬜ 3.9 Comparaison côte à côte avec la capture + corrections
+- ⬜ 3.10 Vérification finale + rapport court
+
+### Phase 4 — Cody Assistant (panneau IA)
+- ⬜ 4.1 Panneau à droite (ouvrir / fermer)
+- ⬜ 4.2 Onglets Assistant · Chat · Codebase · Context
+- ⬜ 4.3 Écran d'accueil et 4 actions rapides
+- ⬜ 4.4 Zone de saisie (pièces jointes, images)
+- ⬜ 4.5 Branchement d'un service d'IA (aucune donnée envoyée sans accord)
+- ⬜ 4.6 Vérification finale + rapport court
+
+### Phase 5 — Parité des fonctionnalités avec VS Code
+- ⬜ 5.1 Tester chaque section de `FEATURES.md`, une par une
+- ⬜ 5.2 Corriger ce qui ne marche pas
+- ⬜ 5.3 Cocher dans `FEATURES.md` uniquement ce qui est testé
+- ⬜ 5.4 Vérification finale + rapport court
+
+### Phase 6 — Extensions
+- ⬜ 6.1 Brancher Open VSX
+- ⬜ 6.2 Étudier d'autres services de magasins d'extensions compatibles
+- ⬜ 6.3 Tester installation / activation / désinstallation d'extensions courantes
+- ⬜ 6.4 Vérification finale + rapport court
+
+### Phase 7 — Sécurité
+- ⬜ 7.1 Chercher secrets et clés dans le code
+- ⬜ 7.2 Contrôler les dépendances (failles connues)
+- ⬜ 7.3 Retirer ou désactiver la télémétrie et les connexions Microsoft
+- ⬜ 7.4 Contrôler les permissions et le mode « dossier non fiable »
+- ⬜ 7.5 Corriger puis re-tester
+- ⬜ 7.6 Rapport court
+
+### Phase 8 — Paquets d'installation
+- ⬜ 8.1 Version Windows
+- ⬜ 8.2 Version Linux
+- ⬜ 8.3 Version macOS
+- ⬜ 8.4 Test d'installation propre
+- ⬜ 8.5 Vérification finale + rapport court
+
+### Phase 9 — Publication GitHub
+- ⬜ 9.1 README clair
+- ⬜ 9.2 Licence et crédits (MIT, mention de Microsoft)
+- ⬜ 9.3 `FEATURES.md` à jour
+- ⬜ 9.4 Guide pour les développeurs qui veulent contribuer
+- ⬜ 9.5 Vérification finale + rapport court
+
+---
+
+## 6. Journal (le plus récent en haut)
+
+| Date | Ce qui a été fait | Résultat |
+|---|---|---|
+| 2026-10-21 (soir) | Phase 1.1 : bibliothèques système installées (libxkbfile, libsecret, libkrb5…). `npm ci` échoue 4 fois : téléchargement refusé (403) sur electronjs.org / nodejs.org | ⛔ Bloqué, voir section 1 |
+| 2026-10-21 (soir) | Phase 0 : clone de VS Code 1.144.0 (20 996 fichiers), licence MIT présente, branche `cody-main`, fichiers de suivi ajoutés et commités, Node 24.22.0 installé | OK |
+| 2026-10-21 | Création de `WORKFLOW.md`, `FEATURES.md` et `Reprise.md` | OK |
+
+## 7. Problèmes rencontrés
+- Le Node de l'environnement (22) est trop ancien : le projet exige 24.22.0. Réglé en installant Node 24 dans `/home/claude/tools`.
+- Bibliothèques système à installer avant `npm ci` : `libxkbfile-dev`, `libsecret-1-dev`, `libkrb5-dev` (seule `libx11-dev` est présente). À vérifier que `apt` fonctionne ici.
+- Le dossier contient un `copilot_shim` et un `AGENTS.md` venant de Microsoft : à examiner en phase 2 / 7 (traces Microsoft et Copilot à retirer).
+
+## 8. Décisions prises par Cheikh
+- Nom : **Cody Code**.
+- Design : **identique à la capture**.
+- Extensions : **Open VSX** + services similaires.
+- Travail **automatique et continu**, rapport seulement à la fin de chaque phase.
