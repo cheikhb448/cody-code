@@ -22,6 +22,16 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v4
 
+      - name: Ajouter de la mémoire de secours (swap)
+        run: |
+          set -e
+          free -h; df -h / /mnt | cat
+          sudo fallocate -l 8G /mnt/swapfile
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          free -h
+
       - name: Installer Node (version exigée par le projet)
         uses: actions/setup-node@v4
         with:
@@ -41,8 +51,11 @@ jobs:
             echo "npm ci a échoué ($i), nouvel essai..."
           done
 
-      - name: Compiler l'éditeur
-        run: npm run compile-client
+      - name: Compiler l'éditeur (version légère)
+        run: |
+          npm run transpile-client
+          ls out | head -20
+          free -h
 
       - name: Récupérer Node pour le serveur
         run: npm run gulp node
