@@ -38,12 +38,37 @@ try {
   await page.waitForSelector('.monaco-editor .view-lines', { timeout: 30000 });
   log('OK fichier ouvert');
 
+  const etat = async (quand) => {
+    const onglet = await page.locator('.tabs-container .tab.active').first().innerText().catch(() => '?');
+    const sale = await page.locator('.tabs-container .tab.active.dirty').count().catch(() => -1);
+    const texteEditeur = await page.locator('.monaco-editor .view-lines').first().innerText().catch(() => '?');
+    log(`[${quand}] onglet="${onglet.replace(/\n/g, ' ')}" modifié=${sale} texte="${texteEditeur.replace(/\n/g, '|').slice(0, 80)}"`);
+  };
+  await etat('après ouverture');
+
   await page.click('.monaco-editor .view-lines');
   await page.keyboard.press('Control+End');
-  await page.keyboard.type(texte);
+  await page.keyboard.type(texte, { delay: 30 });
+  await page.waitForTimeout(500);
+  await etat('après frappe');
+
   await page.keyboard.press('Control+s');
   await page.waitForTimeout(2500);
+  await etat('après Ctrl+S');
   await page.screenshot({ path: '/tmp/cody-logs/2-apres-sauvegarde.png' });
+
+  if (!fs.readFileSync(fichier, 'utf8').includes(texte)) {
+    log('Ctrl+S sans effet, essai via la palette de commandes');
+    await page.keyboard.press('F1');
+    await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 15000 });
+    await page.keyboard.type('Save', { delay: 30 });
+    await page.waitForTimeout(1500);
+    const premiers = await page.locator('.quick-input-list .monaco-list-row').allInnerTexts().catch(() => []);
+    log('palette: ' + premiers.slice(0, 4).join(' || ').replace(/\n/g, ' '));
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(2500);
+    await etat('après palette');
+  }
 
   const contenu = fs.readFileSync(fichier, 'utf8');
   log('Contenu du fichier : ' + JSON.stringify(contenu));
