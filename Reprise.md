@@ -10,26 +10,26 @@
 
 | Élément | Valeur |
 |---|---|
-| Dernière mise à jour | 2026-10-21 (soir) |
+| Dernière mise à jour | 2026-10-23 (soir) |
 | Phase en cours | **Phase 1 — Base qui tourne** |
-| Étape en cours | 1.1 — Installer les dépendances (⛔ BLOQUÉE, voir ci-dessous) |
-| Dernière étape terminée et vérifiée | Phase 0 entière (0.1 à 0.6) |
-| Bloqué ? | **OUI** — la compilation est impossible dans cet environnement |
-
-**⛔ Blocage :** l'installation (`npm ci`) doit compiler des modules natifs. Pour cela elle télécharge des fichiers sur `electronjs.org` (et `nodejs.org`), deux sites **refusés (403) par le filtre réseau de cet environnement**. Essayé 4 fois (Electron, Node avec fichiers locaux, modules précompilés) : même résultat. Je ne contourne pas ce filtre. Rien d'autre n'est en cause (les bibliothèques système sont installées, Node 24 est prêt).
-
-**Solution prévue :** compiler sur **GitHub Actions** (serveurs gratuits de GitHub, accès internet complet). Il faut un dépôt GitHub appartenant à Cheikh, auquel Claude peut envoyer le code. Dès que c'est possible : ajouter un fichier de workflow dans `.github/workflows/` qui fait `npm ci`, la compilation et un test de démarrage, puis lire les résultats.
-
-**Mise à jour (19h50) :** Cheikh a collé un token GitHub dans le chat, mais l'environnement le refuse (« No linked GitHub account » ; seuls les dépôts liés au compte Claude sont autorisés). La bonne méthode : Cheikh relie GitHub dans Claude (Réglages → Connecteurs → GitHub), puis donne le nom exact du dépôt (`propriétaire/cody-code`) ; j'utilise alors l'outil `add_repo` en mode « push ». Ne jamais enregistrer ce token nulle part (il est exposé dans le chat : Cheikh doit le supprimer sur GitHub).
-
-**Prochaine action exacte :** attendre que Cheikh relie GitHub et donne le nom du dépôt. Entre-temps, ne rien modifier au code sans pouvoir le compiler/vérifier. Quand le dépôt est disponible : étape 1.1 via GitHub Actions.
+| Étape en cours | 1.1/1.2 — Installer + compiler **sur GitHub Actions** (🚧 en cours) |
+| Dernière étape terminée et vérifiée | Phase 0 + dépôt GitHub relié et code envoyé |
+| Bloqué ? | Non (le blocage réseau est contourné légalement : GitHub Actions a un accès internet complet) |
 
 **Où est quoi :**
-- Code de Cody Code : `/home/claude/cody-code` (branche `cody-main`, source officielle gardée sous le nom `upstream`)
-- Node 24.22.0 : `/home/claude/tools/node_modules/.bin/node` (le Node par défaut est 22, trop ancien)
-- Version de VS Code utilisée comme base : 1.144.0 (commit `5b7277ed`)
+- Dépôt GitHub de Cheikh : `cheikhb448/cody-code` (privé). Branche de travail : **`cody-main`** (la branche `main` contient seulement `README.md` et `Tests.py` de Cheikh : ne pas l'écraser).
+- Code local : `/home/claude/cody-code` (branche `cody-main`, remote `origin` = GitHub de Cheikh, `upstream` = microsoft/vscode).
+- Base : VS Code 1.144.0 (commit `5b7277ed`). Historique aplati en 1 commit de départ (nécessaire car 98 fichiers Git LFS de tests Copilot manquaient : retirés, `extensions/copilot/test/simulation/cache`).
+- Programme de fabrication : `.github/workflows/cody-build.yml` (installe, compile `npm run compile-client`, lance le serveur web, vérifie HTTP 200 + « workbench »). Les programmes de Microsoft sont rangés dans `.github/workflows-microsoft-desactives/`.
+- Lire les résultats : `gh api repos/cheikhb448/cody-code/actions/runs` puis `gh run view <id> --repo cheikhb448/cody-code --log-failed`.
+- Node 24 local (inutile maintenant) : `/home/claude/tools/node_modules/.bin/node`.
 
----
+**Prochaine action exacte :** lire le résultat du dernier run de `Cody Code - Construction`. Si échec : lire le journal, corriger le workflow ou le code, pousser, relancer. Si succès : cocher 1.1 à 1.4 puis faire la vérification 1.5.
+
+**Règles GitHub apprises :**
+- Le token collé dans le chat NE sert PAS (refusé). Le dépôt est accessible via l'outil `add_repo` (mode push), déjà fait ; au besoin le refaire.
+- Ne jamais écrire de token dans un fichier.
+- Un seul `git clone`/`push` à la fois (limite de 2 opérations simultanées).
 
 ## 2. Rappel du projet
 - **Cody Code** = éditeur basé sur le code libre de VS Code (Code - OSS, licence MIT), avec **toutes** les fonctionnalités de VS Code.
@@ -141,6 +141,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 
 | Date | Ce qui a été fait | Résultat |
 |---|---|---|
+| 2026-10-23 | Dépôt GitHub `cheikhb448/cody-code` relié ; code poussé sur `cody-main` ; LFS Copilot retiré ; workflow `cody-build.yml` ajouté et lancé | 🚧 résultat à lire |
 | 2026-10-21 (soir) | Phase 1.1 : bibliothèques système installées (libxkbfile, libsecret, libkrb5…). `npm ci` échoue 4 fois : téléchargement refusé (403) sur electronjs.org / nodejs.org | ⛔ Bloqué, voir section 1 |
 | 2026-10-21 (soir) | Phase 0 : clone de VS Code 1.144.0 (20 996 fichiers), licence MIT présente, branche `cody-main`, fichiers de suivi ajoutés et commités, Node 24.22.0 installé | OK |
 | 2026-10-21 | Création de `WORKFLOW.md`, `FEATURES.md` et `Reprise.md` | OK |
