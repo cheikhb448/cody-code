@@ -22,6 +22,13 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v4
 
+      - name: Libérer de la place sur le disque
+        run: |
+          df -h / | cat
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/boost /opt/hostedtoolcache/CodeQL /usr/local/.ghcup /usr/share/swift
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
+          df -h / | cat
+
       - name: Ajouter de la mémoire de secours (swap)
         run: |
           set -e
@@ -50,6 +57,11 @@ jobs:
             if [ "$i" -eq 3 ]; then echo "npm ci a échoué 3 fois" >&2; exit 1; fi
             echo "npm ci a échoué ($i), nouvel essai..."
           done
+
+      - name: Vider le cache npm (gagner de la place)
+        run: |
+          npm cache clean --force || true
+          df -h / | cat
 
       - name: Compiler l'éditeur (version légère)
         run: |
