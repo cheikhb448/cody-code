@@ -92,6 +92,14 @@ jobs:
           head -c 600 /tmp/cody-logs/index.html
           grep -qi "workbench" /tmp/cody-logs/index.html
 
+      - name: Installer le navigateur de test
+        run: |
+          npm install --no-save --prefix /tmp/pw playwright
+          /tmp/pw/node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Test - ouvrir, écrire et sauvegarder un fichier
+        run: node cody-tests/phase1-ecrire-sauver.mjs
+
       - name: Envoyer les journaux
         if: always()
         uses: actions/upload-artifact@v4
