@@ -44,6 +44,12 @@ try {
     const texteEditeur = await page.locator('.monaco-editor .view-lines').first().innerText().catch(() => '?');
     log(`[${quand}] onglet="${onglet.replace(/\n/g, ' ')}" modifié=${sale} texte="${texteEditeur.replace(/\n/g, '|').slice(0, 80)}"`);
   };
+  // Attendre que le contenu du fichier soit réellement affiché avant de taper
+  await page.waitForFunction(() => {
+    const el = document.querySelector('.monaco-editor .view-lines');
+    return el && el.textContent && el.textContent.includes('debut');
+  }, null, { timeout: 30000 });
+  log('OK contenu du fichier affiché');
   await etat('après ouverture');
 
   await page.click('.monaco-editor .view-lines');
