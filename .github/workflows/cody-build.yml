@@ -1,0 +1,76 @@
+name: Cody Code - Construction et test de démarrage
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [cody-main]
+    paths-ignore:
+      - '**/*.md'
+
+jobs:
+  build:
+    name: Construire et lancer Cody Code (version web)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      VSCODE_SKIP_PRELAUNCH: '1'
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+      NPM_CONFIG_FUND: 'false'
+      NPM_CONFIG_AUDIT: 'false'
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node (version exigée par le projet)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Installer les bibliothèques système
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libxkbfile-dev libsecret-1-dev libkrb5-dev libx11-dev libgbm1
+
+      - name: Installer les dépendances
+        run: |
+          set -e
+          for i in 1 2 3; do
+            npm ci && break
+            if [ "$i" -eq 3 ]; then echo "npm ci a échoué 3 fois" >&2; exit 1; fi
+            echo "npm ci a échoué ($i), nouvel essai..."
+          done
+
+      - name: Compiler l'éditeur
+        run: npm run compile-client
+
+      - name: Récupérer Node pour le serveur
+        run: npm run gulp node
+
+      - name: Lancer le serveur web Cody Code
+        run: |
+          set -e
+          mkdir -p /tmp/cody-logs
+          nohup ./scripts/code-server.sh --host 127.0.0.1 --port 8080 --without-connection-token --accept-server-license-terms > /tmp/cody-logs/server.log 2>&1 &
+          echo $! > /tmp/cody-logs/server.pid
+          for i in $(seq 1 90); do
+            code=$(curl -s -o /tmp/cody-logs/index.html -w '%{http_code}' http://127.0.0.1:8080/ || true)
+            echo "essai $i : HTTP $code"
+            if [ "$code" = "200" ]; then break; fi
+            sleep 5
+          done
+          test "$code" = "200"
+
+      - name: Vérifier que la page de l'éditeur est bien là
+        run: |
+          set -e
+          head -c 600 /tmp/cody-logs/index.html
+          grep -qi "workbench" /tmp/cody-logs/index.html
+
+      - name: Envoyer les journaux
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: journaux-cody
+          path: /tmp/cody-logs
+          if-no-files-found: ignore
