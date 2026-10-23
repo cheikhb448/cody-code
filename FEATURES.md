@@ -9,6 +9,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 ---
 
 ## 1. Éditeur
+- ✅ Ouvrir un fichier (Ctrl+P), écrire et sauvegarder (Ctrl+S) — testé automatiquement, version web (phase 1)
 - ⬜ Édition de texte multi-fichiers avec onglets
 - ⬜ Coloration syntaxique
 - ⬜ Numéros de ligne, fil d'Ariane (breadcrumbs)

@@ -11,25 +11,30 @@
 | Élément | Valeur |
 |---|---|
 | Dernière mise à jour | 2026-10-23 (soir) |
-| Phase en cours | **Phase 1 — Base qui tourne** |
-| Étape en cours | 1.1/1.2 — Installer + compiler **sur GitHub Actions** (🚧 en cours) |
-| Dernière étape terminée et vérifiée | Phase 0 + dépôt GitHub relié et code envoyé |
-| Bloqué ? | Non (le blocage réseau est contourné légalement : GitHub Actions a un accès internet complet) |
+| Phase en cours | **Phase 1 terminée ✅ → Phase 2 — Identité Cody Code (pas commencée)** |
+| Étape en cours | 2.1 — Lister les endroits où apparaît « Visual Studio Code » / « Code - OSS » |
+| Dernière étape terminée et vérifiée | Phase 1 entière (1.1 à 1.5) : installation, compilation, lancement et test d'écriture/sauvegarde réussis sur GitHub Actions |
+| Bloqué ? | Non |
 
 **Où est quoi :**
 - Dépôt GitHub de Cheikh : `cheikhb448/cody-code` (privé). Branche de travail : **`cody-main`** (la branche `main` contient seulement `README.md` et `Tests.py` de Cheikh : ne pas l'écraser).
 - Code local : `/home/claude/cody-code` (branche `cody-main`, remote `origin` = GitHub de Cheikh, `upstream` = microsoft/vscode).
-- Base : VS Code 1.144.0 (commit `5b7277ed`). Historique aplati en 1 commit de départ (nécessaire car 98 fichiers Git LFS de tests Copilot manquaient : retirés, `extensions/copilot/test/simulation/cache`).
-- Programme de fabrication : `.github/workflows/cody-build.yml` (installe, compile `npm run compile-client`, lance le serveur web, vérifie HTTP 200 + « workbench »). Les programmes de Microsoft sont rangés dans `.github/workflows-microsoft-desactives/`.
-- Lire les résultats : `gh api repos/cheikhb448/cody-code/actions/runs` puis `gh run view <id> --repo cheikhb448/cody-code --log-failed`.
-- Node 24 local (inutile maintenant) : `/home/claude/tools/node_modules/.bin/node`.
+- Base : VS Code 1.144.0 (commit `5b7277ed`). Historique aplati en 1 commit de départ ; 98 fichiers Git LFS de tests Copilot retirés (`extensions/copilot/test/simulation/cache`).
+- Programme de construction : `.github/workflows/cody-build.yml`. Ceux de Microsoft : `.github/workflows-microsoft-desactives/`.
+- Test réel : `cody-tests/phase1-ecrire-sauver.mjs` (Playwright : ouvre l'éditeur, ouvre un fichier, écrit, sauvegarde, vérifie le fichier).
+- **Lire les résultats d'un run :** `gh api repos/cheikhb448/cody-code/actions/runs` ; les journaux complets ne sont PAS téléchargeables d'ici (403). Astuce : le test écrit ses messages en « annotations » → `gh api repos/cheikhb448/cody-code/check-runs/<job_id>/annotations`.
 
-**Prochaine action exacte :** lire le résultat du dernier run de `Cody Code - Construction`. Si échec : lire le journal, corriger le workflow ou le code, pousser, relancer. Si succès : cocher 1.1 à 1.4 puis faire la vérification 1.5.
+**Comment on compile (leçons apprises) :**
+- Dépôt privé = machine GitHub petite (≈7 Go RAM, disque limité) → le workflow libère le disque, ajoute 8 Go de swap, et utilise `npm run transpile-client` (léger) au lieu de `compile-client` (trop lourd).
+- Un run complet dure ≈ 13 min. Le serveur web se lance avec `./scripts/code-server.sh` (VSCODE_SKIP_PRELAUNCH=1).
+- Les extensions intégrées ne sont PAS compilées dans ce run (messages « Cannot find module extensions/…/out ») : à traiter en phase 5/6 (`npm run gulp compile-extensions`).
+- Dans les tests, taper avec `delay: 30` ms sinon le texte est perdu.
+
+**Prochaine action exacte :** démarrer la phase 2 (identité). Découper en étapes 2.1 à 2.6 (voir plan plus bas), vérifier chacune par un run GitHub Actions, sans rapport tant que la phase n'est pas finie.
 
 **Règles GitHub apprises :**
-- Le token collé dans le chat NE sert PAS (refusé). Le dépôt est accessible via l'outil `add_repo` (mode push), déjà fait ; au besoin le refaire.
-- Ne jamais écrire de token dans un fichier.
-- Un seul `git clone`/`push` à la fois (limite de 2 opérations simultanées).
+- Le token collé dans le chat NE sert PAS (refusé) et ne doit jamais être écrit dans un fichier. Dépôt accessible via l'outil `add_repo` (push), déjà fait ; au besoin le refaire.
+- Un seul `git clone`/`push` à la fois.
 
 ## 2. Rappel du projet
 - **Cody Code** = éditeur basé sur le code libre de VS Code (Code - OSS, licence MIT), avec **toutes** les fonctionnalités de VS Code.
@@ -67,11 +72,11 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 - ⬜ 0.6 Vérification finale de la phase 0 + rapport court à Cheikh
 
 ### Phase 1 — Base qui tourne
-- ⬜ 1.1 Installer les dépendances
-- ⬜ 1.2 Compiler l'éditeur tel quel
-- ⬜ 1.3 Le lancer (version web ou bureau selon ce que permet l'environnement)
-- ⬜ 1.4 Tester : ouvrir, écrire, sauvegarder un fichier
-- ⬜ 1.5 Vérification finale de la phase 1 + rapport court
+- ✅ 1.1 Installer les dépendances
+- ✅ 1.2 Compiler l'éditeur tel quel
+- ✅ 1.3 Le lancer (version web ou bureau selon ce que permet l'environnement)
+- ✅ 1.4 Tester : ouvrir, écrire, sauvegarder un fichier
+- ✅ 1.5 Vérification finale de la phase 1 + rapport court
 
 ### Phase 2 — Identité Cody Code
 - ⬜ 2.1 Lister tous les endroits où apparaît « Visual Studio Code » / « Code - OSS »
@@ -141,6 +146,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 
 | Date | Ce qui a été fait | Résultat |
 |---|---|---|
+| 2026-10-23 (nuit) | Phase 1 terminée : installation, compilation légère, serveur web et test d'écriture/sauvegarde OK sur GitHub Actions (run 40034501361). Contrôle sécurité : aucun secret dans nos fichiers, serveur de test en local seulement, droits GitHub réduits | ✅ OK |
 | 2026-10-23 | Dépôt GitHub `cheikhb448/cody-code` relié ; code poussé sur `cody-main` ; LFS Copilot retiré ; workflow `cody-build.yml` ajouté et lancé | 🚧 résultat à lire |
 | 2026-10-21 (soir) | Phase 1.1 : bibliothèques système installées (libxkbfile, libsecret, libkrb5…). `npm ci` échoue 4 fois : téléchargement refusé (403) sur electronjs.org / nodejs.org | ⛔ Bloqué, voir section 1 |
 | 2026-10-21 (soir) | Phase 0 : clone de VS Code 1.144.0 (20 996 fichiers), licence MIT présente, branche `cody-main`, fichiers de suivi ajoutés et commités, Node 24.22.0 installé | OK |
