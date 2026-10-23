@@ -146,6 +146,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 
 | Date | Ce qui a été fait | Résultat |
 |---|---|---|
+| 2026-10-23 (nuit) | Contrôle final : 1 échec dû à une course critique dans le TEST (texte tapé avant l'affichage du fichier), corrigé ; relancé = succès (run 40036901572) avec droits GitHub réduits | ✅ OK |
 | 2026-10-23 (nuit) | Phase 1 terminée : installation, compilation légère, serveur web et test d'écriture/sauvegarde OK sur GitHub Actions (run 40034501361). Contrôle sécurité : aucun secret dans nos fichiers, serveur de test en local seulement, droits GitHub réduits | ✅ OK |
 | 2026-10-23 | Dépôt GitHub `cheikhb448/cody-code` relié ; code poussé sur `cody-main` ; LFS Copilot retiré ; workflow `cody-build.yml` ajouté et lancé | 🚧 résultat à lire |
 | 2026-10-21 (soir) | Phase 1.1 : bibliothèques système installées (libxkbfile, libsecret, libkrb5…). `npm ci` échoue 4 fois : téléchargement refusé (403) sur electronjs.org / nodejs.org | ⛔ Bloqué, voir section 1 |
