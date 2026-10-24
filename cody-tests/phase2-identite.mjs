@@ -8,7 +8,7 @@ const annoter = (niveau) => {
   const msg = lignes.join('\n').slice(-3500).replace(/%/g, '%25').replace(/\r/g, '').replace(/\n/g, '%0A');
   console.log(`::${niveau} title=Test phase 2::${msg}`);
 };
-const interdits = [/Visual Studio Code/, /Code - OSS/, /VS Code/, /vscode-oss/i];
+const interdits = [/Visual Studio/, /Code\s*[-–]+\s*OSS/i, /VS\s?Code/, /vscode-?oss/i];
 const trouver = (texte) => {
   const res = [];
   for (const re of interdits) {

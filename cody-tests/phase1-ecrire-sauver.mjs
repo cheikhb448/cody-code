@@ -28,6 +28,14 @@ try {
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
   log('OK éditeur affiché');
   await page.waitForTimeout(3000);
+  // La page d'accueil « Welcome » s'ouvre au premier démarrage : on la ferme pour ne pas gêner le test
+  try {
+    const accueil = page.locator('.tabs-container .tab', { hasText: 'Welcome' }).first();
+    await accueil.waitFor({ timeout: 8000 });
+    await accueil.locator('.codicon-close, .action-label').first().click();
+    log('page Welcome fermée');
+    await page.waitForTimeout(1000);
+  } catch { log('pas de page Welcome'); }
   await page.screenshot({ path: '/tmp/cody-logs/1-editeur.png' });
 
   await page.keyboard.press('Control+p');
