@@ -206,9 +206,9 @@
 	],
 	"onboardingThemes": [
 		{
-			"id": "dark-2026",
-			"label": "Dark 2026",
-			"themeId": "Dark 2026",
+			"id": "cody-dark",
+			"label": "Cody Dark",
+			"themeId": "Cody Dark",
 			"type": "dark"
 		},
 		{
@@ -224,9 +224,9 @@
 			"type": "dark"
 		},
 		{
-			"id": "light-2026",
-			"label": "Light 2026",
-			"themeId": "Light 2026",
+			"id": "cody-light",
+			"label": "Cody Light",
+			"themeId": "Cody Light",
 			"type": "light"
 		},
 		{

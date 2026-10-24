@@ -14,6 +14,8 @@ jobs:
   build:
     name: Construire et lancer Cody Code (version web)
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write   # uniquement pour publier les captures d'écran sur la branche ci-captures
     timeout-minutes: 120
     env:
       VSCODE_SKIP_PRELAUNCH: '1'
@@ -106,6 +108,26 @@ jobs:
       - name: Test - identité Cody Code (nom, icône, À propos)
         if: always()
         run: node cody-tests/phase2-identite.mjs
+
+      - name: Test - design Cody (couleurs + capture d'écran)
+        if: always()
+        run: node cody-tests/phase3-design.mjs
+
+      - name: Publier les captures d'écran (branche ci-captures)
+        if: always()
+        run: |
+          set -e
+          mkdir -p /tmp/captures
+          cp /tmp/cody-logs/*.png /tmp/captures/ 2>/dev/null || true
+          cd /tmp/captures
+          ls -la
+          git init -q
+          git checkout -q -b ci-captures
+          git config user.name "Cody CI"
+          git config user.email "ci@cody-code.local"
+          git add -A
+          git commit -q -m "Captures du run ${{ github.run_id }}" || exit 0
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ci-captures
 
       - name: Envoyer les journaux
         if: always()
