@@ -103,6 +103,9 @@ jobs:
       - name: Test - ouvrir, écrire et sauvegarder un fichier
         run: node cody-tests/phase1-ecrire-sauver.mjs
 
+      - name: Test - identité Cody Code (nom, icône, À propos)
+        run: node cody-tests/phase2-identite.mjs
+
       - name: Envoyer les journaux
         if: always()
         uses: actions/upload-artifact@v4
