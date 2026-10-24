@@ -10,11 +10,17 @@
 
 | Élément | Valeur |
 |---|---|
-| Dernière mise à jour | 2026-10-23 (soir) |
-| Phase en cours | **Phase 1 terminée ✅ → Phase 2 — Identité Cody Code (pas commencée)** |
-| Étape en cours | 2.1 — Lister les endroits où apparaît « Visual Studio Code » / « Code - OSS » |
-| Dernière étape terminée et vérifiée | Phase 1 entière (1.1 à 1.5) : installation, compilation, lancement et test d'écriture/sauvegarde réussis sur GitHub Actions |
+| Dernière mise à jour | 2026-10-24 |
+| Phase en cours | **Phase 2 — Identité Cody Code** |
+| Étape en cours | 2.5 — test automatique de l'identité (run GitHub en cours : `cody-tests/phase2-identite.mjs`) |
+| Dernière étape terminée et vérifiée | 2.4 (écrite, pas encore testée) ; Phase 1 entière ✅ |
 | Bloqué ? | Non |
+
+**Phase 2 — fait (à tester par le run) :** `product.json` renommé (29 clés, nouveaux identifiants Windows/Mac), 375 textes « Visual Studio Code » / « VS Code » / « Code - OSS » remplacés dans `src/` et `resources/`, logo original (`resources/cody-brand/*.svg`), icônes générées (web, linux, win32 .ico, macOS .icns, `code-icon.svg`), `README.md` réécrit, `NOTICE.md` ajouté.
+**Volontairement NON modifié :** en-têtes de licence Microsoft (obligatoires MIT), tests, `loopbackServer.ts` (comparaison de nom d'appli), `resources/linux/debian/templates.template` (propose le dépôt apt Microsoft → à traiter en phase 8), extensions intégrées (`extensions/*/package.nls.json` contiennent encore « VS Code » → à traiter en phase 5/6), lignes de télémétrie/journaux internes.
+**À savoir :** `webviewContentExternalBaseUrlTemplate` dans `product.json` pointe vers un CDN Microsoft (vscode-cdn.net) → à remplacer/auto-héberger (phase 7, sécurité). `defaultChatAgent`, `voiceWsUrl`, `trustedExtensionAuthAccess`, `builtInExtensionsEnabledWithAutoUpdates` visent Copilot/Microsoft → phase 4/7.
+
+**Prochaine action exacte :** lire le résultat du run (annotations « Test phase 2 »). Si échec : corriger les traces restantes et relancer. Si succès : cocher 2.1–2.6, mettre `FEATURES.md` à jour, faire le contrôle sécurité, envoyer le rapport court de phase 2, puis commencer la phase 3 (design).
 
 **Où est quoi :**
 - Dépôt GitHub de Cheikh : `cheikhb448/cody-code` (privé). Branche de travail : **`cody-main`** (la branche `main` contient seulement `README.md` et `Tests.py` de Cheikh : ne pas l'écraser).
