@@ -104,6 +104,7 @@ jobs:
         run: node cody-tests/phase1-ecrire-sauver.mjs
 
       - name: Test - identité Cody Code (nom, icône, À propos)
+        if: always()
         run: node cody-tests/phase2-identite.mjs
 
       - name: Envoyer les journaux

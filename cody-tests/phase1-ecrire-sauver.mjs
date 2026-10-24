@@ -45,10 +45,23 @@ try {
     log(`[${quand}] onglet="${onglet.replace(/\n/g, ' ')}" modifié=${sale} texte="${texteEditeur.replace(/\n/g, '|').slice(0, 80)}"`);
   };
   // Attendre que le contenu du fichier soit réellement affiché avant de taper
-  await page.waitForFunction(() => {
-    const el = document.querySelector('.monaco-editor .view-lines');
-    return el && el.textContent && el.textContent.includes('debut');
-  }, null, { timeout: 30000 });
+  try {
+    await page.waitForFunction(() => {
+      const el = document.querySelector('.monaco-editor .view-lines');
+      return el && el.textContent && el.textContent.includes('debut');
+    }, null, { timeout: 30000 });
+  } catch (e) {
+    const diag = await page.evaluate(() => ({
+      titre: document.title,
+      onglets: [...document.querySelectorAll('.tabs-container .tab')].map(t => t.innerText.replace(/\n/g, ' ')),
+      editeurs: [...document.querySelectorAll('.monaco-editor')].length,
+      texteEditeur: (document.querySelector('.monaco-editor .view-lines')?.textContent || '').slice(0, 100),
+      notifications: [...document.querySelectorAll('.notifications-toasts .notification-list-item, .monaco-dialog-box')].map(n => n.innerText.replace(/\n/g, ' ').slice(0, 200)),
+      explorateur: [...document.querySelectorAll('.explorer-folders-view .monaco-list-row')].map(n => n.innerText.replace(/\n/g, ' ')).slice(0, 5),
+    }));
+    log('DIAGNOSTIC: ' + JSON.stringify(diag));
+    throw e;
+  }
   log('OK contenu du fichier affiché');
   await etat('après ouverture');
 
