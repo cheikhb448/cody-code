@@ -275,7 +275,7 @@ export class IssueReporterOverlay {
 		heading.textContent = localize('screenshotsHeading', "Add attachments for better context");
 
 		const subtitle = append(page, $('p.wizard-subtitle'));
-		subtitle.textContent = localize('screenshotsSubtitle', "You can add up to {0} screenshots or videos. Navigate VS Code and choose when to capture.", MAX_ATTACHMENTS);
+		subtitle.textContent = localize('screenshotsSubtitle', "You can add up to {0} screenshots or videos. Navigate Cody Code and choose when to capture.", MAX_ATTACHMENTS);
 
 		const importHint = append(page, $('p.wizard-subtitle.wizard-attachment-hint'));
 		importHint.textContent = localize('attachmentImportHint', "Drop images or videos here, or focus the attachments area and paste. Images: PNG, JPEG, GIF, WebP, AVIF (up to 10 MB). Videos: MP4, WebM, MOV (up to 100 MB). Files stay local until you preview on GitHub.");
@@ -792,9 +792,9 @@ export class IssueReporterOverlay {
 
 	private getAllSourceOptions(): { label: string; value: IssueSource }[] {
 		return [
-			{ label: product.nameLong || localize('vscode', "Visual Studio Code"), value: IssueSource.VSCode },
+			{ label: product.nameLong || localize('vscode', "Cody Code"), value: IssueSource.VSCode },
 			{ label: localize('agentsWindow', "Agents Window"), value: IssueSource.AgentsWindow },
-			{ label: localize('extensionSource', "A VS Code extension"), value: IssueSource.Extension },
+			{ label: localize('extensionSource', "A Cody Code extension"), value: IssueSource.Extension },
 			{ label: localize('marketplace', "Extensions Marketplace"), value: IssueSource.Marketplace },
 		];
 	}
@@ -1083,11 +1083,11 @@ export class IssueReporterOverlay {
 	private getIssueSourceLabel(): string {
 		switch (this.selectedIssueSource) {
 			case IssueSource.VSCode:
-				return product.nameLong || localize('vscode', "Visual Studio Code");
+				return product.nameLong || localize('vscode', "Cody Code");
 			case IssueSource.AgentsWindow:
 				return localize('agentsWindow', "Agents Window");
 			case IssueSource.Extension:
-				return this.selectedExtension?.displayName || this.selectedExtension?.name || localize('extensionSource', "A VS Code extension");
+				return this.selectedExtension?.displayName || this.selectedExtension?.name || localize('extensionSource', "A Cody Code extension");
 			case IssueSource.Marketplace:
 				return localize('marketplace', "Extensions Marketplace");
 			case IssueSource.Unknown:

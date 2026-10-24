@@ -14,7 +14,7 @@ export function getSessionApplication(name: string, title?: string): ISessionApp
 		case 'vscode-editor-window':
 		case 'vscode-agents-window':
 		case 'visual_studio_code_remote_agent_tool_invoked':
-			return { id: 'vscode', label: localize('application.vscode', "VS Code") };
+			return { id: 'vscode', label: localize('application.vscode', "Cody Code") };
 		case 'github/cli':
 		case 'copilot-cli':
 			return { id: 'github/cli', label: localize('application.copilotCli', "Copilot CLI") };

@@ -178,12 +178,12 @@ export class RunTestTool implements IToolImpl {
 		if (!testCases.length) {
 			const hasWorkspaceTests = [...this._testService.collection.rootItems].some(root => root.children.size > 0);
 			const message = !params.files?.length && !hasWorkspaceTests
-				? localize('runTestTool.noWorkspaceTests', "No tests are available to run through VS Code's test extensions in this workspace. No tests were run; this is not a passing test result.")
+				? localize('runTestTool.noWorkspaceTests', "No tests are available to run through Cody Code's test extensions in this workspace. No tests were run; this is not a passing test result.")
 				: params.testNames?.length && (!discovery.files.length || discovery.files.some(file => file.tests.length))
-					? localize('runTestTool.noNames', "No discovered VS Code tests matched the requested test names. The request has not been validated.")
-					: localize('runTestTool.noTests', "No VS Code tests matched the requested files. The request has not been validated.");
+					? localize('runTestTool.noNames', "No discovered Cody Code tests matched the requested test names. The request has not been validated.")
+					: localize('runTestTool.noTests', "No Cody Code tests matched the requested files. The request has not been validated.");
 			return {
-				content: [{ kind: 'text', value: `${message}\n${diagnostics || localize('runTestTool.controllers', "Registered VS Code test controllers: {0}.", [...this._testService.getTestControllers()].length)}\n${this._getUnvalidatedGuidance()}` }],
+				content: [{ kind: 'text', value: `${message}\n${diagnostics || localize('runTestTool.controllers', "Registered Cody Code test controllers: {0}.", [...this._testService.getTestControllers()].length)}\n${this._getUnvalidatedGuidance()}` }],
 				toolResultError: message,
 			};
 		}
@@ -265,7 +265,7 @@ export class RunTestTool implements IToolImpl {
 
 	private _getUnvalidatedGuidance(): string {
 		return [...this._testService.getTestControllers()].length === 0
-			? localize('runTestTool.discoveryUnavailable', "VS Code test discovery is unavailable without a registered test controller. Use the repository's configured test command instead of repeatedly checking the same paths.")
+			? localize('runTestTool.discoveryUnavailable', "Cody Code test discovery is unavailable without a registered test controller. Use the repository's configured test command instead of repeatedly checking the same paths.")
 			: localize('runTestTool.configuredCommand', "This does not establish that the workspace contains no tests. Use the repository's configured test command if one is defined; otherwise report that no tests could be run. Do not retry this tool unless discovery or configuration changes.");
 	}
 
@@ -541,7 +541,7 @@ export class RunTestTool implements IToolImpl {
 						}
 					} catch (error) {
 						errors.push(isCancellationError(error)
-							? localize('runTestTool.controllerDiscoveryPending', "VS Code test discovery is pending for controller {0}. The request has not been validated.", root.controllerId)
+							? localize('runTestTool.controllerDiscoveryPending', "Cody Code test discovery is pending for controller {0}. The request has not been validated.", root.controllerId)
 							: getErrorMessage(error));
 					}
 				}));
@@ -613,7 +613,7 @@ export class RunTestTool implements IToolImpl {
 			[TestDiscoveryState.Unknown]: localize('runTestTool.state.unknown', "unknown"),
 		};
 		return [
-			localize('runTestTool.controllers', "Registered VS Code test controllers: {0}.", [...this._testService.getTestControllers()].length),
+			localize('runTestTool.controllers', "Registered Cody Code test controllers: {0}.", [...this._testService.getTestControllers()].length),
 			...files.flatMap(file => [
 				file.existence === TestFileExistence.Exists
 					? localize('runTestTool.pathExists', "{0}: path exists.", file.path)

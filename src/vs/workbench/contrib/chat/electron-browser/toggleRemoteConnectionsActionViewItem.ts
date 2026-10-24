@@ -171,7 +171,7 @@ export class RemoteConnectionsActionViewItem extends BaseActionViewItem {
 					checked: !usesGitHubEnvironment,
 					run: () => this._selectConnectionMethod('devTunnel'),
 				}),
-				detail: localize('remoteConnections.devTunnel.detail', "Access workspaces and agents on this machine from VS Code or vscode.dev/agents."),
+				detail: localize('remoteConnections.devTunnel.detail', "Access workspaces and agents on this machine from Cody Code or vscode.dev/agents."),
 			},
 			{
 				...toAction({
@@ -180,7 +180,7 @@ export class RemoteConnectionsActionViewItem extends BaseActionViewItem {
 					checked: usesGitHubEnvironment,
 					run: () => this._selectConnectionMethod('githubEnvironment'),
 				}),
-				detail: localize('remoteConnections.githubEnvironment.detail', "Access agents on this machine from VS Code, vscode.dev/agents, GitHub apps, or github.com/copilot."),
+				detail: localize('remoteConnections.githubEnvironment.detail', "Access agents on this machine from Cody Code, vscode.dev/agents, GitHub apps, or github.com/copilot."),
 				badge: localize('remoteConnections.preview', "Preview"),
 			},
 		];
@@ -306,7 +306,7 @@ export class ToggleRemoteConnectionsActionViewItem extends BaseActionViewItem {
 		if (this._usesMissionControl()) {
 			return localize('missionControlSharing.hover', "{0}\n\n{1}",
 				this._getAriaLabel(),
-				localize('remoteConnections.githubEnvironment.detail', "Access agents on this machine from VS Code, vscode.dev/agents, GitHub apps, or github.com/copilot."),
+				localize('remoteConnections.githubEnvironment.detail', "Access agents on this machine from Cody Code, vscode.dev/agents, GitHub apps, or github.com/copilot."),
 			);
 		}
 		const lines: string[] = [];
