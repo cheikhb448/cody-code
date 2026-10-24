@@ -11,16 +11,18 @@
 | Élément | Valeur |
 |---|---|
 | Dernière mise à jour | 2026-10-24 |
-| Phase en cours | **Phase 2 — Identité Cody Code** |
-| Étape en cours | 2.5 — test automatique de l'identité (run GitHub en cours : `cody-tests/phase2-identite.mjs`) |
-| Dernière étape terminée et vérifiée | 2.4 (écrite, pas encore testée) ; Phase 1 entière ✅ |
+| Phase en cours | **Phase 2 terminée ✅ → Phase 3 — Design identique à la capture (pas commencée)** |
+| Étape en cours | 3.1 — Relever couleurs, polices et espacements de la capture |
+| Dernière étape terminée et vérifiée | Phase 2 entière (2.1 à 2.6) : run GitHub 40094108059 = succès (test phase 1 + test phase 2) |
 | Bloqué ? | Non |
 
-**Phase 2 — fait (à tester par le run) :** `product.json` renommé (29 clés, nouveaux identifiants Windows/Mac), 375 textes « Visual Studio Code » / « VS Code » / « Code - OSS » remplacés dans `src/` et `resources/`, logo original (`resources/cody-brand/*.svg`), icônes générées (web, linux, win32 .ico, macOS .icns, `code-icon.svg`), `README.md` réécrit, `NOTICE.md` ajouté.
-**Volontairement NON modifié :** en-têtes de licence Microsoft (obligatoires MIT), tests, `loopbackServer.ts` (comparaison de nom d'appli), `resources/linux/debian/templates.template` (propose le dépôt apt Microsoft → à traiter en phase 8), extensions intégrées (`extensions/*/package.nls.json` contiennent encore « VS Code » → à traiter en phase 5/6), lignes de télémétrie/journaux internes.
-**À savoir :** `webviewContentExternalBaseUrlTemplate` dans `product.json` pointe vers un CDN Microsoft (vscode-cdn.net) → à remplacer/auto-héberger (phase 7, sécurité). `defaultChatAgent`, `voiceWsUrl`, `trustedExtensionAuthAccess`, `builtInExtensionsEnabledWithAutoUpdates` visent Copilot/Microsoft → phase 4/7.
-
-**Prochaine action exacte :** lire le résultat du run (annotations « Test phase 2 »). Si échec : corriger les traces restantes et relancer. Si succès : cocher 2.1–2.6, mettre `FEATURES.md` à jour, faire le contrôle sécurité, envoyer le rapport court de phase 2, puis commencer la phase 3 (design).
+**Phase 2 — résultat :** nom « Cody Code » dans `product.json` (29 clés, nouveaux identifiants Windows/Mac), 375 textes remplacés dans `src/` et `resources/`, logo original (`resources/cody-brand/*.svg`) + icônes (web, linux, win32 .ico, macOS .icns, `code-icon.svg`), `README.md` et `NOTICE.md`, `manifest.json` corrigé. Testé : titre de page, icônes (HTTP 200), manifest, texte visible, fenêtre « À propos » — aucun « Visual Studio / VS Code / Code - OSS ».
+**Limites connues (à traiter plus tard) :**
+- En mode développement le nom affiché est « Cody Code **Dev** » (repli de `product.ts`) ; les vraies versions (phase 8) utilisent `product.json` → « Cody Code ».
+- Version interne gardée à 1.144.0 (celle de VS Code) car les extensions vérifient la compatibilité avec ce numéro. Afficher « v1.0.0 » comme sur la capture = texte séparé, à faire en phase 3 (barre d'état).
+- Extensions intégrées (`extensions/*/package.nls.json`) contiennent encore « VS Code » → phase 5/6.
+- `resources/linux/debian/templates.template` propose le dépôt apt Microsoft → phase 8.
+- `product.json` contient encore des adresses Microsoft/Copilot : `webviewContentExternalBaseUrlTemplate` (vscode-cdn.net), `defaultChatAgent` (api.github.com/copilot…, aka.ms/…), `voiceWsUrl`, `trustedExtensionAuthAccess`, `builtInExtensionsEnabledWithAutoUpdates` → phase 4 (remplacer par Cody Assistant) et phase 7 (sécurité).
 
 **Où est quoi :**
 - Dépôt GitHub de Cheikh : `cheikhb448/cody-code` (privé). Branche de travail : **`cody-main`** (la branche `main` contient seulement `README.md` et `Tests.py` de Cheikh : ne pas l'écraser).
@@ -36,7 +38,7 @@
 - Les extensions intégrées ne sont PAS compilées dans ce run (messages « Cannot find module extensions/…/out ») : à traiter en phase 5/6 (`npm run gulp compile-extensions`).
 - Dans les tests, taper avec `delay: 30` ms sinon le texte est perdu.
 
-**Prochaine action exacte :** démarrer la phase 2 (identité). Découper en étapes 2.1 à 2.6 (voir plan plus bas), vérifier chacune par un run GitHub Actions, sans rapport tant que la phase n'est pas finie.
+**Prochaine action exacte :** phase 3 — découper en étapes 3.1 à 3.10, commencer par relever les couleurs de la capture `Espace_de_développement_Cody_Code_en_français.png` (dans `/mnt/user-data/uploads/`).
 
 **Règles GitHub apprises :**
 - Le token collé dans le chat NE sert PAS (refusé) et ne doit jamais être écrit dans un fichier. Dépôt accessible via l'outil `add_repo` (push), déjà fait ; au besoin le refaire.
@@ -85,12 +87,12 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 - ✅ 1.5 Vérification finale de la phase 1 + rapport court
 
 ### Phase 2 — Identité Cody Code
-- ⬜ 2.1 Lister tous les endroits où apparaît « Visual Studio Code » / « Code - OSS »
-- ⬜ 2.2 Remplacer le nom par « Cody Code »
-- ⬜ 2.3 Créer le logo et les icônes de Cody Code
-- ⬜ 2.4 Remplacer les textes et fenêtres « À propos »
-- ⬜ 2.5 Vérifier qu'il ne reste aucune trace visible de Microsoft / VS Code
-- ⬜ 2.6 Vérification finale + rapport court
+- ✅ 2.1 Lister tous les endroits où apparaît « Visual Studio Code » / « Code - OSS »
+- ✅ 2.2 Remplacer le nom par « Cody Code »
+- ✅ 2.3 Créer le logo et les icônes de Cody Code
+- ✅ 2.4 Remplacer les textes et fenêtres « À propos »
+- ✅ 2.5 Vérifier qu'il ne reste aucune trace visible de Microsoft / VS Code
+- ✅ 2.6 Vérification finale + rapport court
 
 ### Phase 3 — Design (identique à la capture)
 - ⬜ 3.1 Relever les couleurs, polices et espacements de la capture
@@ -152,6 +154,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 
 | Date | Ce qui a été fait | Résultat |
 |---|---|---|
+| 2026-10-24 | Phase 2 terminée : identité Cody Code, tests phase 1+2 verts (run 40094108059). Corrigés en route : manifest « Code- OSS », test phase 1 gêné par la page Welcome | ✅ OK |
 | 2026-10-23 (nuit) | Contrôle final : 1 échec dû à une course critique dans le TEST (texte tapé avant l'affichage du fichier), corrigé ; relancé = succès (run 40036901572) avec droits GitHub réduits | ✅ OK |
 | 2026-10-23 (nuit) | Phase 1 terminée : installation, compilation légère, serveur web et test d'écriture/sauvegarde OK sur GitHub Actions (run 40034501361). Contrôle sécurité : aucun secret dans nos fichiers, serveur de test en local seulement, droits GitHub réduits | ✅ OK |
 | 2026-10-23 | Dépôt GitHub `cheikhb448/cody-code` relié ; code poussé sur `cody-main` ; LFS Copilot retiré ; workflow `cody-build.yml` ajouté et lancé | 🚧 résultat à lire |
