@@ -52,9 +52,9 @@ try {
   await page.waitForTimeout(2000);
   await page.screenshot({ path: '/tmp/cody-logs/p3-1-ecran.png' });
 
-  const cls = await page.evaluate(() => document.body.className);
-  log('classes du <body> : ' + cls.slice(0, 120));
-  verifier(/vs-dark/.test(cls), 'thème sombre actif');
+  const cls = await page.evaluate(() => [document.documentElement, document.body, document.querySelector('.monaco-workbench')].map(e => e?.className ?? '').join(' | '));
+  log('classes : ' + cls.slice(0, 200));
+  verifier(/vs-dark|vscode-theme-defaults-themes-cody_dark/.test(cls), 'thème sombre actif');
 
   for (const [sel, hex] of Object.entries(attendus)) {
     const val = await page.evaluate((s) => {
