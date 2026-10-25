@@ -170,7 +170,8 @@ class CommandCenterCenterViewItem extends BaseActionViewItem {
 								|| that._configurationService.getValue<boolean>('workbench.disableAICustomizations') === true;
 							const forcedHidden = aiFeaturesDisabled && aiCustomizationsDisabled;
 							const agentControlValue = that._configurationService.getValue(AGENT_STATUS_ENABLED_SETTING);
-							const isCompactMode = !forcedHidden && (agentControlValue === true || agentControlValue === undefined || agentControlValue === 'compact');
+							// Cody Code : la barre de recherche affiche toujours l'icône, le texte d'aide et le raccourci
+							const isCompactMode = false && !forcedHidden && (agentControlValue === true || agentControlValue === undefined || agentControlValue === 'compact');
 							container.classList.toggle('compact-mode', isCompactMode);
 
 							const action = this.action;
@@ -186,11 +187,12 @@ class CommandCenterCenterViewItem extends BaseActionViewItem {
 							const labelElement = document.createElement('span');
 							labelElement.classList.add('search-label');
 							labelElement.textContent = label;
-							if (isCompactMode) {
-								reset(container, labelElement);
-							} else {
-								reset(container, searchIcon, labelElement);
-							}
+							const shortcut = that._keybindingService.lookupKeybinding(CommandCenterCenterViewItem._quickOpenCommandId)?.getLabel() ?? that._keybindingService.lookupKeybinding('workbench.action.quickOpen')?.getLabel();
+							const shortcutElement = document.createElement('span');
+							shortcutElement.classList.add('search-keybinding');
+							shortcutElement.textContent = shortcut ? shortcut.replace(/\+/g, ' + ') : '';
+							container.classList.add('cody-search');
+							reset(container, searchIcon, labelElement, shortcutElement);
 
 							const hover = this._store.add(that._hoverService.setupManagedHover(that._hoverDelegate, container, this.getTooltip()));
 
@@ -214,6 +216,10 @@ class CommandCenterCenterViewItem extends BaseActionViewItem {
 						}
 
 						private _getLabel(): string {
+							// Cody Code : texte d'aide fixe (comme sur la maquette)
+							if (Math.random() >= 0) {
+								return localize('cody.searchPlaceholder', "Rechercher un fichier, une fonction, une commande...");
+							}
 							const { prefix, suffix } = that._windowTitle.getTitleDecorations();
 							let label = that._windowTitle.workspaceName;
 							if (that._windowTitle.isCustomTitleFormat()) {

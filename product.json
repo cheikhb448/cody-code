@@ -246,5 +246,19 @@
 		"GitHub.copilot-chat"
 	],
 	"sessionsWindowAllowedExtensions": [],
-	"voiceWsUrl": "wss://falcon-caas.mai.microsoft.com/voice-code/api/v1/realtime/voice"
+	"voiceWsUrl": "wss://falcon-caas.mai.microsoft.com/voice-code/api/v1/realtime/voice",
+	"configurationDefaults": {
+		"window.menuBarVisibility": "hidden",
+		"window.commandCenter": true,
+		"workbench.layoutControl.enabled": false,
+		"workbench.startupEditor": "none",
+		"editor.minimap.enabled": false,
+		"chat.disableAIFeatures": true,
+		"workbench.colorTheme": "Cody Dark",
+		"workbench.activityBar.location": "default",
+		"breadcrumbs.enabled": true,
+		"editor.fontSize": 14,
+		"editor.lineHeight": 24
+	},
+	"codyVersion": "1.0.0"
 }

@@ -1,0 +1,81 @@
+/*---------------------------------------------------------------------------------------------
+ *  Cody Code - barre de titre : logo, nom, projet, barre de recherche
+ *  Basé sur Code - OSS (Microsoft Corporation, licence MIT).
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-workbench .part.titlebar .cody-brand {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 0 10px 0 14px;
+	height: 100%;
+	flex-shrink: 0;
+}
+
+.monaco-workbench .part.titlebar .cody-brand-logo {
+	width: 30px;
+	height: 30px;
+	flex-shrink: 0;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='110' y1='90' x2='400' y2='430' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0' stop-color='%2322D3EE'/%3E%3Cstop offset='.5' stop-color='%233B82F6'/%3E%3Cstop offset='1' stop-color='%238B5CF6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M339.4 172.6A118 118 0 1 0 339.4 339.4' fill='none' stroke='url(%23g)' stroke-width='66' stroke-linecap='round'/%3E%3Cpath d='M262 214L306 256 262 298' fill='none' stroke='url(%23g)' stroke-width='30' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.monaco-workbench .part.titlebar .cody-brand-name {
+	font-size: 17px;
+	font-weight: 600;
+	letter-spacing: 0.2px;
+	color: var(--vscode-titleBar-activeForeground);
+	white-space: nowrap;
+}
+
+.monaco-workbench .part.titlebar .cody-project {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	margin-left: 14px;
+	padding: 5px 10px;
+	border-radius: 8px;
+	font-size: 13px;
+	color: var(--vscode-titleBar-activeForeground);
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.monaco-workbench .part.titlebar .cody-project:hover {
+	background: var(--vscode-commandCenter-activeBackground);
+}
+
+.monaco-workbench .part.titlebar .cody-project .codicon {
+	font-size: 15px;
+	color: var(--vscode-icon-foreground);
+}
+
+/* Barre de recherche centrale */
+.monaco-workbench .part.titlebar .command-center .action-item.command-center-center .action-item.command-center-quick-pick.cody-search {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	min-width: 360px;
+	padding: 0 12px;
+	height: 34px;
+	border-radius: 10px;
+	border: 1px solid var(--vscode-commandCenter-border);
+	background: var(--vscode-commandCenter-background);
+	justify-content: flex-start;
+}
+
+.monaco-workbench .part.titlebar .command-center .cody-search .search-label {
+	flex: 1;
+	text-align: left;
+	color: var(--vscode-input-placeholderForeground);
+	font-size: 13px;
+}
+
+.monaco-workbench .part.titlebar .command-center .cody-search .search-keybinding {
+	padding: 2px 8px;
+	border-radius: 6px;
+	border: 1px solid var(--vscode-commandCenter-border);
+	font-size: 11px;
+	color: var(--vscode-descriptionForeground);
+	white-space: nowrap;
+}

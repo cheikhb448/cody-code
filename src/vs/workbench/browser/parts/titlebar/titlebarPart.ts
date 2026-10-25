@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import './media/titlebarpart.css';
+import './media/cody-titlebar.css';
 import { localize, localize2 } from '../../../../nls.js';
 import { MultiWindowParts, Part } from '../../part.js';
 import { ITitleService } from '../../../services/title/browser/titleService.js';
@@ -53,7 +54,10 @@ import { IView } from '../../../../base/browser/ui/grid/grid.js';
 import { createInstantHoverDelegate } from '../../../../base/browser/ui/hover/hoverDelegateFactory.js';
 import { IBaseActionViewItemOptions } from '../../../../base/browser/ui/actionbar/actionViewItems.js';
 import { IHoverDelegate } from '../../../../base/browser/ui/hover/hoverDelegate.js';
-import { CommandsRegistry } from '../../../../platform/commands/common/commands.js';
+import { CommandsRegistry, ICommandService } from '../../../../platform/commands/common/commands.js';
+import { IProductService } from '../../../../platform/product/common/productService.js';
+import { ILabelService } from '../../../../platform/label/common/label.js';
+import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
 import { safeIntl } from '../../../../base/common/date.js';
 import { IsCompactTitleBarContext, TitleBarVisibleContext } from '../../../common/contextkeys.js';
 import { ServiceCollection } from '../../../../platform/instantiation/common/serviceCollection.js';
@@ -479,6 +483,11 @@ export class BrowserTitlebarPart extends Part implements ITitlebarPart {
 			this.appIcon = prepend(this.leftContent, $('a.window-appicon'));
 		}
 
+		// Cody Code : logo, nom du produit et sélecteur de projet
+		if (!this.isAuxiliary) {
+			this.createCodyBrand();
+		}
+
 		// Draggable region that we can manipulate for #52522
 		this.dragRegion = prepend(this.rootContainer, $('div.titlebar-drag-region'));
 
@@ -636,6 +645,33 @@ export class BrowserTitlebarPart extends Part implements ITitlebarPart {
 			reset(this.title, commandCenter.element);
 			this.titleDisposables.add(commandCenter);
 		}
+	}
+
+	private createCodyBrand(): void {
+		this.instantiationService.invokeFunction(accessor => {
+			const productService = accessor.get(IProductService);
+			const commandService = accessor.get(ICommandService);
+			const labelService = accessor.get(ILabelService);
+			const contextService = accessor.get(IWorkspaceContextService);
+
+			const brand = prepend(this.leftContent, $('div.cody-brand'));
+			append(brand, $('span.cody-brand-logo'));
+			append(brand, $('span.cody-brand-name', undefined, productService.nameShort));
+
+			const project = append(brand, $('a.cody-project', { role: 'button', tabindex: '0' }));
+			append(project, $('span.codicon.codicon-folder'));
+			const projectName = append(project, $('span.cody-project-name'));
+			append(project, $('span.codicon.codicon-chevron-down'));
+
+			const update = () => {
+				const workspace = contextService.getWorkspace();
+				projectName.textContent = workspace.folders.length ? labelService.getWorkspaceLabel(workspace) : 'Aucun dossier';
+			};
+			update();
+			this._register(contextService.onDidChangeWorkspaceName(update));
+			this._register(contextService.onDidChangeWorkbenchState(update));
+			this._register(addDisposableListener(project, EventType.CLICK, () => commandService.executeCommand('workbench.action.openRecent')));
+		});
 	}
 
 	private actionViewItemProvider(action: IAction, options: IBaseActionViewItemOptions): IActionViewItem | undefined {

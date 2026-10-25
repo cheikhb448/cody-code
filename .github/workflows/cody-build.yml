@@ -70,8 +70,9 @@ jobs:
 
       - name: Compiler l'éditeur (version légère)
         run: |
+          npm run gulp copy-codicons
           npm run transpile-client
-          ls out | head -20
+          ls out/vs/base/browser/ui/codicons/codicon/ | head
           free -h
 
       - name: Compiler les extensions intégrées et copier les icônes
@@ -86,9 +87,8 @@ jobs:
         run: |
           set -e
           mkdir -p /tmp/cody-logs /tmp/cody-data/data/Machine
-          # Réglages de test uniquement (le produit garde la confiance des dossiers activée)
-          echo '{ "security.workspace.trust.enabled": false, "workbench.startupEditor": "none" }' > /tmp/cody-data/data/Machine/settings.json
-          nohup ./scripts/code-server.sh --host 127.0.0.1 --port 8080 --server-data-dir /tmp/cody-data --without-connection-token --accept-server-license-terms > /tmp/cody-logs/server.log 2>&1 &
+          # Test uniquement : pas de fenêtre de confiance (le produit garde cette protection active)
+          nohup ./scripts/code-server.sh --host 127.0.0.1 --port 8080 --server-data-dir /tmp/cody-data --disable-workspace-trust --without-connection-token --accept-server-license-terms > /tmp/cody-logs/server.log 2>&1 &
           echo $! > /tmp/cody-logs/server.pid
           for i in $(seq 1 90); do
             code=$(curl -s -o /tmp/cody-logs/index.html -w '%{http_code}' http://127.0.0.1:8080/ || true)

@@ -424,6 +424,8 @@ export class WebClientServer {
 			folderUri: resolveWorkspaceURI(this._environmentService.args['default-folder']),
 			workspaceUri: resolveWorkspaceURI(this._environmentService.args['default-workspace']),
 			productConfiguration,
+			// Cody Code : réglages par défaut venant de product.json (configurationDefaults)
+			configurationDefaults: (this._productService as unknown as { configurationDefaults?: Record<string, unknown> }).configurationDefaults,
 			callbackRoute: callbackRoute
 		};
 

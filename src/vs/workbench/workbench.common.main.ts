@@ -335,6 +335,9 @@ import './contrib/extensions/browser/extensionsViewlet.js';
 import './contrib/output/browser/output.contribution.js';
 import './contrib/output/browser/outputView.js';
 
+// Cody Code
+import './contrib/cody/browser/codyStatusbar.contribution.js';
+
 // Terminal
 import './contrib/terminal/terminal.all.js';
 
