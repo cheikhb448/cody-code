@@ -337,6 +337,7 @@ import './contrib/output/browser/outputView.js';
 
 // Cody Code
 import './contrib/cody/browser/codyStatusbar.contribution.js';
+import './contrib/cody/browser/codyTitlebarActions.contribution.js';
 
 // Terminal
 import './contrib/terminal/terminal.all.js';

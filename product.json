@@ -260,5 +260,13 @@
 		"editor.fontSize": 14,
 		"editor.lineHeight": 24
 	},
-	"codyVersion": "1.0.0"
+	"codyVersion": "1.0.0",
+	"extensionsGallery": {
+		"serviceUrl": "https://open-vsx.org/vscode/gallery",
+		"itemUrl": "https://open-vsx.org/vscode/item",
+		"resourceUrlTemplate": "https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}",
+		"controlUrl": "",
+		"nlsBaseUrl": "",
+		"publisherUrl": ""
+	}
 }

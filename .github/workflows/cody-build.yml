@@ -87,6 +87,9 @@ jobs:
         run: |
           set -e
           mkdir -p /tmp/cody-logs /tmp/cody-data/data/Machine
+          # Interface en français : installer le paquet de langue (magasin libre Open VSX)
+          ./scripts/code-server.sh --server-data-dir /tmp/cody-data --install-extension MS-CEINTL.vscode-language-pack-fr > /tmp/cody-logs/install-fr.log 2>&1 || true
+          tail -5 /tmp/cody-logs/install-fr.log
           # Test uniquement : pas de fenêtre de confiance (le produit garde cette protection active)
           nohup ./scripts/code-server.sh --host 127.0.0.1 --port 8080 --server-data-dir /tmp/cody-data --disable-workspace-trust --without-connection-token --accept-server-license-terms > /tmp/cody-logs/server.log 2>&1 &
           echo $! > /tmp/cody-logs/server.pid

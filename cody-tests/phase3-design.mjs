@@ -29,7 +29,7 @@ const attendus = {
 let browser;
 try {
   browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1671, height: 941 } });
+  const page = await browser.newPage({ viewport: { width: 1671, height: 941 }, locale: 'fr-FR' });
   page.on('pageerror', e => log('ERREUR PAGE: ' + e.message.slice(0, 160)));
   await page.goto(`http://127.0.0.1:8080/?folder=${dossier}`, { waitUntil: 'load' });
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
@@ -68,6 +68,12 @@ try {
     }, sel);
     verifier(val === rgb(hex), `${sel} fond ${val} (attendu ${rgb(hex)})`);
   }
+
+  const texteInterface = await page.evaluate(() => document.body.innerText);
+  log('extrait interface : ' + texteInterface.replace(/\s+/g, ' ').slice(0, 260));
+  verifier(/Explorateur/i.test(texteInterface), 'interface en français (« Explorateur »)');
+  const soleil = await page.locator('.codicon-cody-theme-toggle').count();
+  verifier(soleil > 0, 'bouton soleil (thème clair/sombre) présent dans la barre de titre');
 
   // Couleur d'un mot-clé de code (class / namespace) : attendu #f4b4f6
   const motCle = await page.evaluate(() => {
