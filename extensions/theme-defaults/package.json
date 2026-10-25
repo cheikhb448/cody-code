@@ -88,6 +88,11 @@
     ],
     "iconThemes": [
       {
+        "id": "cody-icons",
+        "label": "Cody Icons",
+        "path": "./fileicons/cody-icons-theme.json"
+      },
+      {
         "id": "vs-minimal",
         "label": "%minimalIconThemeLabel%",
         "path": "./fileicons/vs_minimal-icon-theme.json"

@@ -1,0 +1,207 @@
+{
+	"iconDefinitions": {
+		"_file": {
+			"iconPath": "./cody/file.svg"
+		},
+		"_folder": {
+			"iconPath": "./cody/folder.svg"
+		},
+		"_folder_open": {
+			"iconPath": "./cody/folder_open.svg"
+		},
+		"_folder_teal": {
+			"iconPath": "./cody/folder_teal.svg"
+		},
+		"_folder_teal_open": {
+			"iconPath": "./cody/folder_teal_open.svg"
+		},
+		"_folder_dim": {
+			"iconPath": "./cody/folder_dim.svg"
+		},
+		"_folder_dim_open": {
+			"iconPath": "./cody/folder_dim_open.svg"
+		},
+		"_json": {
+			"iconPath": "./cody/json.svg"
+		},
+		"_info": {
+			"iconPath": "./cody/info.svg"
+		},
+		"_php": {
+			"iconPath": "./cody/php.svg"
+		},
+		"_css": {
+			"iconPath": "./cody/css.svg"
+		},
+		"_scss": {
+			"iconPath": "./cody/scss.svg"
+		},
+		"_js": {
+			"iconPath": "./cody/js.svg"
+		},
+		"_ts": {
+			"iconPath": "./cody/ts.svg"
+		},
+		"_html": {
+			"iconPath": "./cody/html.svg"
+		},
+		"_python": {
+			"iconPath": "./cody/python.svg"
+		},
+		"_java": {
+			"iconPath": "./cody/java.svg"
+		},
+		"_go": {
+			"iconPath": "./cody/go.svg"
+		},
+		"_rust": {
+			"iconPath": "./cody/rust.svg"
+		},
+		"_yaml": {
+			"iconPath": "./cody/yaml.svg"
+		},
+		"_xml": {
+			"iconPath": "./cody/xml.svg"
+		},
+		"_shell": {
+			"iconPath": "./cody/shell.svg"
+		},
+		"_text": {
+			"iconPath": "./cody/text.svg"
+		},
+		"_image": {
+			"iconPath": "./cody/image.svg"
+		},
+		"_lock": {
+			"iconPath": "./cody/lock.svg"
+		},
+		"_env": {
+			"iconPath": "./cody/env.svg"
+		},
+		"_git": {
+			"iconPath": "./cody/git.svg"
+		},
+		"_sql": {
+			"iconPath": "./cody/sql.svg"
+		},
+		"_c": {
+			"iconPath": "./cody/c.svg"
+		},
+		"_cpp": {
+			"iconPath": "./cody/cpp.svg"
+		}
+	},
+	"file": "_file",
+	"folder": "_folder",
+	"folderExpanded": "_folder_open",
+	"rootFolder": "_folder",
+	"rootFolderExpanded": "_folder_open",
+	"folderNames": {
+		"tests": "_folder_teal",
+		"test": "_folder_teal",
+		"__tests__": "_folder_teal",
+		"spec": "_folder_teal",
+		"node_modules": "_folder_dim",
+		"vendor": "_folder_dim",
+		".git": "_folder_dim",
+		".github": "_folder_dim",
+		"storage": "_folder_dim",
+		"dist": "_folder_dim",
+		"build": "_folder_dim",
+		"out": "_folder_dim"
+	},
+	"folderNamesExpanded": {
+		"tests": "_folder_teal_open",
+		"test": "_folder_teal_open",
+		"__tests__": "_folder_teal_open",
+		"spec": "_folder_teal_open",
+		"node_modules": "_folder_dim_open",
+		"vendor": "_folder_dim_open",
+		".git": "_folder_dim_open",
+		".github": "_folder_dim_open",
+		"storage": "_folder_dim_open",
+		"dist": "_folder_dim_open",
+		"build": "_folder_dim_open",
+		"out": "_folder_dim_open"
+	},
+	"fileExtensions": {
+		"php": "_php",
+		"phtml": "_php",
+		"css": "_css",
+		"scss": "_scss",
+		"sass": "_scss",
+		"less": "_css",
+		"js": "_js",
+		"mjs": "_js",
+		"cjs": "_js",
+		"jsx": "_js",
+		"ts": "_ts",
+		"tsx": "_ts",
+		"json": "_json",
+		"jsonc": "_json",
+		"html": "_html",
+		"htm": "_html",
+		"vue": "_html",
+		"py": "_python",
+		"java": "_java",
+		"go": "_go",
+		"rs": "_rust",
+		"yml": "_yaml",
+		"yaml": "_yaml",
+		"xml": "_xml",
+		"svg": "_xml",
+		"sh": "_shell",
+		"bash": "_shell",
+		"zsh": "_shell",
+		"txt": "_text",
+		"log": "_text",
+		"png": "_image",
+		"jpg": "_image",
+		"jpeg": "_image",
+		"gif": "_image",
+		"webp": "_image",
+		"ico": "_image",
+		"lock": "_lock",
+		"env": "_env",
+		"sql": "_sql",
+		"c": "_c",
+		"h": "_c",
+		"cpp": "_cpp",
+		"hpp": "_cpp",
+		"md": "_info",
+		"markdown": "_info"
+	},
+	"fileNames": {
+		"composer.json": "_json",
+		"package.json": "_json",
+		"readme.md": "_info",
+		".gitignore": "_git",
+		".gitattributes": "_git",
+		".env": "_env",
+		".env.example": "_env"
+	},
+	"languageIds": {
+		"php": "_php",
+		"css": "_css",
+		"scss": "_scss",
+		"javascript": "_js",
+		"typescript": "_ts",
+		"json": "_json",
+		"jsonc": "_json",
+		"html": "_html",
+		"python": "_python",
+		"markdown": "_info",
+		"yaml": "_yaml",
+		"xml": "_xml",
+		"shellscript": "_shell",
+		"sql": "_sql",
+		"go": "_go",
+		"rust": "_rust",
+		"java": "_java",
+		"c": "_c",
+		"cpp": "_cpp"
+	},
+	"light": {
+		"file": "_file"
+	}
+}

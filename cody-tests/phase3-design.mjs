@@ -52,6 +52,11 @@ try {
   await page.waitForTimeout(2000);
   await page.screenshot({ path: '/tmp/cody-logs/p3-1-ecran.png' });
 
+  // Panneau du bas : terminal
+  await page.keyboard.press('Control+`');
+  await page.waitForTimeout(6000);
+  await page.screenshot({ path: '/tmp/cody-logs/p3-2-terminal.png' });
+
   const cls = await page.evaluate(() => [document.documentElement, document.body, document.querySelector('.monaco-workbench')].map(e => e?.className ?? '').join(' | '));
   log('classes : ' + cls.slice(0, 200));
   verifier(/vs-dark|vscode-theme-defaults-themes-cody_dark/.test(cls), 'thème sombre actif');

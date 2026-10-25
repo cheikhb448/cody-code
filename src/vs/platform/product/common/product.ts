@@ -78,12 +78,12 @@ else {
 	if (Object.keys(product).length === 0) {
 		Object.assign(product, {
 			version: '1.144.0-dev',
-			nameShort: 'Cody Code Dev',
-			nameLong: 'Cody Code Dev',
-			applicationName: 'code-oss',
-			dataFolderName: '.vscode-oss',
-			urlProtocol: 'code-oss',
-			reportIssueUrl: 'https://github.com/microsoft/vscode/issues/new',
+			nameShort: 'Cody Code',
+			nameLong: 'Cody Code',
+			applicationName: 'cody-code',
+			dataFolderName: '.cody-code',
+			urlProtocol: 'cody-code',
+			reportIssueUrl: 'https://github.com/cheikhb448/cody-code/issues/new',
 			licenseName: 'MIT',
 			licenseUrl: 'https://github.com/microsoft/vscode/blob/main/LICENSE.txt',
 			serverLicenseUrl: 'https://github.com/microsoft/vscode/blob/main/LICENSE.txt',
