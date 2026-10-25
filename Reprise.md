@@ -10,19 +10,22 @@
 
 | Élément | Valeur |
 |---|---|
-| Dernière mise à jour | 2026-10-24 |
-| Phase en cours | **Phase 2 terminée ✅ → Phase 3 — Design identique à la capture (pas commencée)** |
-| Étape en cours | 3.1 — Relever couleurs, polices et espacements de la capture |
-| Dernière étape terminée et vérifiée | Phase 2 entière (2.1 à 2.6) : run GitHub 40094108059 = succès (test phase 1 + test phase 2) |
+| Dernière mise à jour | 2026-10-25 |
+| Phase en cours | **Phase 3 — Design identique à la capture** |
+| Étapes faites | 3.1 palette relevée (`cody-design/palette.md`), 3.2 thèmes « Cody Dark » (défaut) et « Cody Light » (`extensions/theme-defaults/themes/cody-*.json`) : couleurs vérifiées par test ✅ |
+| Étape en cours | 3.3 — barre de titre / barre d'état / réglages par défaut (code poussé, run GitHub en cours ; à vérifier sur la capture) |
+| Reste à faire (phase 3) | 3.3 icônes de fichiers colorées + barre d'activités + section BRANCHES ; 3.4 panneau du bas (Terminal…) ; 3.5 interface en français + bouton soleil (thème clair/sombre) + cloche + compte ; 3.6 comparaison capture/capture ; 3.7 vérification finale + rapport |
 | Bloqué ? | Non |
 
-**Phase 2 — résultat :** nom « Cody Code » dans `product.json` (29 clés, nouveaux identifiants Windows/Mac), 375 textes remplacés dans `src/` et `resources/`, logo original (`resources/cody-brand/*.svg`) + icônes (web, linux, win32 .ico, macOS .icns, `code-icon.svg`), `README.md` et `NOTICE.md`, `manifest.json` corrigé. Testé : titre de page, icônes (HTTP 200), manifest, texte visible, fenêtre « À propos » — aucun « Visual Studio / VS Code / Code - OSS ».
-**Limites connues (à traiter plus tard) :**
-- En mode développement le nom affiché est « Cody Code **Dev** » (repli de `product.ts`) ; les vraies versions (phase 8) utilisent `product.json` → « Cody Code ».
-- Version interne gardée à 1.144.0 (celle de VS Code) car les extensions vérifient la compatibilité avec ce numéro. Afficher « v1.0.0 » comme sur la capture = texte séparé, à faire en phase 3 (barre d'état).
-- Extensions intégrées (`extensions/*/package.nls.json`) contiennent encore « VS Code » → phase 5/6.
-- `resources/linux/debian/templates.template` propose le dépôt apt Microsoft → phase 8.
-- `product.json` contient encore des adresses Microsoft/Copilot : `webviewContentExternalBaseUrlTemplate` (vscode-cdn.net), `defaultChatAgent` (api.github.com/copilot…, aka.ms/…), `voiceWsUrl`, `trustedExtensionAuthAccess`, `builtInExtensionsEnabledWithAutoUpdates` → phase 4 (remplacer par Cody Assistant) et phase 7 (sécurité).
+**Comment je regarde le résultat visuel :** le test `cody-tests/phase3-design.mjs` prend une capture (1671×941, projet « DropLink » reconstitué dans `cody-tests/fixtures/DropLink`) ; le workflow la publie sur la branche **`ci-captures`** ; je fais `git fetch origin ci-captures && git archive FETCH_HEAD | tar -x -C /home/claude/captures` puis je lis `p3-1-ecran.png` et je compare à `cody-design/reference-capture.png`.
+
+**Changements de code faits en phase 3 :**
+- Thème par défaut sombre même sur le web (`themeConfiguration.ts`), couleurs de chargement Cody (`workbenchThemeService.ts`).
+- `product.json` : `configurationDefaults` (menu caché, commandCenter, minimap off, `chat.disableAIFeatures` true tant que Cody Assistant n'existe pas, startupEditor none…) + `codyVersion` 1.0.0. Transmis au navigateur par `src/vs/server/node/webClientServer.ts`. ⚠ La version bureau (Electron, phase 8) aura besoin d'un autre mécanisme pour ces réglages.
+- Barre de titre : logo + « Cody Code » + sélecteur de projet (`titlebarPart.ts` → `createCodyBrand`, style `media/cody-titlebar.css`). Barre de recherche centrale refaite (`commandCenterControl.ts`).
+- Barre d'état : `src/vs/workbench/contrib/cody/browser/codyStatusbar.contribution.ts` (nom, v1.0.0, ● Prêt).
+- ⚠ Écart assumé : le raccourci affiché dans la recherche est celui de VS Code (Ctrl+P), pas « Ctrl+K » comme sur la capture, car Ctrl+K est le préfixe de dizaines de raccourcis VS Code. À signaler à Cheikh dans le rapport de fin de phase.
+- Leçons CI : `npm run gulp copy-codicons` doit passer AVANT `transpile-client` (sinon pas d'icônes) ; test sans fenêtre de confiance via `--disable-workspace-trust` (le produit garde la protection).
 
 **Où est quoi :**
 - Dépôt GitHub de Cheikh : `cheikhb448/cody-code` (privé). Branche de travail : **`cody-main`** (la branche `main` contient seulement `README.md` et `Tests.py` de Cheikh : ne pas l'écraser).
@@ -38,7 +41,7 @@
 - Les extensions intégrées ne sont PAS compilées dans ce run (messages « Cannot find module extensions/…/out ») : à traiter en phase 5/6 (`npm run gulp compile-extensions`).
 - Dans les tests, taper avec `delay: 30` ms sinon le texte est perdu.
 
-**Prochaine action exacte :** phase 3 — découper en étapes 3.1 à 3.10, commencer par relever les couleurs de la capture `Espace_de_développement_Cody_Code_en_français.png` (dans `/mnt/user-data/uploads/`).
+**Prochaine action exacte :** lire le résultat du dernier run, regarder la capture sur `ci-captures`, corriger la barre de titre / d'état, puis continuer 3.3 → 3.7.
 
 **Règles GitHub apprises :**
 - Le token collé dans le chat NE sert PAS (refusé) et ne doit jamais être écrit dans un fichier. Dépôt accessible via l'outil `add_repo` (push), déjà fait ; au besoin le refaire.
