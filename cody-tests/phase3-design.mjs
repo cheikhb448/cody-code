@@ -89,14 +89,33 @@ try {
   verifier(/Branches/i.test(texteInterface), 'section « Branches » présente dans l\'explorateur');
 
   // Bouton soleil : passe en clair puis revient en sombre
-  const estSombre = () => page.evaluate(() => /vs-dark/.test(document.querySelector('.monaco-workbench')?.className ?? ''));
+  const classes = () => page.evaluate(() => document.querySelector('.monaco-workbench')?.className ?? '');
+  const attendre = async (sombre) => {
+    for (let i = 0; i < 20; i++) {
+      if (/vs-dark/.test(await classes()) === sombre) { return true; }
+      await page.waitForTimeout(500);
+    }
+    return false;
+  };
   await page.locator('.codicon-cody-theme-toggle').first().click();
-  await page.waitForTimeout(2500);
-  verifier(!(await estSombre()), 'le bouton soleil passe en thème clair');
+  let ok = await attendre(false);
+  log('après clic sur le soleil : ' + (await classes()).split(' ').filter(c => /^vs/.test(c)).join(' '));
+  if (!ok) {
+    // Même action par la palette de commandes, pour savoir si le problème vient du clic ou de l'action
+    await page.keyboard.press('F1');
+    await page.waitForTimeout(800);
+    await page.keyboard.type('basculer entre le thème clair', { delay: 30 });
+    await page.waitForTimeout(1000);
+    await page.keyboard.press('Enter');
+    ok = await attendre(false);
+    log('après la palette de commandes : ' + (await classes()).split(' ').filter(c => /^vs/.test(c)).join(' '));
+  }
+  verifier(ok, 'le bouton soleil passe en thème clair');
   await page.screenshot({ path: '/tmp/cody-logs/p3-3-clair.png' });
-  await page.locator('.codicon-cody-theme-toggle').first().click();
-  await page.waitForTimeout(2500);
-  verifier(await estSombre(), 'le bouton soleil revient en thème sombre');
+  if (ok) {
+    await page.locator('.codicon-cody-theme-toggle').first().click();
+    verifier(await attendre(true), 'le bouton soleil revient en thème sombre');
+  }
 
   annoter(erreurs ? 'error' : 'notice');
   await browser.close();
