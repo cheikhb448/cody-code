@@ -50,3 +50,19 @@ registerAction2(class CodyNotificationsAction extends Action2 {
 		await accessor.get(ICommandService).executeCommand('notifications.toggleList');
 	}
 });
+
+registerAction2(class CodyAccountAction extends Action2 {
+	constructor() {
+		super({
+			id: 'cody.showAccount',
+			title: localize2('cody.showAccount', "Cody Code : compte"),
+			icon: Codicon.account,
+			f1: false,
+			menu: [{ id: MenuId.TitleBar, group: 'navigation', order: 3 }]
+		});
+	}
+
+	async run(accessor: ServicesAccessor): Promise<void> {
+		await accessor.get(ICommandService).executeCommand('workbench.action.manageAccounts');
+	}
+});
