@@ -140,6 +140,17 @@ jobs:
         if: always()
         run: node cody-tests/phase3-design.mjs
 
+      - name: Vérification du code Cody (types TypeScript)
+        if: always()
+        continue-on-error: true
+        timeout-minutes: 30
+        run: |
+          export NODE_OPTIONS=--max-old-space-size=6144
+          npm run typecheck-client > /tmp/cody-logs/typecheck.log 2>&1 || true
+          n=$(grep -c "error TS" /tmp/cody-logs/typecheck.log || true)
+          echo "::notice title=Types TypeScript::$n erreur(s)"
+          grep "error TS" /tmp/cody-logs/typecheck.log | grep -i "cody\|titlebar\|webClientServer\|explorerViewer\|outline.contribution\|timeline.contribution\|workbenchThemeService\|themeConfiguration\|commandCenter" | head -10 | while read l; do echo "::error title=Type::$l"; done
+
       - name: Publier les captures d'écran (branche ci-captures)
         if: always()
         run: |

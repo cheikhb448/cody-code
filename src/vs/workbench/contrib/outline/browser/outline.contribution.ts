@@ -30,7 +30,7 @@ Registry.as<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([{
 	ctorDescriptor: new SyncDescriptor(OutlinePane),
 	canToggleVisibility: true,
 	canMoveView: true,
-	hideByDefault: false,
+	hideByDefault: true, // Cody Code : masqué par défaut (comme la maquette), réactivable via le menu « ... »
 	collapsed: true,
 	order: 2,
 	weight: 30,
