@@ -91,6 +91,9 @@ jobs:
           ./scripts/code-server.sh --server-data-dir /tmp/cody-data --install-extension MS-CEINTL.vscode-language-pack-fr > /tmp/cody-logs/install-fr.log 2>&1 || true
           echo "::notice title=Paquet français::$(tail -3 /tmp/cody-logs/install-fr.log | tr '\n' ' ')"
           find /tmp/cody-data -maxdepth 4 -iname '*language-pack*' | head -3 | while read d; do echo "::notice title=Dossier paquet::$d"; done
+          # Compilation « empaquetée » avec les textes traduisibles (nécessaire pour le français)
+          node build/next/index.ts bundle --nls --target server-web --out out > /tmp/cody-logs/bundle.log 2>&1 || true
+          echo "::notice title=Bundle fin::$(tail -3 /tmp/cody-logs/bundle.log | tr '\n' ' ')"
           node build/cody/make-nls-fr.mjs /tmp/cody-data > /tmp/cody-logs/nls-fr.log 2>&1 || true
           echo "::notice title=Génération français::$(cat /tmp/cody-logs/nls-fr.log | tr '\n' ' ')"
           # Test uniquement : pas de fenêtre de confiance (le produit garde cette protection active)
@@ -125,19 +128,6 @@ jobs:
       - name: Test - design Cody (couleurs + capture d'écran)
         if: always()
         run: node cody-tests/phase3-design.mjs
-
-      - name: Essai - compilation avec textes traduits (version web empaquetée)
-        if: always()
-        continue-on-error: true
-        run: |
-          node build/next/index.ts bundle --nls --target server-web --out out-nls-test > /tmp/cody-logs/bundle.log 2>&1 || true
-          echo "::notice title=Bundle fin::$(tail -4 /tmp/cody-logs/bundle.log | tr '\n' ' ')"
-          echo "::notice title=Bundle contenu::$(ls out-nls-test | head -40 | tr '\n' ' ')"
-          echo "::notice title=Bundle nls::$(ls -la out-nls-test/nls* 2>&1 | tr '\n' ' ')"
-          if [ -f out-nls-test/nls.keys.json ]; then
-            node build/cody/make-nls-fr.mjs /tmp/cody-data out-nls-test > /tmp/cody-logs/nls-fr2.log 2>&1 || true
-            echo "::notice title=Bundle français::$(cat /tmp/cody-logs/nls-fr2.log | tr '\n' ' ')"
-          fi
 
       - name: Publier les captures d'écran (branche ci-captures)
         if: always()
