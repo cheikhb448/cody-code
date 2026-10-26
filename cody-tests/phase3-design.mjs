@@ -31,6 +31,8 @@ try {
   browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1671, height: 941 }, locale: 'fr-FR' });
   page.on('pageerror', e => log('ERREUR PAGE: ' + e.message.slice(0, 160)));
+  const vus404 = new Set();
+  page.on('response', r => { if (r.status() >= 400 && vus404.size < 12 && !vus404.has(r.url())) { vus404.add(r.url()); log('HTTP ' + r.status() + ' ' + r.url().replace('http://127.0.0.1:8080', '')); } });
   await page.goto(`http://127.0.0.1:8080/?folder=${dossier}`, { waitUntil: 'load' });
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
   await page.waitForTimeout(4000);
