@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createReadStream, promises } from 'fs';
+import { createReadStream, existsSync, promises } from 'fs';
 import type * as http from 'http';
 import * as cookie from 'cookie';
 import * as crypto from 'crypto';
@@ -437,6 +437,9 @@ export class WebClientServer {
 		if (!locale.startsWith('en') && this._productService.nlsCoreBaseUrl) {
 			WORKBENCH_NLS_BASE_URL = this._productService.nlsCoreBaseUrl;
 			WORKBENCH_NLS_URL = createNlsUrl(WORKBENCH_NLS_BASE_URL, this._productService.commit, this._productService.version, locale);
+		} else if (locale.startsWith('fr') && existsSync(join(APP_ROOT, 'out', 'nls.messages.fr.js'))) {
+			// Cody Code : interface en français, fichier généré à la compilation (build/cody/make-nls-fr.mjs)
+			WORKBENCH_NLS_URL = `${staticRoute}/out/nls.messages.fr.js`;
 		} else {
 			WORKBENCH_NLS_URL = ''; // fallback will apply
 		}
