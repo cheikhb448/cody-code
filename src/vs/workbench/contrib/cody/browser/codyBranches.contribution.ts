@@ -95,7 +95,7 @@ Registry.as<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([{
 	canMoveView: true,
 	hideByDefault: false,
 	collapsed: false,
-	order: 1,
-	weight: 15,
+	order: 100, // tout en bas de l'explorateur, comme sur la maquette
+	weight: 10,
 	containerIcon: Codicon.gitBranch
 }], VIEW_CONTAINER);

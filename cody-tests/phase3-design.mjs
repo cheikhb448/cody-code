@@ -84,6 +84,20 @@ try {
     return s ? getComputedStyle(s).color : null;
   });
   verifier(motCle === rgb('#f4b4f6'), `couleur des mots-clés ${motCle} (attendu ${rgb('#f4b4f6')})`);
+
+  // Section BRANCHES (en bas de l'explorateur)
+  verifier(/Branches/i.test(texteInterface), 'section « Branches » présente dans l\'explorateur');
+
+  // Bouton soleil : passe en clair puis revient en sombre
+  const estSombre = () => page.evaluate(() => /vs-dark/.test(document.querySelector('.monaco-workbench')?.className ?? ''));
+  await page.locator('.codicon-cody-theme-toggle').first().click();
+  await page.waitForTimeout(2500);
+  verifier(!(await estSombre()), 'le bouton soleil passe en thème clair');
+  await page.screenshot({ path: '/tmp/cody-logs/p3-3-clair.png' });
+  await page.locator('.codicon-cody-theme-toggle').first().click();
+  await page.waitForTimeout(2500);
+  verifier(await estSombre(), 'le bouton soleil revient en thème sombre');
+
   annoter(erreurs ? 'error' : 'notice');
   await browser.close();
   process.exit(erreurs ? 1 : 0);

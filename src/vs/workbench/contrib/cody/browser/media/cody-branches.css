@@ -28,3 +28,11 @@
 .cody-branches-chevron {
 	color: var(--vscode-descriptionForeground);
 }
+
+/* Titres de la barre latérale en majuscules, comme sur la maquette */
+.monaco-workbench .part.sidebar > .title .title-label h2,
+.monaco-workbench .part.sidebar .pane-header .title {
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	font-size: 12px;
+}
