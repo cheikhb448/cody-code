@@ -93,7 +93,9 @@ jobs:
           find /tmp/cody-data -maxdepth 4 -iname '*language-pack*' | head -3 | while read d; do echo "::notice title=Dossier paquet::$d"; done
           # Compilation « empaquetée » avec les textes traduisibles (nécessaire pour le français)
           node build/next/index.ts bundle --nls --target server-web --out out-nls > /tmp/cody-logs/bundle.log 2>&1 || true
-          cp -r out-nls/. out/   # la version empaquetée recouvre la version légère
+          # Seule la partie « fenêtre de l'éditeur » (navigateur) est remplacée par la version empaquetée avec textes traduisibles
+          cp -r out-nls/vs/. out/vs/
+          cp out-nls/nls.keys.json out-nls/nls.messages.json out-nls/nls.messages.js out/
           echo "::notice title=Bundle fin::$(tail -3 /tmp/cody-logs/bundle.log | tr '\n' ' ')"
           node build/cody/make-nls-fr.mjs /tmp/cody-data > /tmp/cody-logs/nls-fr.log 2>&1 || true
           echo "::notice title=Génération français::$(cat /tmp/cody-logs/nls-fr.log | tr '\n' ' ')"
