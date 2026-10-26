@@ -31,6 +31,7 @@ try {
   browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1671, height: 941 }, locale: 'fr-FR' });
   page.on('pageerror', e => log('ERREUR PAGE: ' + e.message.slice(0, 160)));
+  let vusConsole = 0;
   const vus404 = new Set();
   page.on('response', r => { if (r.status() >= 400 && !r.url().includes('web-extension-resource') && vus404.size < 12 && !vus404.has(r.url())) { vus404.add(r.url()); log('HTTP ' + r.status() + ' ' + r.url().replace('http://127.0.0.1:8080', '')); } });
   await page.goto(`http://127.0.0.1:8080/?folder=${dossier}`, { waitUntil: 'load' });
@@ -97,6 +98,7 @@ try {
     }
     return false;
   };
+  page.on('console', m => { if (m.type() === 'error' && vusConsole++ < 8) { log('console: ' + m.text().slice(0, 160)); } });
   await page.locator('.codicon-cody-theme-toggle').first().click();
   let ok = await attendre(false);
   log('après clic sur le soleil : ' + (await classes()).split(' ').filter(c => /^vs/.test(c)).join(' '));
@@ -109,6 +111,23 @@ try {
     await page.keyboard.press('Enter');
     ok = await attendre(false);
     log('après la palette de commandes : ' + (await classes()).split(' ').filter(c => /^vs/.test(c)).join(' '));
+  }
+  if (!ok) {
+    log('messages à l\'écran : ' + (await page.evaluate(() => (document.querySelector('.notifications-toasts')?.innerText ?? '').replace(/\s+/g, ' ').slice(0, 300))));
+    // Le thème « Cody Light » existe-t-il ? Essai direct par le sélecteur de thèmes
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('F1');
+    await page.waitForTimeout(800);
+    await page.keyboard.type('Thème de couleur', { delay: 30 });
+    await page.waitForTimeout(1000);
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(1200);
+    log('liste des thèmes : ' + (await page.evaluate(() => (document.querySelector('.quick-input-list')?.innerText ?? '').replace(/\s+/g, ' ').slice(0, 300))));
+    await page.keyboard.type('Cody Light', { delay: 30 });
+    await page.waitForTimeout(800);
+    await page.keyboard.press('Enter');
+    ok = await attendre(false);
+    log('après sélection directe : ' + (await classes()).split(' ').filter(c => /^vs/.test(c)).join(' '));
   }
   verifier(ok, 'le bouton soleil passe en thème clair');
   await page.screenshot({ path: '/tmp/cody-logs/p3-3-clair.png' });
