@@ -71,20 +71,20 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 ## 8. Personnalisation
 - ⬜ Paramètres (interface graphique + `settings.json`)
 - ⬜ Raccourcis clavier personnalisables
-- ⬜ Thèmes de couleurs (thème sombre Cody par défaut, clair disponible)
+- ✅ Thèmes de couleurs (thème sombre Cody par défaut, clair disponible) — couleurs vérifiées automatiquement (phase 3)
 - ⬜ Profils d'utilisateur
 - ⬜ Synchronisation des paramètres
-- ⬜ Langue de l'interface (français inclus)
+- ✅ Langue de l'interface : français affiché automatiquement (testé, version web ; une partie des textes reste en anglais, voir notes) (phase 3)
 
 ## 9. Interface Cody (design propre)
 - ✅ Identité : nom « Cody Code », logo et icônes propres (titre, icône web, manifest, fenêtre « À propos ») — testé automatiquement, version web (phase 2)
-- ⬜ Barre de titre avec nom du projet, recherche globale, notifications, compte
-- ⬜ Barre d'activités à gauche (Explorateur, Recherche, Git, Exécuter, Extensions)
-- ⬜ Explorateur en arbre avec icônes colorées par type de fichier
+- 🚧 Barre de titre avec nom du projet, recherche globale, notifications, compte — fait, vérifié sur capture (test automatique à compléter)
+- 🚧 Barre d'activités à gauche (Explorateur, Recherche, Git, Exécuter, Extensions) — fait, vérifié sur capture
+- 🚧 Explorateur en arbre avec icônes colorées par type de fichier + section Branches — fait (section Branches testée)
 - ⬜ Onglets de fichiers stylisés
-- ⬜ Panneau du bas (Terminal, Problèmes, Sortie, Débogage, Console)
-- ⬜ Barre d'état (langage, encodage, fins de ligne, branche Git, état « Prêt »)
-- ⬜ Basculement thème clair / sombre en un clic
+- 🚧 Panneau du bas (Terminal, Problèmes, Sortie, Débogage, Console) — fait, vérifié sur capture
+- 🚧 Barre d'état (nom, version, langage, encodage, fins de ligne, état « Prêt ») — fait, vérifié sur capture ; branche Git à compléter
+- ✅ Basculement thème clair / sombre en un clic (bouton soleil) — testé automatiquement (phase 3)
 
 ## 10. Cody Assistant (IA)
 - ⬜ Panneau latéral à droite, ouvrable et fermable
@@ -118,3 +118,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 
 ## Licence et crédits
 Cody Code est basé sur [Code - OSS](https://github.com/microsoft/vscode), publié sous licence MIT par Microsoft. Le nom, le logo et les icônes de « Visual Studio Code » ne sont pas inclus : Cody Code a sa propre identité.
+
+## Notes
+- Le raccourci affiché dans la barre de recherche est Ctrl + P (celui de VS Code), pas Ctrl + K.
+- Français : le paquet de langue libre (Open VSX) couvre environ 76 % des textes ; le reste reste en anglais.

@@ -11,12 +11,11 @@
 | Élément | Valeur |
 |---|---|
 | Dernière mise à jour | 2026-10-26 |
-| Phase en cours | **Phase 3 — Design identique à la capture** |
-| Étapes faites | 3.1 palette relevée (`cody-design/palette.md`), 3.2 thèmes « Cody Dark » (défaut) et « Cody Light » (`extensions/theme-defaults/themes/cody-*.json`) : couleurs vérifiées par test ✅ |
-| Étape en cours | 3.5/3.6 — Français ✅ OK (test « Explorateur » vert, run 40304312726, commit e34e208c). Méthode CI : `bundle --nls` dans `out-nls`, puis on copie dans `out/` seulement `vs/code/browser/workbench/`, `media/` et `nls.*` ; `product.json` reçoit `commit` (CI seulement) pour que les adresses client/serveur concordent ; `webClientServer.ts` sert `workbench.html` (non-dev) + `nls.messages.fr.js`. Reste : les icônes (codicons) manquent sur la capture de la version empaquetée → regarder la liste « HTTP 404 » du test phase 3 (run ea2d40c9). Aussi : 403 sur les traductions d'extensions intégrées (web-extension-resource open-vsx) = mineur. |
-| Déjà fait en 3.3/3.4 | icônes colorées, barre de titre, recherche, barre d'état, Terminal en premier, soleil + cloche, magasin Open VSX (run 40234124471 : tout vert sauf français) |
-| Fait aussi | icône compte (barre de titre), lignes explorateur 26px (à vérifier sur capture) |
-| Reste à faire (phase 3) | section BRANCHES + icône compte (barre de titre) ; 3.6 comparer avec `cody-design/reference-capture.png` et corriger ; 3.7 vérif finale/sécurité, FEATURES.md, rapport COURT à Cheikh (dire : Ctrl+P au lieu de Ctrl+K ; panneau droit encore « Chat » VS Code jusqu'à la phase 4) |
+| Phase en cours | **Phase 3 terminée côté code** (tests verts : run 40411800007, commit a1b6a037) → il reste le rapport court à Cheikh, puis **Phase 4 — Cody Assistant** |
+| Fait en phase 3 | palette + thèmes Cody (clair/sombre), barre de titre (logo, projet, recherche, soleil, cloche, compte), barre d'état, Terminal en 1er, icônes de fichiers colorées, explorateur 26px, section BRANCHES (Structure/Chronologie masquées), titres en majuscules, interface en français, tests automatiques (couleurs, français, soleil clair/sombre, Branches), vérification TypeScript en CI (0 erreur) |
+| Écarts à dire à Cheikh | Ctrl+P au lieu de Ctrl+K ; panneau droit encore « Conversation » de VS Code (phase 4) ; panneau du bas fermé au démarrage (capture : ouvert) ; onglets un peu plus petits que la capture ; français ≈76 % (paquet libre v1.131) ; « Hello » et « Layout: us » dans la barre d'état = extension de test / clavier web, à nettoyer plus tard |
+| Méthode CI (français) | `bundle --nls` dans `out-nls`, copie dans `out/` de `vs/code/browser/workbench/`, `media/`, `nls.*` ; `product.json` reçoit `commit` en CI seulement ; `webClientServer.ts` sert `workbench.html` + `nls.messages.fr.js`. Leçon : `setColorTheme` veut l'id interne du thème, pas son nom. |
+| Sécurité phase 3 | aucun secret dans nos fichiers ; pas d'innerHTML dans le code Cody ; chemins serveur fixes (pas d'entrée utilisateur) ; rappel : Cheikh doit supprimer ses anciens tokens GitHub |
 | Bloqué ? | Non |
 
 **Comment je regarde le résultat visuel :** le test `cody-tests/phase3-design.mjs` prend une capture (1671×941, projet « DropLink » reconstitué dans `cody-tests/fixtures/DropLink`) ; le workflow la publie sur la branche **`ci-captures`** ; je fais `git fetch origin ci-captures && git archive FETCH_HEAD | tar -x -C /home/claude/captures` puis je lis `p3-1-ecran.png` et je compare à `cody-design/reference-capture.png`.
@@ -43,7 +42,7 @@
 - Les extensions intégrées ne sont PAS compilées dans ce run (messages « Cannot find module extensions/…/out ») : à traiter en phase 5/6 (`npm run gulp compile-extensions`).
 - Dans les tests, taper avec `delay: 30` ms sinon le texte est perdu.
 
-**Prochaine action exacte :** lire le résultat du dernier run, regarder la capture sur `ci-captures`, corriger la barre de titre / d'état, puis continuer 3.3 → 3.7.
+**Prochaine action exacte :** envoyer le rapport court de phase 3 à Cheikh, puis commencer la phase 4 (Cody Assistant : panneau à droite, onglets Assistant/Chat/Codebase/Context, accueil « Salut Cheikh ! », 4 cartes, saisie ; aucune donnée envoyée sans accord). Découper la phase 4 en petites étapes avant de coder.
 
 **Règles GitHub apprises :**
 - Le token collé dans le chat NE sert PAS (refusé) et ne doit jamais être écrit dans un fichier. Dépôt accessible via l'outil `add_repo` (push), déjà fait ; au besoin le refaire.
@@ -159,6 +158,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 
 | Date | Ce qui a été fait | Résultat |
 |---|---|---|
+| 2026-10-26 | Phase 3 terminée côté code : français, BRANCHES, soleil clair/sombre, tests verts (run 40411800007) | ✅ OK |
 | 2026-10-24 | Phase 2 terminée : identité Cody Code, tests phase 1+2 verts (run 40094108059). Corrigés en route : manifest « Code- OSS », test phase 1 gêné par la page Welcome | ✅ OK |
 | 2026-10-23 (nuit) | Contrôle final : 1 échec dû à une course critique dans le TEST (texte tapé avant l'affichage du fichier), corrigé ; relancé = succès (run 40036901572) avec droits GitHub réduits | ✅ OK |
 | 2026-10-23 (nuit) | Phase 1 terminée : installation, compilation légère, serveur web et test d'écriture/sauvegarde OK sur GitHub Actions (run 40034501361). Contrôle sécurité : aucun secret dans nos fichiers, serveur de test en local seulement, droits GitHub réduits | ✅ OK |
