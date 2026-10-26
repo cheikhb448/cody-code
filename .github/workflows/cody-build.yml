@@ -101,6 +101,8 @@ jobs:
           echo "::notice title=Bundle fin::$(tail -3 /tmp/cody-logs/bundle.log | tr '\n' ' ')"
           node build/cody/make-nls-fr.mjs /tmp/cody-data > /tmp/cody-logs/nls-fr.log 2>&1 || true
           echo "::notice title=Génération français::$(cat /tmp/cody-logs/nls-fr.log | tr '\n' ' ')"
+          # La version empaquetée connaît son numéro de commit : le serveur doit le connaître aussi (adresses identiques)
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('product.json','utf8'));p.commit=process.env.GITHUB_SHA;fs.writeFileSync('product.json',JSON.stringify(p,null,2))"
           # Test uniquement : pas de fenêtre de confiance (le produit garde cette protection active)
           nohup ./scripts/code-server.sh --host 127.0.0.1 --port 8080 --server-data-dir /tmp/cody-data --disable-workspace-trust --without-connection-token --accept-server-license-terms > /tmp/cody-logs/server.log 2>&1 &
           echo $! > /tmp/cody-logs/server.pid
