@@ -13,8 +13,9 @@
 | Dernière mise à jour | 2026-10-26 |
 | Phase en cours | **Phase 3 — Design identique à la capture** |
 | Étapes faites | 3.1 palette relevée (`cody-design/palette.md`), 3.2 thèmes « Cody Dark » (défaut) et « Cody Light » (`extensions/theme-defaults/themes/cody-*.json`) : couleurs vérifiées par test ✅ |
-| Étape en cours | 3.5 — interface en français : script `build/cody/make-nls-fr.mjs` + `webClientServer.ts` poussés (commit 8f5368ad), run GitHub à lire (annotations « Paquet français », « Génération français », test « Explorateur ») |
+| Étape en cours | 3.5 — français. Découverte : la version « légère » (transpile) n'a PAS de textes traduisibles ; il faut `node build/next/index.ts bundle --nls --target server-web --out out-nls` (≈1 min). Le serveur en mode dev (VSCODE_DEV) ne supporte pas NLS côté serveur → on ne recouvre dans `out/` que `out-nls/vs/` + `nls.*` (commit 3e4a9625). Paquet fr Open VSX v1.131 installé OK (76 % de textes traduits, le reste en anglais). `make-nls-fr.mjs <paquet> [dossier]` génère `nls.messages.fr.js`, servi par `webClientServer.ts` si langue fr. À lire : run suivant (test « Explorateur ») |
 | Déjà fait en 3.3/3.4 | icônes colorées, barre de titre, recherche, barre d'état, Terminal en premier, soleil + cloche, magasin Open VSX (run 40234124471 : tout vert sauf français) |
+| Fait aussi | icône compte (barre de titre), lignes explorateur 26px (à vérifier sur capture) |
 | Reste à faire (phase 3) | section BRANCHES + icône compte (barre de titre) ; 3.6 comparer avec `cody-design/reference-capture.png` et corriger ; 3.7 vérif finale/sécurité, FEATURES.md, rapport COURT à Cheikh (dire : Ctrl+P au lieu de Ctrl+K ; panneau droit encore « Chat » VS Code jusqu'à la phase 4) |
 | Bloqué ? | Non |
 
