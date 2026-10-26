@@ -10,11 +10,12 @@
 
 | Élément | Valeur |
 |---|---|
-| Dernière mise à jour | 2026-10-25 |
+| Dernière mise à jour | 2026-10-26 |
 | Phase en cours | **Phase 3 — Design identique à la capture** |
 | Étapes faites | 3.1 palette relevée (`cody-design/palette.md`), 3.2 thèmes « Cody Dark » (défaut) et « Cody Light » (`extensions/theme-defaults/themes/cody-*.json`) : couleurs vérifiées par test ✅ |
-| Étape en cours | 3.3 — barre de titre / barre d'état / réglages par défaut (code poussé, run GitHub en cours ; à vérifier sur la capture) |
-| Reste à faire (phase 3) | 3.3 icônes de fichiers colorées + barre d'activités + section BRANCHES ; 3.4 panneau du bas (Terminal…) ; 3.5 interface en français + bouton soleil (thème clair/sombre) + cloche + compte ; 3.6 comparaison capture/capture ; 3.7 vérification finale + rapport |
+| Étape en cours | 3.5 — interface en français : script `build/cody/make-nls-fr.mjs` + `webClientServer.ts` poussés (commit 8f5368ad), run GitHub à lire (annotations « Paquet français », « Génération français », test « Explorateur ») |
+| Déjà fait en 3.3/3.4 | icônes colorées, barre de titre, recherche, barre d'état, Terminal en premier, soleil + cloche, magasin Open VSX (run 40234124471 : tout vert sauf français) |
+| Reste à faire (phase 3) | section BRANCHES + icône compte (barre de titre) ; 3.6 comparer avec `cody-design/reference-capture.png` et corriger ; 3.7 vérif finale/sécurité, FEATURES.md, rapport COURT à Cheikh (dire : Ctrl+P au lieu de Ctrl+K ; panneau droit encore « Chat » VS Code jusqu'à la phase 4) |
 | Bloqué ? | Non |
 
 **Comment je regarde le résultat visuel :** le test `cody-tests/phase3-design.mjs` prend une capture (1671×941, projet « DropLink » reconstitué dans `cody-tests/fixtures/DropLink`) ; le workflow la publie sur la branche **`ci-captures`** ; je fais `git fetch origin ci-captures && git archive FETCH_HEAD | tar -x -C /home/claude/captures` puis je lis `p3-1-ecran.png` et je compare à `cody-design/reference-capture.png`.
