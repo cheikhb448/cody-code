@@ -99,12 +99,15 @@ jobs:
           # Test uniquement : pas de fenêtre de confiance (le produit garde cette protection active)
           nohup ./scripts/code-server.sh --host 127.0.0.1 --port 8080 --server-data-dir /tmp/cody-data --disable-workspace-trust --without-connection-token --accept-server-license-terms > /tmp/cody-logs/server.log 2>&1 &
           echo $! > /tmp/cody-logs/server.pid
-          for i in $(seq 1 90); do
+          for i in $(seq 1 24); do
             code=$(curl -s -o /tmp/cody-logs/index.html -w '%{http_code}' http://127.0.0.1:8080/ || true)
             echo "essai $i : HTTP $code"
             if [ "$code" = "200" ]; then break; fi
             sleep 5
           done
+          if [ "$code" != "200" ]; then
+            echo "::error title=Serveur::$(tail -c 1800 /tmp/cody-logs/server.log | tr '\n' ' ')"
+          fi
           test "$code" = "200"
 
       - name: Vérifier que la page de l'éditeur est bien là
