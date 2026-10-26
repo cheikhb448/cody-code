@@ -1,13 +1,13 @@
 /*---------------------------------------------------------------------------------------------
  *  Cody Code - génère out/nls.messages.fr.js à partir du paquet de langue français.
- *  Usage : node build/cody/make-nls-fr.mjs <dossier-du-paquet-ou-des-extensions>
+ *  Usage : node build/cody/make-nls-fr.mjs <dossier-du-paquet> [dossier-de-sortie (défaut : out)]
  *  Licence MIT (voir LICENSE.txt à la racine).
  *--------------------------------------------------------------------------------------------*/
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 const racine = resolve(import.meta.dirname, '..', '..');
-const sortie = join(racine, 'out');
+const sortie = process.argv[3] ? resolve(process.argv[3]) : join(racine, 'out');
 
 function trouver(dossier, profondeur = 0) {
 	if (profondeur > 6 || !existsSync(dossier)) { return undefined; }

@@ -126,6 +126,19 @@ jobs:
         if: always()
         run: node cody-tests/phase3-design.mjs
 
+      - name: Essai - compilation avec textes traduits (version web empaquetée)
+        if: always()
+        continue-on-error: true
+        run: |
+          node build/next/index.ts bundle --nls --target server-web --out out-nls-test > /tmp/cody-logs/bundle.log 2>&1 || true
+          echo "::notice title=Bundle fin::$(tail -4 /tmp/cody-logs/bundle.log | tr '\n' ' ')"
+          echo "::notice title=Bundle contenu::$(ls out-nls-test | head -40 | tr '\n' ' ')"
+          echo "::notice title=Bundle nls::$(ls -la out-nls-test/nls* 2>&1 | tr '\n' ' ')"
+          if [ -f out-nls-test/nls.keys.json ]; then
+            node build/cody/make-nls-fr.mjs /tmp/cody-data out-nls-test > /tmp/cody-logs/nls-fr2.log 2>&1 || true
+            echo "::notice title=Bundle français::$(cat /tmp/cody-logs/nls-fr2.log | tr '\n' ' ')"
+          fi
+
       - name: Publier les captures d'écran (branche ci-captures)
         if: always()
         run: |
