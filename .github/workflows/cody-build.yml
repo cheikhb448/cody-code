@@ -97,6 +97,7 @@ jobs:
           mkdir -p out/vs/code/browser/workbench
           cp -r out-nls/vs/code/browser/workbench/. out/vs/code/browser/workbench/
           echo "::notice title=Bundle fichiers::$(ls out-nls/vs/code/browser/workbench | tr '\n' ' ') | $(find out-nls -name '*.ttf' | tr '\n' ' ') | $(find out-nls/vs -maxdepth 3 -type d | head -30 | tr '\n' ' ')"
+          mkdir -p out/media && cp -r out-nls/media/. out/media/
           cp out-nls/nls.keys.json out-nls/nls.messages.json out-nls/nls.messages.js out/
           echo "::notice title=Bundle fin::$(tail -3 /tmp/cody-logs/bundle.log | tr '\n' ' ')"
           node build/cody/make-nls-fr.mjs /tmp/cody-data > /tmp/cody-logs/nls-fr.log 2>&1 || true
