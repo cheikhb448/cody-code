@@ -31,7 +31,13 @@ registerAction2(class CodyToggleThemeAction extends Action2 {
 		const themeService = accessor.get(IWorkbenchThemeService);
 		const type = themeService.getColorTheme().type;
 		const isLight = type === ColorScheme.LIGHT || type === ColorScheme.HIGH_CONTRAST_LIGHT;
-		await themeService.setColorTheme(isLight ? ThemeSettingDefaults.COLOR_THEME_DARK : ThemeSettingDefaults.COLOR_THEME_LIGHT, ConfigurationTarget.USER);
+		// setColorTheme attend l'identifiant interne du thème, pas son nom : on le retrouve par son nom
+		const nomCherche = isLight ? ThemeSettingDefaults.COLOR_THEME_DARK : ThemeSettingDefaults.COLOR_THEME_LIGHT;
+		const themes = await themeService.getColorThemes();
+		const theme = themes.find(t => t.settingsId === nomCherche);
+		if (theme) {
+			await themeService.setColorTheme(theme.id, ConfigurationTarget.USER);
+		}
 	}
 });
 
