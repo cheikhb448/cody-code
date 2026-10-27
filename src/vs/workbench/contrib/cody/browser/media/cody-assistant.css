@@ -1,0 +1,15 @@
+/*---------------------------------------------------------------------------------------------
+ *  Cody Code - panneau Cody Assistant
+ *--------------------------------------------------------------------------------------------*/
+
+.cody-assistant-root {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+}
+
+.cody-assistant-placeholder {
+	padding: 16px;
+	color: var(--vscode-foreground);
+}

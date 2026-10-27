@@ -47,7 +47,7 @@ const chatViewContainer: ViewContainer = Registry.as<IViewContainersRegistry>(Vi
 	storageId: ChatViewContainerId,
 	hideIfEmpty: true,
 	order: 1,
-}, ViewContainerLocation.AuxiliaryBar, { isDefault: true, doNotRegisterOpenCommand: true });
+}, ViewContainerLocation.AuxiliaryBar, { isDefault: false, doNotRegisterOpenCommand: true }); // Cody Code : le panneau par défaut est Cody Assistant
 
 const chatViewDescriptor: IViewDescriptor = {
 	id: ChatViewId,
@@ -71,6 +71,7 @@ const chatViewDescriptor: IViewDescriptor = {
 	},
 	ctorDescriptor: new SyncDescriptor(ChatViewPane),
 	when: ContextKeyExpr.and(
+		ContextKeyExpr.equals('config.cody.enableVSCodeChat', true), // Cody Code : Chat de VS Code masqué sauf réglage explicite
 		ChatContextKeys.accountPolicyGateActive.negate(),
 		ContextKeyExpr.or(
 			ContextKeyExpr.and(

@@ -140,6 +140,10 @@ jobs:
         if: always()
         run: node cody-tests/phase3-design.mjs
 
+      - name: Test - panneau Cody Assistant
+        if: always()
+        run: node cody-tests/phase4-assistant.mjs
+
       - name: Vérification du code Cody (types TypeScript)
         if: always()
         continue-on-error: true
