@@ -11,7 +11,9 @@
 | Élément | Valeur |
 |---|---|
 | Dernière mise à jour | 2026-10-26 |
-| Phase en cours | **Phase 3 terminée côté code** (tests verts : run 40411800007, commit a1b6a037) → il reste le rapport court à Cheikh, puis **Phase 4 — Cody Assistant** |
+| Phase en cours | **Phase 4 — Cody Assistant** (phase 3 terminée et annoncée à Cheikh) |
+| Plan phase 4 | 4.1 étude (faite : Chat masqué par `config.cody.enableVSCodeChat`, `isDefault:false` ; Cody = conteneur barre latérale droite, `src/vs/workbench/contrib/cody/browser/assistant/`) · 4.2 panneau ouvrir/fermer · 4.3 en-tête + onglets Assistant/Chat/Codebase/Context · 4.4 accueil + 4 cartes · 4.5 zone de saisie · 4.6 service d'IA avec accord · 4.7 vérif finale + sécurité + rapport court |
+| Étape en cours | 4.2 — code poussé (commit 237f740f), test `cody-tests/phase4-assistant.mjs` ajouté au workflow ; à lire : run GitHub (annotation « Test phase 4 », capture `p4-1-panneau.png`) |
 | Fait en phase 3 | palette + thèmes Cody (clair/sombre), barre de titre (logo, projet, recherche, soleil, cloche, compte), barre d'état, Terminal en 1er, icônes de fichiers colorées, explorateur 26px, section BRANCHES (Structure/Chronologie masquées), titres en majuscules, interface en français, tests automatiques (couleurs, français, soleil clair/sombre, Branches), vérification TypeScript en CI (0 erreur) |
 | Écarts à dire à Cheikh | Ctrl+P au lieu de Ctrl+K ; panneau droit encore « Conversation » de VS Code (phase 4) ; panneau du bas fermé au démarrage (capture : ouvert) ; onglets un peu plus petits que la capture ; français ≈76 % (paquet libre v1.131) ; « Hello » et « Layout: us » dans la barre d'état = extension de test / clavier web, à nettoyer plus tard |
 | Méthode CI (français) | `bundle --nls` dans `out-nls`, copie dans `out/` de `vs/code/browser/workbench/`, `media/`, `nls.*` ; `product.json` reçoit `commit` en CI seulement ; `webClientServer.ts` sert `workbench.html` + `nls.messages.fr.js`. Leçon : `setColorTheme` veut l'id interne du thème, pas son nom. |
@@ -42,7 +44,7 @@
 - Les extensions intégrées ne sont PAS compilées dans ce run (messages « Cannot find module extensions/…/out ») : à traiter en phase 5/6 (`npm run gulp compile-extensions`).
 - Dans les tests, taper avec `delay: 30` ms sinon le texte est perdu.
 
-**Prochaine action exacte :** envoyer le rapport court de phase 3 à Cheikh, puis commencer la phase 4 (Cody Assistant : panneau à droite, onglets Assistant/Chat/Codebase/Context, accueil « Salut Cheikh ! », 4 cartes, saisie ; aucune donnée envoyée sans accord). Découper la phase 4 en petites étapes avant de coder.
+**Prochaine action exacte :** lire le run de 4.2, puis 4.3. (Phase 3 déjà annoncée ; ancienne note : commencer la phase 4 (Cody Assistant : panneau à droite, onglets Assistant/Chat/Codebase/Context, accueil « Salut Cheikh ! », 4 cartes, saisie ; aucune donnée envoyée sans accord). Découper la phase 4 en petites étapes avant de coder.
 
 **Règles GitHub apprises :**
 - Le token collé dans le chat NE sert PAS (refusé) et ne doit jamais être écrit dans un fichier. Dépôt accessible via l'outil `add_repo` (push), déjà fait ; au besoin le refaire.
