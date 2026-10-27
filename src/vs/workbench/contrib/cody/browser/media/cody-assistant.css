@@ -4,8 +4,8 @@
 
 /* ---- En-tête : le titre du panneau devient « logo + Cody Assistant + badge IA » ---- */
 
-.monaco-workbench .part.auxiliarybar > .title .composite-bar .action-item .action-label[aria-label^="Cody Assistant"],
-.monaco-workbench .part.auxiliarybar > .title .composite-bar .action-item .action-label[aria-label^="Cody Assistant"]:hover {
+.monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label[aria-label^="Cody Assistant"],
+.monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label[aria-label^="Cody Assistant"]:hover {
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
@@ -19,7 +19,7 @@
 	overflow: visible;
 }
 
-.monaco-workbench .part.auxiliarybar > .title .composite-bar .action-item .action-label[aria-label^="Cody Assistant"]::before {
+.monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label[aria-label^="Cody Assistant"]::before {
 	content: '';
 	position: static;
 	inset: auto;
@@ -33,7 +33,7 @@
 	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5c.5 5.2 2.2 7.5 8 8.5-5.8 1-7.5 3.3-8 8.5-.5-5.2-2.2-7.5-8-8.5 5.8-1 7.5-3.3 8-8.5zM19 15c.25 2.6 1.1 3.7 4 4.2-2.9.5-3.75 1.6-4 4.3-.25-2.7-1.1-3.8-4-4.3 2.9-.5 3.75-1.6 4-4.2z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-.monaco-workbench .part.auxiliarybar > .title .composite-bar .action-item .action-label[aria-label^="Cody Assistant"]::after {
+.monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label[aria-label^="Cody Assistant"]::after {
 	content: 'IA';
 	font-size: 11px;
 	font-weight: 600;
