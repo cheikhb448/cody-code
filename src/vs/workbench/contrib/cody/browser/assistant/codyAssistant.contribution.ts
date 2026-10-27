@@ -8,7 +8,7 @@ import { Codicon } from '../../../../../base/common/codicons.js';
 import { localize, localize2 } from '../../../../../nls.js';
 import { SyncDescriptor } from '../../../../../platform/instantiation/common/descriptors.js';
 import { Registry } from '../../../../../platform/registry/common/platform.js';
-import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from '../../../../../platform/configuration/common/configurationRegistry.js';
+import { IConfigurationRegistry, Extensions as ConfigurationExtensions, ConfigurationScope } from '../../../../../platform/configuration/common/configurationRegistry.js';
 import { registerIcon } from '../../../../../platform/theme/common/iconRegistry.js';
 import { ViewPaneContainer } from '../../../../browser/parts/views/viewPaneContainer.js';
 import { IViewContainersRegistry, IViewsRegistry, ViewContainer, ViewContainerLocation, Extensions as ViewExtensions } from '../../../../common/views.js';
@@ -55,11 +55,13 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 		'cody.assistant.endpoint': {
 			type: 'string',
 			default: '',
+			scope: ConfigurationScope.APPLICATION, // jamais modifiable par les réglages d'un projet (sécurité : la clé ne doit pas partir vers l'adresse d'un inconnu)
 			markdownDescription: localize('cody.config.endpoint', "Adresse du service d'IA (compatible « OpenAI »), par exemple `http://localhost:11434/v1/chat/completions` pour Ollama. Rien n'est envoyé tant que tu n'as pas accepté l'envoi vers ce service. Utilise la commande « Cody Assistant : configurer le service d'IA »."),
 		},
 		'cody.assistant.model': {
 			type: 'string',
 			default: '',
+			scope: ConfigurationScope.APPLICATION,
 			description: localize('cody.config.model', "Nom du modèle d'IA à utiliser (selon le service choisi).")
 		},
 		'cody.assistant.userName': {

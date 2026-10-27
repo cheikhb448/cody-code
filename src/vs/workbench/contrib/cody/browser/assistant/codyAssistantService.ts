@@ -165,6 +165,7 @@ class CodyAssistantService implements ICodyAssistantService {
 				headers: entetes,
 				data: JSON.stringify({ model: modele, messages, stream: false }),
 				timeout: 120_000,
+				followRedirects: 0, // jamais de redirection : les messages et la clé ne vont que vers le service accepté
 				logUrl: false,
 				callSite: 'NO_FETCH_TELEMETRY'
 			}, CancellationToken.None);

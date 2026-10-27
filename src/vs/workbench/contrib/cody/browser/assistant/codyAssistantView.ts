@@ -223,7 +223,9 @@ export class CodyAssistantView extends ViewPane {
 		for (const element of this.contexte) {
 			const ligne = dom.append(liste, dom.$('li'));
 			dom.append(ligne, dom.$('span' + ThemeIcon.asCSSSelector(element.genre === 'image' ? Codicon.fileMedia : Codicon.file)));
-			dom.append(ligne, dom.$('span.cody-assistant-context-name')).textContent = element.nom;
+			dom.append(ligne, dom.$('span.cody-assistant-context-name')).textContent = element.genre === 'image'
+				? localize('cody.context.imageNote', "{0} (image : pas encore envoyée à l'IA)", element.nom)
+				: element.nom;
 		}
 	}
 
