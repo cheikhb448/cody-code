@@ -39,6 +39,70 @@ try {
   verifier(!/Conversation|Build with Agent|Créer avec des assistants/.test(etat.texte), 'le Chat de VS Code n\'est plus affiché');
   await page.screenshot({ path: '/tmp/cody-logs/p4-1-panneau.png' });
 
+  // 4.3 : en-tête (logo, nom, badge IA) et 4 onglets
+  const entete = await page.evaluate(() => {
+    const l = document.querySelector('.part.auxiliarybar > .title .action-label[aria-label^="Cody Assistant"]');
+    return l ? { badge: getComputedStyle(l, '::after').content, logo: getComputedStyle(l, '::before').content } : null;
+  });
+  verifier(entete && /IA/.test(entete.badge), 'l\'en-tête affiche le badge « IA »');
+  const onglets = await page.$$eval('.cody-assistant-tab', els => els.map(e => e.textContent));
+  verifier(JSON.stringify(onglets) === JSON.stringify(['Assistant', 'Chat', 'Codebase', 'Context']), 'les 4 onglets : ' + onglets.join(' · '));
+  const actif = await page.$eval('.cody-assistant-tab.active', e => e.textContent);
+  verifier(actif === 'Assistant', 'l\'onglet Assistant est actif au départ');
+
+  // 4.4 : accueil et 4 actions rapides
+  const accueil = await page.$eval('.cody-assistant-content', e => e.innerText.replace(/\s+/g, ' '));
+  verifier(/Salut/.test(accueil) && /Je suis Cody/.test(accueil), 'message d\'accueil « Salut ! Je suis Cody… »');
+  for (const nom of ['Générer du code', 'Expliquer le code', 'Corriger les erreurs', 'Améliorer le code']) {
+    verifier(accueil.includes(nom), 'carte « ' + nom + ' »');
+  }
+  await page.screenshot({ path: '/tmp/cody-logs/p4-2-accueil.png' });
+
+  // 4.5 : zone de saisie
+  const saisie = await page.evaluate(() => ({
+    placeholder: document.querySelector('.cody-assistant-textarea')?.placeholder ?? '',
+    outils: document.querySelectorAll('.cody-assistant-tool').length,
+    envoi: !!document.querySelector('.cody-assistant-send'),
+  }));
+  verifier(/Pose ta question/.test(saisie.placeholder), 'champ de saisie : « ' + saisie.placeholder + ' »');
+  verifier(saisie.outils === 3 && saisie.envoi, '3 boutons (fichier, image, idées) + bouton envoyer');
+
+  // Une carte remplit la saisie
+  await page.click('.cody-assistant-card[data-action="generer"]');
+  const amorce = await page.$eval('.cody-assistant-textarea', e => e.value);
+  verifier(/Génère du code/.test(amorce), 'cliquer sur une carte remplit la saisie');
+  await page.fill('.cody-assistant-textarea', '');
+
+  // Le trombone ajoute le fichier ouvert au contexte
+  await page.keyboard.press('Control+p');
+  await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 30000 });
+  await page.keyboard.type('public/index.php', { delay: 30 });
+  await page.waitForTimeout(1500);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(2500);
+  await page.click('.cody-assistant-tool[data-outil="joindre"]');
+  await page.waitForTimeout(500);
+  const puces = await page.$eval('.cody-assistant-chips', e => e.innerText);
+  verifier(/index\.php/.test(puces), 'le trombone ajoute le fichier ouvert (index.php)');
+
+  // Navigation entre onglets
+  await page.click('.cody-assistant-tab:nth-child(3)');
+  let contenu = await page.$eval('.cody-assistant-content', e => e.innerText);
+  verifier(/pas encore disponible/.test(contenu), 'onglet Codebase : message « pas encore disponible »');
+  verifier(await page.$eval('.cody-assistant-input', e => e.classList.contains('hidden')), 'la saisie est cachée dans Codebase');
+  await page.click('.cody-assistant-tab:nth-child(4)');
+  contenu = await page.$eval('.cody-assistant-content', e => e.innerText);
+  verifier(/index\.php/.test(contenu), 'onglet Context : liste le fichier ajouté');
+
+  // Envoi : le message reste sur place, Cody dit qu'il n'est pas relié
+  await page.click('.cody-assistant-tab:nth-child(1)');
+  await page.fill('.cody-assistant-textarea', 'Bonjour Cody');
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  contenu = await page.$eval('.cody-assistant-content', e => e.innerText);
+  verifier(/Bonjour Cody/.test(contenu) && /pas encore relié/.test(contenu), 'l\'envoi affiche la question dans Chat et la réponse « pas encore relié »');
+  await page.screenshot({ path: '/tmp/cody-logs/p4-3-chat.png' });
+
   // Fermer puis rouvrir (Ctrl+Alt+B)
   await page.keyboard.press('Control+Alt+b');
   await page.waitForTimeout(1500);

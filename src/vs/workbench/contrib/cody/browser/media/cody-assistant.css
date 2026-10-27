@@ -2,14 +2,308 @@
  *  Cody Code - panneau Cody Assistant
  *--------------------------------------------------------------------------------------------*/
 
+/* ---- En-tête : le titre du panneau devient « logo + Cody Assistant + badge IA » ---- */
+
+.monaco-workbench .part.auxiliarybar > .title .composite-bar .action-item .action-label[aria-label^="Cody Assistant"],
+.monaco-workbench .part.auxiliarybar > .title .composite-bar .action-item .action-label[aria-label^="Cody Assistant"]:hover {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 15px;
+	font-weight: 600;
+	text-transform: none;
+	color: var(--vscode-foreground);
+	background: transparent;
+	box-shadow: none;
+	padding-left: 6px;
+}
+
+.monaco-workbench .part.auxiliarybar > .title .composite-bar .action-item .action-label[aria-label^="Cody Assistant"]::before {
+	content: '';
+	width: 20px;
+	height: 20px;
+	background-color: #4d8dff;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5c.5 5.2 2.2 7.5 8 8.5-5.8 1-7.5 3.3-8 8.5-.5-5.2-2.2-7.5-8-8.5 5.8-1 7.5-3.3 8-8.5zM19 15c.25 2.6 1.1 3.7 4 4.2-2.9.5-3.75 1.6-4 4.3-.25-2.7-1.1-3.8-4-4.3 2.9-.5 3.75-1.6 4-4.2z'/%3E%3C/svg%3E") center / contain no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5c.5 5.2 2.2 7.5 8 8.5-5.8 1-7.5 3.3-8 8.5-.5-5.2-2.2-7.5-8-8.5 5.8-1 7.5-3.3 8-8.5zM19 15c.25 2.6 1.1 3.7 4 4.2-2.9.5-3.75 1.6-4 4.3-.25-2.7-1.1-3.8-4-4.3 2.9-.5 3.75-1.6 4-4.2z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.monaco-workbench .part.auxiliarybar > .title .composite-bar .action-item .action-label[aria-label^="Cody Assistant"]::after {
+	content: 'IA';
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1;
+	padding: 3px 7px;
+	border-radius: 10px;
+	color: #b9a8ff;
+	background-color: rgba(124, 92, 255, 0.22);
+}
+
+/* ---- Contenu ---- */
+
 .cody-assistant-root {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 	overflow: hidden;
+	color: var(--vscode-foreground);
+	font-size: 14px;
 }
 
-.cody-assistant-placeholder {
-	padding: 16px;
+.cody-assistant-tabs {
+	display: flex;
+	gap: 6px;
+	padding: 4px 14px 0;
+	border-bottom: 1px solid var(--vscode-panel-border, rgba(255, 255, 255, 0.08));
+}
+
+.cody-assistant-tab {
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent;
+	color: var(--vscode-descriptionForeground);
+	font-size: 14px;
+	padding: 8px 10px;
+	cursor: pointer;
+}
+
+.cody-assistant-tab:hover {
 	color: var(--vscode-foreground);
+}
+
+.cody-assistant-tab.active {
+	color: var(--vscode-foreground);
+	font-weight: 600;
+	border-bottom-color: var(--vscode-button-background, #5b5bfe);
+}
+
+.cody-assistant-content {
+	flex: 1;
+	overflow-y: auto;
+	padding: 16px 14px;
+}
+
+.cody-assistant-hello {
+	font-size: 22px;
+	font-weight: 600;
+	margin: 6px 0 10px;
+}
+
+.cody-assistant-intro {
+	color: var(--vscode-descriptionForeground);
+	line-height: 1.55;
+	margin: 0 0 18px;
+}
+
+.cody-assistant-intro strong {
+	color: var(--vscode-foreground);
+}
+
+.cody-assistant-cards {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+
+.cody-assistant-card {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	text-align: left;
+	padding: 12px;
+	border-radius: 10px;
+	border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.08));
+	background: var(--vscode-editorWidget-background);
+	color: var(--vscode-foreground);
+	cursor: pointer;
+}
+
+.cody-assistant-card:hover {
+	border-color: var(--vscode-button-background, #5b5bfe);
+}
+
+.cody-assistant-card-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: none;
+	width: 34px;
+	height: 34px;
+	border-radius: 9px;
+	font-size: 18px;
+}
+
+.cody-assistant-card-icon.generer { color: #4d8dff; background: rgba(77, 141, 255, 0.18); }
+.cody-assistant-card-icon.expliquer { color: #2ee6c5; background: rgba(46, 230, 197, 0.16); }
+.cody-assistant-card-icon.corriger { color: #f5a742; background: rgba(245, 167, 66, 0.18); }
+.cody-assistant-card-icon.ameliorer { color: #a78bff; background: rgba(167, 139, 255, 0.18); }
+
+.cody-assistant-card-text {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
+	gap: 2px;
+}
+
+.cody-assistant-card-title {
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.cody-assistant-card-desc {
+	font-size: 11px;
+	color: var(--vscode-descriptionForeground);
+}
+
+.cody-assistant-card-arrow {
+	flex: none;
+	color: var(--vscode-descriptionForeground);
+}
+
+.cody-assistant-section-title {
+	font-size: 16px;
+	margin: 4px 0 10px;
+}
+
+.cody-assistant-empty {
+	color: var(--vscode-descriptionForeground);
+	line-height: 1.5;
+}
+
+.cody-assistant-msg {
+	max-width: 92%;
+	margin: 0 0 10px;
+	padding: 9px 12px;
+	border-radius: 10px;
+	line-height: 1.5;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.cody-assistant-msg.moi {
+	margin-left: auto;
+	background: var(--vscode-button-background, #5b5bfe);
+	color: var(--vscode-button-foreground, #fff);
+}
+
+.cody-assistant-msg.cody {
+	background: var(--vscode-editorWidget-background);
+	border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.08));
+}
+
+.cody-assistant-context-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.cody-assistant-context-list li {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 0;
+}
+
+/* ---- Zone de saisie ---- */
+
+.cody-assistant-input {
+	flex: none;
+	margin: 0 14px 14px;
+	padding: 10px 12px;
+	border-radius: 10px;
+	border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.1));
+	background: var(--vscode-editorWidget-background);
+}
+
+.cody-assistant-input.hidden {
+	display: none;
+}
+
+.cody-assistant-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.cody-assistant-chips:not(:empty) {
+	margin-bottom: 8px;
+}
+
+.cody-assistant-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 12px;
+	padding: 2px 8px;
+	border-radius: 10px;
+	background: rgba(124, 92, 255, 0.2);
+}
+
+.cody-assistant-textarea {
+	width: 100%;
+	box-sizing: border-box;
+	resize: none;
+	border: none;
+	outline: none;
+	background: transparent;
+	color: var(--vscode-foreground);
+	font-family: inherit;
+	font-size: 14px;
+}
+
+.cody-assistant-textarea::placeholder {
+	color: var(--vscode-input-placeholderForeground);
+}
+
+.cody-assistant-input-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 6px;
+}
+
+.cody-assistant-tools {
+	display: flex;
+	gap: 6px;
+}
+
+.cody-assistant-tool {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border: none;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--vscode-descriptionForeground);
+	cursor: pointer;
+	font-size: 16px;
+}
+
+.cody-assistant-tool:hover {
+	background: var(--vscode-toolbar-hoverBackground);
+	color: var(--vscode-foreground);
+}
+
+.cody-assistant-tool[data-outil="idees"] {
+	color: #7c5cff;
+}
+
+.cody-assistant-send {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border: none;
+	border-radius: 9px;
+	background: var(--vscode-button-background, #5b5bfe);
+	color: var(--vscode-button-foreground, #fff);
+	cursor: pointer;
+	font-size: 16px;
+}
+
+.cody-assistant-send:hover {
+	background: var(--vscode-button-hoverBackground, #4a4aee);
 }

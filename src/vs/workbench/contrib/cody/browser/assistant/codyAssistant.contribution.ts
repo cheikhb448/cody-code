@@ -8,6 +8,7 @@ import { Codicon } from '../../../../../base/common/codicons.js';
 import { localize, localize2 } from '../../../../../nls.js';
 import { SyncDescriptor } from '../../../../../platform/instantiation/common/descriptors.js';
 import { Registry } from '../../../../../platform/registry/common/platform.js';
+import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from '../../../../../platform/configuration/common/configurationRegistry.js';
 import { registerIcon } from '../../../../../platform/theme/common/iconRegistry.js';
 import { ViewPaneContainer } from '../../../../browser/parts/views/viewPaneContainer.js';
 import { IViewContainersRegistry, IViewsRegistry, ViewContainer, ViewContainerLocation, Extensions as ViewExtensions } from '../../../../common/views.js';
@@ -44,3 +45,17 @@ Registry.as<IViewsRegistry>(ViewExtensions.ViewsRegistry).registerViews([{
 		order: 1
 	}
 }], container);
+
+Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerConfiguration({
+	id: 'cody',
+	order: 5,
+	title: localize('cody.config.title', "Cody Code"),
+	type: 'object',
+	properties: {
+		'cody.assistant.userName': {
+			type: 'string',
+			default: '',
+			description: localize('cody.config.userName', "Ton prénom, affiché dans le message d'accueil de Cody Assistant.")
+		}
+	}
+});
