@@ -87,11 +87,11 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Basculement thème clair / sombre en un clic (bouton soleil) — testé automatiquement (phase 3)
 
 ## 10. Cody Assistant (IA)
-- ⬜ Panneau latéral à droite, ouvrable et fermable
-- ⬜ Onglets : Assistant · Chat · Codebase · Context
-- ⬜ Actions rapides : générer du code, expliquer le code, corriger les erreurs, améliorer le code
-- ⬜ Saisie de question avec pièces jointes et images
-- ⬜ Aucune donnée envoyée sans accord de l'utilisateur
+- ✅ Panneau latéral à droite, ouvrable et fermable (Ctrl+Alt+B) — testé automatiquement (phase 4)
+- ✅ Onglets : Assistant · Chat · Codebase · Context — testé (Codebase : « pas encore disponible »)
+- ✅ Actions rapides : générer du code, expliquer le code, corriger les erreurs, améliorer le code — testé (remplissent la saisie)
+- 🚧 Saisie de question avec pièces jointes et images — fichier ouvert → contexte testé ; les images ne sont pas encore envoyées à l'IA
+- ✅ Aucune donnée envoyée sans accord de l'utilisateur — testé : accord demandé par service avant tout envoi, refus = 0 envoi, accord retirable, projet piégé sans effet, pas de redirection, http seulement vers localhost
 
 ## 11. Productivité
 - ⬜ Emmet (écriture rapide HTML/CSS)
@@ -120,5 +120,6 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 Cody Code est basé sur [Code - OSS](https://github.com/microsoft/vscode), publié sous licence MIT par Microsoft. Le nom, le logo et les icônes de « Visual Studio Code » ne sont pas inclus : Cody Code a sa propre identité.
 
 ## Notes
+- Cody Assistant : brancher n'importe quel service « compatible OpenAI » (Ollama sur son ordinateur, ou un service en ligne avec sa propre clé) via la commande « Cody Assistant : configurer le service d'IA ». Aucun service n'est choisi par défaut. Pas encore de réponses « en direct » (flux) ni d'analyse du projet entier (Codebase).
 - Le raccourci affiché dans la barre de recherche est Ctrl + P (celui de VS Code), pas Ctrl + K.
 - Français : le paquet de langue libre (Open VSX) couvre environ 76 % des textes ; le reste reste en anglais.

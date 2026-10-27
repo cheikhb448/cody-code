@@ -11,9 +11,9 @@
 | Élément | Valeur |
 |---|---|
 | Dernière mise à jour | 2026-10-26 |
-| Phase en cours | **Phase 4 — Cody Assistant** (phase 3 terminée et annoncée à Cheikh) |
-| Plan phase 4 | 4.1 étude (faite : Chat masqué par `config.cody.enableVSCodeChat`, `isDefault:false` ; Cody = conteneur barre latérale droite, `src/vs/workbench/contrib/cody/browser/assistant/`) · 4.2 panneau ouvrir/fermer · 4.3 en-tête + onglets Assistant/Chat/Codebase/Context · 4.4 accueil + 4 cartes · 4.5 zone de saisie · 4.6 service d'IA avec accord · 4.7 vérif finale + sécurité + rapport court |
-| Étape en cours | 4.3→4.5 ✅ (run 40464471496 vert). 4.6 : code poussé (commit 96c80f36) = `codyAssistantService.ts` (accord obligatoire par service AVANT tout envoi, http autorisé seulement vers localhost, clé dans le stockage sécurisé, aucun envoi sinon), `codyAssistantActions.contribution.ts` (commandes « configurer le service d'IA », « retirer mes accords »), réglages `cody.assistant.endpoint/model/userName`, CSP web élargie à localhost (`webClientServer.ts`), test avec faux service sur le port 9099. À lire : annotation « Test phase 4 » + capture p4-4-reponse. ⚠ Phase 8 : la CSP du bureau (`src/vs/code/electron-browser/workbench/workbench.html`) devra aussi accepter localhost. Panneau élargi à 480 px max (`layout.ts`). Ensuite 4.7 |
+| Phase en cours | **Phase 4 terminée côté code** (tests verts : run 40586277812, commit ee7be618) → il reste le rapport court à Cheikh, puis **Phase 5 — Parité des fonctionnalités** (tester chaque ligne de FEATURES.md) |
+| Fait en phase 4 | panneau Cody Assistant à droite (480 px max, remplace le Chat de VS Code, masqué via `config.cody.enableVSCodeChat`), en-tête logo + IA, 4 onglets, accueil, 4 cartes, saisie, connexion IA compatible OpenAI avec accord obligatoire par service, commandes « configurer le service d'IA » / « retirer mes accords », réglages `cody.assistant.endpoint/model` (portée APPLICATION : un projet ne peut pas les changer), pas de redirection, http seulement vers localhost, clé dans le stockage sécurisé, CSP web ouverte à localhost |
+| Écarts à dire à Cheikh | prénom dans « Salut ! » = réglage `cody.assistant.userName` (vide par défaut) ; aucun service d'IA choisi par défaut (il doit en brancher un) ; Codebase pas encore disponible ; images pas encore envoyées ; pas de réponse en direct (flux) ; Phase 8 : CSP du bureau à ouvrir à localhost |
 | Fait en phase 3 | palette + thèmes Cody (clair/sombre), barre de titre (logo, projet, recherche, soleil, cloche, compte), barre d'état, Terminal en 1er, icônes de fichiers colorées, explorateur 26px, section BRANCHES (Structure/Chronologie masquées), titres en majuscules, interface en français, tests automatiques (couleurs, français, soleil clair/sombre, Branches), vérification TypeScript en CI (0 erreur) |
 | Écarts à dire à Cheikh | Ctrl+P au lieu de Ctrl+K ; panneau droit encore « Conversation » de VS Code (phase 4) ; panneau du bas fermé au démarrage (capture : ouvert) ; onglets un peu plus petits que la capture ; français ≈76 % (paquet libre v1.131) ; « Hello » et « Layout: us » dans la barre d'état = extension de test / clavier web, à nettoyer plus tard |
 | Méthode CI (français) | `bundle --nls` dans `out-nls`, copie dans `out/` de `vs/code/browser/workbench/`, `media/`, `nls.*` ; `product.json` reçoit `commit` en CI seulement ; `webClientServer.ts` sert `workbench.html` + `nls.messages.fr.js`. Leçon : `setColorTheme` veut l'id interne du thème, pas son nom. |
@@ -44,7 +44,7 @@
 - Les extensions intégrées ne sont PAS compilées dans ce run (messages « Cannot find module extensions/…/out ») : à traiter en phase 5/6 (`npm run gulp compile-extensions`).
 - Dans les tests, taper avec `delay: 30` ms sinon le texte est perdu.
 
-**Prochaine action exacte :** lire le run de 4.2, puis 4.3. (Phase 3 déjà annoncée ; ancienne note : commencer la phase 4 (Cody Assistant : panneau à droite, onglets Assistant/Chat/Codebase/Context, accueil « Salut Cheikh ! », 4 cartes, saisie ; aucune donnée envoyée sans accord). Découper la phase 4 en petites étapes avant de coder.
+**Prochaine action exacte :** envoyer le rapport court de phase 4 à Cheikh, puis phase 5 : découper en petites étapes (une section de FEATURES.md à la fois : éditeur, intelligence du code, explorateur, terminal, git, débogage, extensions, personnalisation…), écrire un test réel par ligne, corriger, cocher seulement ce qui est testé. Penser aussi : nettoyer « Hello » (extension de test) et « Layout: us » de la barre d'état.
 
 **Règles GitHub apprises :**
 - Le token collé dans le chat NE sert PAS (refusé) et ne doit jamais être écrit dans un fichier. Dépôt accessible via l'outil `add_repo` (push), déjà fait ; au besoin le refaire.
@@ -160,6 +160,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 
 | Date | Ce qui a été fait | Résultat |
 |---|---|---|
+| 2026-10-27 | Phase 4 terminée côté code : Cody Assistant (panneau, onglets, accueil, saisie, connexion IA avec accord) ; tests verts (run 40586277812) | ✅ OK |
 | 2026-10-26 | Phase 3 terminée côté code : français, BRANCHES, soleil clair/sombre, tests verts (run 40411800007) | ✅ OK |
 | 2026-10-24 | Phase 2 terminée : identité Cody Code, tests phase 1+2 verts (run 40094108059). Corrigés en route : manifest « Code- OSS », test phase 1 gêné par la page Welcome | ✅ OK |
 | 2026-10-23 (nuit) | Contrôle final : 1 échec dû à une course critique dans le TEST (texte tapé avant l'affichage du fichier), corrigé ; relancé = succès (run 40036901572) avec droits GitHub réduits | ✅ OK |
