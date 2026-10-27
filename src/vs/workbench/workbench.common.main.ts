@@ -340,6 +340,7 @@ import './contrib/cody/browser/codyStatusbar.contribution.js';
 import './contrib/cody/browser/codyTitlebarActions.contribution.js';
 import './contrib/cody/browser/codyBranches.contribution.js';
 import './contrib/cody/browser/assistant/codyAssistant.contribution.js';
+import './contrib/cody/browser/assistant/codyAssistantActions.contribution.js';
 
 // Terminal
 import './contrib/terminal/terminal.all.js';

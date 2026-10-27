@@ -10,6 +10,8 @@ import * as dom from '../../../../../base/browser/dom.js';
 import { Codicon } from '../../../../../base/common/codicons.js';
 import { ThemeIcon } from '../../../../../base/common/themables.js';
 import { basename } from '../../../../../base/common/resources.js';
+import { URI } from '../../../../../base/common/uri.js';
+import { ICommandService } from '../../../../../platform/commands/common/commands.js';
 import { localize } from '../../../../../nls.js';
 import { IConfigurationService } from '../../../../../platform/configuration/common/configuration.js';
 import { IContextKeyService } from '../../../../../platform/contextkey/common/contextkey.js';
@@ -24,17 +26,20 @@ import { IViewletViewOptions } from '../../../../browser/parts/views/viewsViewle
 import { EditorResourceAccessor } from '../../../../common/editor.js';
 import { IViewDescriptorService } from '../../../../common/views.js';
 import { IEditorService } from '../../../../services/editor/common/editorService.js';
+import { ICodyAssistantService } from './codyAssistantService.js';
 
 type OngletId = 'assistant' | 'chat' | 'codebase' | 'context';
 
 interface IElementContexte {
 	readonly nom: string;
 	readonly genre: 'fichier' | 'image';
+	readonly uri?: URI;
 }
 
 interface IMessage {
 	readonly auteur: 'moi' | 'cody';
 	readonly texte: string;
+	readonly bouton?: 'configurer';
 }
 
 interface IActionRapide {
@@ -50,6 +55,7 @@ export class CodyAssistantView extends ViewPane {
 	private ongletActif: OngletId = 'assistant';
 	private readonly contexte: IElementContexte[] = [];
 	private readonly messages: IMessage[] = [];
+	private reponseEnCours = false;
 
 	private boutonsOnglets = new Map<OngletId, HTMLElement>();
 	private zoneContenu!: HTMLElement;
@@ -68,7 +74,9 @@ export class CodyAssistantView extends ViewPane {
 		@IOpenerService openerService: IOpenerService,
 		@IThemeService themeService: IThemeService,
 		@IHoverService hoverService: IHoverService,
-		@IEditorService private readonly editorService: IEditorService
+		@IEditorService private readonly editorService: IEditorService,
+		@ICodyAssistantService private readonly assistantService: ICodyAssistantService,
+		@ICommandService private readonly commandService: ICommandService
 	) {
 		super(options, keybindingService, contextMenuService, configService, contextKeyService, viewDescriptorService, instantiationService, openerService, themeService, hoverService);
 	}
@@ -186,7 +194,12 @@ export class CodyAssistantView extends ViewPane {
 		}
 		for (const message of this.messages) {
 			const bulle = dom.append(this.zoneContenu, dom.$('.cody-assistant-msg.' + message.auteur));
-			bulle.textContent = message.texte; // textContent : jamais de HTML venant de l'extérieur
+			dom.append(bulle, dom.$('span')).textContent = message.texte; // textContent : jamais de HTML venant de l'extérieur
+			if (message.bouton === 'configurer') {
+				const bouton = dom.append(bulle, dom.$('button.cody-assistant-action'));
+				bouton.textContent = localize('cody.configure.button', "Configurer le service d'IA");
+				this._register(dom.addDisposableListener(bouton, dom.EventType.CLICK, () => this.commandService.executeCommand('cody.assistant.configure')));
+			}
 		}
 		this.zoneContenu.scrollTop = this.zoneContenu.scrollHeight;
 	}
@@ -241,7 +254,7 @@ export class CodyAssistantView extends ViewPane {
 		this._register(dom.addDisposableListener(trombone, dom.EventType.CLICK, () => {
 			const uri = EditorResourceAccessor.getOriginalUri(this.editorService.activeEditor);
 			if (uri) {
-				this.ajouterContexte({ nom: basename(uri), genre: 'fichier' });
+				this.ajouterContexte({ nom: basename(uri), genre: 'fichier', uri });
 			}
 		}));
 
@@ -259,11 +272,11 @@ export class CodyAssistantView extends ViewPane {
 			choix.value = '';
 		}));
 
-		this._register(dom.addDisposableListener(envoyer, dom.EventType.CLICK, () => this.envoyer()));
+		this._register(dom.addDisposableListener(envoyer, dom.EventType.CLICK, () => { void this.envoyer(); }));
 		this._register(dom.addDisposableListener(this.champSaisie, dom.EventType.KEY_DOWN, (e: KeyboardEvent) => {
 			if (e.key === 'Enter' && !e.shiftKey) {
 				e.preventDefault();
-				this.envoyer();
+				void this.envoyer();
 			}
 		}));
 	}
@@ -293,18 +306,38 @@ export class CodyAssistantView extends ViewPane {
 		}
 	}
 
-	private envoyer(): void {
+	private async envoyer(): Promise<void> {
 		const texte = this.champSaisie.value.trim();
-		if (!texte) {
+		if (!texte || this.reponseEnCours) {
 			return;
 		}
 		this.messages.push({ auteur: 'moi', texte });
-		// Tant qu'aucun service d'IA n'est configuré et accepté, rien ne quitte la fenêtre.
-		this.messages.push({
-			auteur: 'cody',
-			texte: localize('cody.reply.notConnected', "Je ne suis pas encore relié à un service d'IA, donc je ne peux pas répondre. Ton message est resté sur cet ordinateur : rien n'a été envoyé.")
-		});
 		this.champSaisie.value = '';
 		this.choisirOnglet('chat');
+
+		// Rien ne part sans configuration ET sans l'accord de l'utilisateur (voir codyAssistantService.ts)
+		this.reponseEnCours = true;
+		const attente: IMessage = { auteur: 'cody', texte: localize('cody.reply.thinking', "Cody réfléchit…") };
+		this.messages.push(attente);
+		this.afficher();
+
+		const historique = this.messages
+			.filter(m => m !== attente && !m.bouton)
+			.map(m => ({ role: (m.auteur === 'moi' ? 'user' : 'assistant') as 'user' | 'assistant', texte: m.texte }));
+		const fichiers = this.contexte.filter(c => c.genre === 'fichier' && c.uri).map(c => ({ nom: c.nom, uri: c.uri! }));
+		const resultat = await this.assistantService.demander(historique, fichiers);
+
+		this.messages.splice(this.messages.indexOf(attente), 1);
+		if (resultat.ok) {
+			this.messages.push({ auteur: 'cody', texte: resultat.texte });
+		} else if (resultat.raison === 'non-configure') {
+			this.messages.push({ auteur: 'cody', texte: localize('cody.reply.notConfigured', "Je ne suis pas encore relié à un service d'IA. Ton message est resté sur cet ordinateur : rien n'a été envoyé. Choisis d'abord un service (par exemple Ollama sur ton ordinateur, ou un service en ligne avec ta propre clé)."), bouton: 'configurer' });
+		} else if (resultat.raison === 'refuse') {
+			this.messages.push({ auteur: 'cody', texte: localize('cody.reply.refused', "D'accord, rien n'a été envoyé. Je ne répondrai que si tu autorises l'envoi à ce service.") });
+		} else {
+			this.messages.push({ auteur: 'cody', texte: resultat.detail, bouton: resultat.raison === 'interdit' ? 'configurer' : undefined });
+		}
+		this.reponseEnCours = false;
+		this.afficher();
 	}
 }

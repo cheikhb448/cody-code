@@ -1,6 +1,7 @@
 // Test Phase 4 : panneau Cody Assistant (à droite). Les vérifications s'ajoutent étape par étape.
 import { chromium } from '/tmp/pw/node_modules/playwright/index.mjs';
 import fs from 'node:fs';
+import http from 'node:http';
 
 const lignes = [];
 const log = m => { console.log(m); lignes.push(m); };
@@ -15,6 +16,23 @@ const dossier = '/tmp/DropLink4';
 fs.rmSync(dossier, { recursive: true, force: true });
 fs.cpSync('cody-tests/fixtures/DropLink', dossier, { recursive: true });
 fs.mkdirSync('/tmp/cody-logs', { recursive: true });
+
+// Faux service d'IA (compatible OpenAI) sur cet ordinateur, pour vérifier ce qui est réellement envoyé
+const recus = [];
+const faux = http.createServer((req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'content-type, authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
+  let corps = '';
+  req.on('data', d => { corps += d; });
+  req.on('end', () => {
+    recus.push({ auth: req.headers.authorization, corps });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ choices: [{ message: { content: 'Réponse de test de Cody' } }] }));
+  });
+});
+await new Promise(r => faux.listen(9099, '127.0.0.1', r));
 
 let browser;
 try {
@@ -103,6 +121,74 @@ try {
   verifier(/Bonjour Cody/.test(contenu) && /pas encore relié/.test(contenu), 'l\'envoi affiche la question dans Chat et la réponse « pas encore relié »');
   await page.screenshot({ path: '/tmp/cody-logs/p4-3-chat.png' });
 
+  // 4.6 : service d'IA — configuration guidée
+  const etapeSaisie = async (texte, attendreErreur = false) => {
+    await page.waitForSelector('.quick-input-widget:not(.hidden) input', { timeout: 15000 });
+    await page.keyboard.press('Control+a');
+    await page.keyboard.type(texte, { delay: 20 });
+    await page.waitForTimeout(500);
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(700);
+  };
+  await page.click('.cody-assistant-action');
+  // une adresse non chiffrée vers Internet doit être refusée
+  await etapeSaisie('http://exemple-externe.test/v1/chat/completions');
+  const refusee = await page.evaluate(() => document.querySelector('.quick-input-widget:not(.hidden) .quick-input-message')?.textContent ?? '');
+  verifier(/https/.test(refusee), 'adresse http vers Internet refusée : « ' + refusee.slice(0, 60) + ' »');
+  await etapeSaisie('http://127.0.0.1:9099/v1/chat/completions');
+  await etapeSaisie('modele-test');
+  await etapeSaisie('cle-secrete-test');
+  await page.waitForTimeout(1000);
+
+  const envoyerMessage = async (texte) => {
+    await page.fill('.cody-assistant-textarea', texte);
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(1500);
+  };
+  const boiteAccord = () => page.evaluate(() => (document.querySelector('.monaco-dialog-box')?.innerText ?? '').replace(/\s+/g, ' '));
+
+  // Premier envoi : l'accord est demandé AVANT tout envoi ; on refuse
+  await envoyerMessage('Question 1');
+  let boite = await boiteAccord();
+  verifier(/127\.0\.0\.1:9099/.test(boite) && /index\.php/.test(boite), 'l\'accord est demandé (service + fichier ajouté cités)');
+  verifier(recus.length === 0, 'rien n\'a été envoyé pendant que la fenêtre d\'accord est ouverte');
+  await page.getByRole('button', { name: 'Refuser' }).click();
+  await page.waitForTimeout(1000);
+  verifier(recus.length === 0, 'après « Refuser » : aucun envoi (0 requête reçue)');
+  contenu = await page.$eval('.cody-assistant-content', e => e.innerText);
+  verifier(/rien n'a été envoyé/.test(contenu), 'Cody confirme qu\'il n\'a rien envoyé');
+
+  // Deuxième envoi : on autorise
+  await envoyerMessage('Question 2');
+  await page.getByRole('button', { name: 'Autoriser' }).click();
+  await page.waitForTimeout(3000);
+  verifier(recus.length === 1, 'après « Autoriser » : 1 requête reçue par le service');
+  const requete = recus[0] ? JSON.parse(recus[0].corps) : {};
+  verifier(requete.model === 'modele-test', 'le modèle choisi est envoyé');
+  verifier(recus[0]?.auth === 'Bearer cle-secrete-test', 'la clé secrète est envoyée seulement à ce service');
+  verifier(JSON.stringify(requete.messages ?? []).includes('autoload.php'), 'le contenu du fichier ajouté (index.php) est inclus');
+  contenu = await page.$eval('.cody-assistant-content', e => e.innerText);
+  verifier(/Réponse de test de Cody/.test(contenu), 'la réponse du service s\'affiche dans Chat');
+  await page.screenshot({ path: '/tmp/cody-logs/p4-4-reponse.png' });
+
+  // Troisième envoi : l'accord est mémorisé, pas de nouvelle fenêtre
+  await envoyerMessage('Question 3');
+  await page.waitForTimeout(2000);
+  verifier((await boiteAccord()) === '' && recus.length === 2, 'accord mémorisé : pas de nouvelle fenêtre, 2 requêtes reçues');
+
+  // Retirer les accords : la fenêtre revient
+  await page.keyboard.press('F1');
+  await page.waitForTimeout(800);
+  await page.keyboard.type('retirer mes accords', { delay: 30 });
+  await page.waitForTimeout(1000);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(1000);
+  await envoyerMessage('Question 4');
+  boite = await boiteAccord();
+  verifier(/Autoriser/.test(boite) && recus.length === 2, 'après « retirer mes accords » : la fenêtre d\'accord revient, rien n\'est envoyé');
+  await page.getByRole('button', { name: 'Refuser' }).click();
+  await page.waitForTimeout(500);
+
   // Fermer puis rouvrir (Ctrl+Alt+B)
   await page.keyboard.press('Control+Alt+b');
   await page.waitForTimeout(1500);
@@ -115,6 +201,7 @@ try {
 
   annoter(erreurs ? 'error' : 'notice');
   await browser.close();
+  faux.close();
   process.exit(erreurs ? 1 : 0);
 } catch (e) {
   log('ÉCHEC : ' + e.message.split('\n')[0]);

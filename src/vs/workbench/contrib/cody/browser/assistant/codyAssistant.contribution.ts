@@ -52,6 +52,16 @@ Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).regis
 	title: localize('cody.config.title', "Cody Code"),
 	type: 'object',
 	properties: {
+		'cody.assistant.endpoint': {
+			type: 'string',
+			default: '',
+			markdownDescription: localize('cody.config.endpoint', "Adresse du service d'IA (compatible « OpenAI »), par exemple `http://localhost:11434/v1/chat/completions` pour Ollama. Rien n'est envoyé tant que tu n'as pas accepté l'envoi vers ce service. Utilise la commande « Cody Assistant : configurer le service d'IA »."),
+		},
+		'cody.assistant.model': {
+			type: 'string',
+			default: '',
+			description: localize('cody.config.model', "Nom du modèle d'IA à utiliser (selon le service choisi).")
+		},
 		'cody.assistant.userName': {
 			type: 'string',
 			default: '',

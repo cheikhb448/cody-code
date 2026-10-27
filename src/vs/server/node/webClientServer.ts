@@ -151,7 +151,7 @@ export function createWorkbenchContentSecurityPolicy(scriptNonce: string, nlsBas
 		`frame-src 'self' https://*.vscode-cdn.net data:;`,
 		'worker-src \'self\' data: blob:;',
 		'style-src \'self\' \'unsafe-inline\';',
-		'connect-src \'self\' ws: wss: https:;',
+		'connect-src \'self\' ws: wss: https: http://localhost:* http://127.0.0.1:* http://[::1]:*;', // Cody Code : + services d'IA tournant sur cet ordinateur (ex. Ollama)
 		'font-src \'self\' blob:;',
 		'manifest-src \'self\';'
 	].join(' ');
