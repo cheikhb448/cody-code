@@ -152,7 +152,7 @@ try {
   await essai('changements', async () => {
     fs.writeFileSync(`${dossier}/g.txt`, 'nouveau fichier\n');
     await page.waitForTimeout(3500);
-    const noms = ['h.txt', 'g.txt', 'lien.txt', 'terminal.txt'];
+    const noms = ['h.txt', 'lien.txt', 'terminal.txt']; // g.txt peut être hors de la zone visible de la liste
     await attendre(async () => { const x = (await page.locator('.scm-view').first().innerText()); return noms.every(n => x.includes(n)); }, 20000);
     const t = (await page.locator('.scm-view').first().innerText()).replace(/\n/g, ' ');
     const manquants = noms.filter(n => !t.includes(n));

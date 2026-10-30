@@ -139,12 +139,18 @@ try {
     await page.keyboard.type('minimap', { delay: 30 });
     await page.waitForTimeout(2000);
     verifier(await page.locator('.settings-editor .monaco-list-row').count() >= 1, 'paramètres : interface graphique avec recherche');
-    await page.keyboard.press('Escape');
-    await page.waitForTimeout(800);
-    await commande('Preferences: Open User Settings (JSON)');
-    await page.waitForTimeout(2000);
-    const onglets = (await page.locator('.tabs-container .tab').allInnerTexts()).map(o => o.replace(/\n/g, ' ')).join(' | ');
-    log('onglets : ' + onglets.slice(0, 200));
+    let onglets = '';
+    for (const nomCmd of ['Preferences: Open User Settings (JSON)', 'Preferences: Open Settings (JSON)']) {
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(800);
+      await palette('F1', nomCmd);
+      log(`« ${nomCmd} » → ` + (await page.locator('.quick-input-widget .monaco-list-row').first().innerText().catch(() => 'aucun résultat')).replace(/\n/g, ' ').slice(0, 60));
+      await choisirCommande(nomCmd);
+      await page.waitForTimeout(3000);
+      onglets = (await page.locator('.tabs-container .tab').allInnerTexts()).map(o => o.replace(/\n/g, ' ')).join(' | ');
+      log('onglets : ' + onglets.slice(0, 200));
+      if (/settings\.json/i.test(onglets)) break;
+    }
     verifier(/settings\.json/i.test(onglets), 'paramètres : fichier settings.json');
   });
   await essai('raccourcis', async () => {
