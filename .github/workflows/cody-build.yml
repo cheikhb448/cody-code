@@ -144,6 +144,10 @@ jobs:
         if: always()
         run: node cody-tests/phase4-assistant.mjs
 
+      - name: Test - fonctions de l'éditeur (phase 5.1)
+        if: always()
+        run: node cody-tests/phase5-editeur.mjs
+
       - name: Vérification du code Cody (types TypeScript)
         if: always()
         continue-on-error: true
