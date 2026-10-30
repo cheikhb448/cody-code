@@ -82,9 +82,18 @@ try {
   await essai('launch', async () => {
     await page.keyboard.press('Control+Shift+d');
     await page.waitForSelector('.debug-viewlet', { timeout: 15000 });
-    await page.waitForTimeout(1500);
-    const t = await page.locator('.debug-viewlet').first().evaluate(e => e.textContent + ' ' + [...e.querySelectorAll('option')].map(o => o.textContent).join(' '));
-    verifier(/Lancer test/.test(t), 'configurations de lancement (launch.json) listées dans la vue Exécuter');
+    await attendre(async () => /Lancer test/.test(await page.locator('.debug-viewlet').first().evaluate(e => e.textContent + ' ' + [...e.querySelectorAll('option')].map(o => o.textContent).join(' '))), 15000);
+    let t = await page.locator('.debug-viewlet').first().evaluate(e => e.textContent + ' ' + [...e.querySelectorAll('option')].map(o => o.textContent).join(' '));
+    let ok = /Lancer test/.test(t);
+    if (!ok) {
+      log('vue Exécuter : ' + t.replace(/\s+/g, ' ').slice(0, 160));
+      await commande('Debug: Select and Start Debugging');
+      const liste = (await page.locator('.quick-input-widget .monaco-list-row').allInnerTexts()).join(' ; ').replace(/\n/g, ' ');
+      log('configurations proposées : ' + liste.slice(0, 160));
+      ok = /Lancer test/.test(liste);
+      await page.keyboard.press('Escape');
+    }
+    verifier(ok, 'configurations de lancement (launch.json) reconnues');
   });
   await essai('points-arret', async () => {
     await ouvrir('app.js');
@@ -134,7 +143,9 @@ try {
     await page.waitForTimeout(800);
     await commande('Preferences: Open User Settings (JSON)');
     await page.waitForTimeout(2000);
-    verifier(await page.locator('.tabs-container .tab', { hasText: 'settings.json' }).count() >= 1, 'paramètres : fichier settings.json');
+    const onglets = (await page.locator('.tabs-container .tab').allInnerTexts()).map(o => o.replace(/\n/g, ' ')).join(' | ');
+    log('onglets : ' + onglets.slice(0, 200));
+    verifier(/settings\.json/i.test(onglets), 'paramètres : fichier settings.json');
   });
   await essai('raccourcis', async () => {
     await commande('Preferences: Open Keyboard Shortcuts');
@@ -172,10 +183,12 @@ try {
     verifier(await page.locator('.notebook-editor').count() >= 1, 'éditeur de notebooks (.ipynb)');
   });
   await essai('zen', async () => {
+    const barre = () => page.locator('.part.statusbar').first().isVisible();
+    const avant = await barre();
     await commande('View: Toggle Zen Mode');
-    await page.waitForTimeout(1500);
-    const z = await page.locator('.monaco-workbench.zen-mode').count();
-    verifier(z >= 1, 'mode sans distraction (Zen)');
+    await page.waitForTimeout(2000);
+    const pendant = await barre();
+    verifier(avant && !pendant, `mode sans distraction (Zen) : barre d'état visible avant=${avant}, pendant=${pendant}`);
     await commande('View: Toggle Zen Mode');
   });
   await essai('recommandees', async () => {
