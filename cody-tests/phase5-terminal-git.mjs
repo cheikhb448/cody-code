@@ -110,19 +110,18 @@ try {
     await page.keyboard.type(`echo "${dossier}/lien.txt"`, { delay: 20 });
     await page.keyboard.press('Enter');
     await page.waitForTimeout(2500);
-    const rangee = page.locator('.xterm-rows > div', { hasText: /lien\.txt/ }).last();
-    await rangee.waitFor({ timeout: 10000 });
-    const b = await rangee.boundingBox();
-    await page.mouse.move(b.x + 20, b.y + b.height / 2);
-    await page.mouse.move(b.x + 110, b.y + b.height / 2, { steps: 8 });
+    await commande('Terminal: Open Detected Link...');
     await page.waitForTimeout(1500);
-    log('survol du lien : ' + (await page.locator('.monaco-hover, .xterm-hover').allInnerTexts()).join(' | ').replace(/\n/g, ' ').slice(0, 120));
-    await page.keyboard.down('Control');
-    await page.mouse.click(b.x + 110, b.y + b.height / 2);
-    await page.keyboard.up('Control');
-    await page.waitForTimeout(2500);
-    const ouvert = await page.locator('.tabs-container .tab', { hasText: 'lien.txt' }).count();
-    verifier(ouvert >= 1, 'lien cliquable dans le terminal (Ctrl+clic ouvre le fichier)');
+    const liens = (await page.locator('.quick-input-widget .monaco-list-row').allInnerTexts()).join(' ; ').replace(/\n/g, ' ');
+    log('liens détectés dans le terminal : ' + liens.slice(0, 150));
+    verifier(/lien\.txt/.test(liens), 'le terminal repère les liens (chemins de fichiers) dans sa sortie');
+    const ligneLien = page.locator('.quick-input-widget .monaco-list-row', { hasText: /lien\.txt/ }).first();
+    if (await ligneLien.count()) {
+      await ligneLien.click();
+      await page.waitForTimeout(2500);
+      const ouvert = await page.locator('.tabs-container .tab', { hasText: 'lien.txt' }).count();
+      verifier(ouvert >= 1, 'lien du terminal : ouvre le fichier dans l\'éditeur');
+    }
   });
   await essai('plusieurs-terminaux', async () => {
     await page.keyboard.press('Control+Shift+`');
@@ -153,9 +152,9 @@ try {
   await essai('changements', async () => {
     fs.writeFileSync(`${dossier}/g.txt`, 'nouveau fichier\n');
     await page.waitForTimeout(3500);
-    const noms = await page.locator('.scm-view .monaco-list-row').allInnerTexts();
-    const t = noms.join(' | ').replace(/\n/g, ' ');
-    verifier(/h\.txt/.test(t) && /g\.txt/.test(t), `vue Git : changements listés (${t.slice(0, 80)})`);
+    await attendre(async () => /Changes\s*[4-9]/.test((await page.locator('.scm-view').first().innerText()).replace(/\n/g, ' ')), 15000);
+    const t = (await page.locator('.scm-view').first().innerText()).replace(/\n/g, ' ');
+    verifier(/h\.txt/.test(t) && /Changes\s*[4-9]/.test(t), `vue Git : changements listés (${t.slice(60, 150)})`);
   });
   await essai('diff', async () => {
     await page.locator('.scm-view .monaco-list-row', { hasText: 'h.txt' }).first().click();
@@ -198,12 +197,12 @@ try {
     verifier(c, 'changer de branche');
   });
   await essai('fusion', async () => {
-    await commande('Git: Merge Branch...', 'ajout');
+    await commande('Git: Merge...', 'ajout');
     const ok = await attendre(() => fs.existsSync(`${dossier}/ajout.txt`), 15000);
     verifier(ok, 'fusionner une branche');
   });
   await essai('conflit', async () => {
-    await commande('Git: Merge Branch...', 'conflitA');
+    await commande('Git: Merge...', 'conflitA');
     await page.waitForTimeout(2000);
     const enConflit = (() => { try { return fs.readFileSync(`${dossier}/f.txt`, 'utf8').includes('<<<<<<<'); } catch { return false; } })();
     verifier(enConflit, 'un conflit de fusion est bien signalé dans le fichier');

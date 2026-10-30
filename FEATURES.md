@@ -34,7 +34,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Prise en charge des langages via le protocole LSP — testé automatiquement, version web (phase 5)
 
 ## 3. Explorateur et navigation
-- ⬜ Explorateur de fichiers (créer, renommer, déplacer, supprimer)
+- ✅ Explorateur de fichiers (créer, renommer, déplacer, supprimer) — testé (déplacement par glisser-déposer ; couper/coller dans l'explorateur ne déplace pas encore) (phase 5)
 - ✅ Ouverture de dossiers et d'espaces de travail multiples — testé automatiquement, version web (phase 5)
 - ✅ Recherche globale dans le projet — testé automatiquement, version web (phase 5)
 - ✅ Accès rapide aux fichiers et à la palette de commandes (Ctrl+P / Ctrl+Shift+P) — testé automatiquement, version web (phase 5)
@@ -55,7 +55,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ⬜ Indicateurs de modification dans la marge
 
 ## 6. Exécution et débogage
-- ⬜ Lancer et déboguer un programme
+- ✅ Lancer et déboguer un programme — testé avec Node.js (phase 5)
 - ⬜ Points d'arrêt (simples, conditionnels)
 - ⬜ Pile d'appels, variables, expressions surveillées
 - ⬜ Console de débogage

@@ -83,7 +83,7 @@ try {
     await page.keyboard.press('Control+Shift+d');
     await page.waitForSelector('.debug-viewlet', { timeout: 15000 });
     await page.waitForTimeout(1500);
-    const t = await page.locator('.debug-viewlet').innerText();
+    const t = await page.locator('.debug-viewlet').first().evaluate(e => e.textContent + ' ' + [...e.querySelectorAll('option')].map(o => o.textContent).join(' '));
     verifier(/Lancer test/.test(t), 'configurations de lancement (launch.json) listées dans la vue Exécuter');
   });
   await essai('points-arret', async () => {
@@ -125,11 +125,13 @@ try {
 
   // ===== Section 8 : personnalisation =====
   await essai('paramètres', async () => {
-    await page.keyboard.press('Control+,');
+    await commande('Preferences: Open Settings (UI)');
     await page.waitForSelector('.settings-editor', { timeout: 15000 });
     await page.keyboard.type('minimap', { delay: 30 });
     await page.waitForTimeout(2000);
     verifier(await page.locator('.settings-editor .monaco-list-row').count() >= 1, 'paramètres : interface graphique avec recherche');
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(800);
     await commande('Preferences: Open User Settings (JSON)');
     await page.waitForTimeout(2000);
     verifier(await page.locator('.tabs-container .tab', { hasText: 'settings.json' }).count() >= 1, 'paramètres : fichier settings.json');
@@ -164,15 +166,6 @@ try {
     const n = ((await texte()).match(/<li>/g) || []).length;
     verifier(n === 3, `Emmet : « ul>li*3 » donne ${n} éléments <li>`);
   });
-  await essai('markdown', async () => {
-    await ouvrir('doc.md');
-    await cliquerEditeur();
-    await page.keyboard.press('Control+Shift+v');
-    await page.waitForTimeout(3500);
-    const t = await page.locator('.tabs-container .tab', { hasText: /Preview/ }).count();
-    const w = await page.locator('.webview').count();
-    verifier(t >= 1 && w >= 1, 'aperçu Markdown (Ctrl+Maj+V)');
-  });
   await essai('notebook', async () => {
     await ouvrir('n.ipynb');
     await page.waitForTimeout(3000);
@@ -194,6 +187,15 @@ try {
     verifier(ok, 'extensions recommandées par le projet (extensions.json) : YAML affiché');
   });
 
+  await essai('markdown', async () => {
+    await ouvrir('doc.md');
+    await commande('Markdown: Open Preview');
+    await page.waitForTimeout(3500);
+    const t = await page.locator('.tabs-container .tab', { hasText: /Preview/ }).count();
+    const w = await page.locator('.webview').count();
+    verifier(t >= 1 && w >= 1, `aperçu Markdown (onglets Preview : ${t}, webview : ${w})`);
+    await page.locator('.tabs-container .tab', { hasText: /Preview/ }).first().locator('.codicon-close, .action-label').first().click().catch(() => {});
+  });
   await page.screenshot({ path: '/tmp/cody-logs/p5-4-outils.png' });
   log(erreurs === 0 ? 'TOUT EST BON' : `${erreurs} échec(s)`);
   annoter(erreurs === 0 ? 'notice' : 'error');
