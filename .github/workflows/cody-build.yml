@@ -148,6 +148,14 @@ jobs:
         if: always()
         run: node cody-tests/phase5-editeur.mjs
 
+      - name: Test - intelligence du code et explorateur (phase 5.2)
+        if: always()
+        run: node cody-tests/phase5-code-explorateur.mjs
+
+      - name: Test - terminal et Git (phase 5.3)
+        if: always()
+        run: node cody-tests/phase5-terminal-git.mjs
+
       - name: Vérification du code Cody (types TypeScript)
         if: always()
         continue-on-error: true

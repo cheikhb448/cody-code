@@ -106,9 +106,9 @@ try {
     await page.waitForSelector('.find-widget.visible .replace-part', { timeout: 10000 });
     await page.keyboard.press('Control+a');
     await page.keyboard.type('mot', { delay: 30 });
-    await page.locator('.find-widget .replace-input textarea, .find-widget .replace-input input').first().click();
+    await page.locator('.find-widget .replace-part textarea').first().click({ timeout: 8000 });
     await page.keyboard.type('mur', { delay: 30 });
-    await page.locator('.find-widget .codicon-find-replace-all').click();
+    await page.keyboard.press('Control+Alt+Enter');
     await page.waitForTimeout(800);
     const t = await texte();
     verifier(t.includes('mur mur mur') && !t.includes('mot'), `remplacer tout : « ${t.trim()} »`);
@@ -206,7 +206,8 @@ try {
     await cliquerEditeur();
     await page.keyboard.press('Control+End');
     await page.keyboard.type('AUTO', { delay: 30 });
-    await page.waitForTimeout(3500);
+    log('texte de l\'éditeur : « ' + (await texte()).replace(/\n/g, '|').slice(0, 60) + ' »');
+    for (let i = 0; i < 14 && !fs.readFileSync(`${dossier}/notes.txt`, 'utf8').includes('AUTO'); i++) await page.waitForTimeout(500);
     const disque = fs.readFileSync(`${dossier}/notes.txt`, 'utf8');
     verifier(disque.includes('AUTO'), `enregistrement automatique sur le disque : « ${disque.trim().slice(0, 40)} »`);
   });
