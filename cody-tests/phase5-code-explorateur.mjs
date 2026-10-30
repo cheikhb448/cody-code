@@ -55,6 +55,7 @@ try {
     await page.keyboard.press('Escape').catch(() => {});
   };
   const cliquerEditeur = async () => { await page.click('.monaco-editor .view-lines'); };
+  const attendre = async (cond, ms = 15000) => { const t = Date.now(); while (Date.now() - t < ms) { if (cond()) return true; await page.waitForTimeout(500); } return false; };
   const allerLigne = async (n) => { await page.keyboard.press('Control+g'); await page.keyboard.type(String(n), { delay: 30 }); await page.keyboard.press('Enter'); await page.waitForTimeout(300); };
 
   // ===== Section 2 : intelligence du code =====
@@ -122,12 +123,13 @@ try {
     await page.keyboard.press('Home');
     for (let i = 0; i < 18; i++) await page.keyboard.press('ArrowRight');
     await page.keyboard.press('F2');
-    await page.waitForSelector('.rename-box, .rename-input', { timeout: 15000 });
-    await page.keyboard.press('Control+a');
+    await page.locator('.rename-box').first().waitFor({ state: 'visible', timeout: 15000 });
+    await page.waitForTimeout(800);
     await page.keyboard.type('saluerTous', { delay: 30 });
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(2500);
+    await page.waitForTimeout(3000);
     const t = await texte();
+    log('texte après renommage : ' + t.replace(/\n/g, '|').slice(0, 150));
     const n = (t.match(/saluerTous/g) || []).length;
     verifier(n >= 3, `renommage intelligent (${n} occurrences renommées)`);
   });
@@ -146,7 +148,8 @@ try {
   // ===== Section 3 : explorateur et navigation =====
   const ligneExplorateur = (nom) => page.locator('.explorer-folders-view .monaco-list-row', { hasText: nom }).first();
   await essai('creer', async () => {
-    await page.click('.explorer-viewlet .codicon-new-file, [aria-label="New File..."]');
+    await page.locator('.explorer-viewlet .pane-header').first().hover();
+    await page.locator('[aria-label="New File..."]').first().click({ force: true, timeout: 10000 });
     await page.waitForSelector('.explorer-folders-view .monaco-inputbox input', { timeout: 10000 });
     await page.keyboard.type('nouveau.txt', { delay: 30 });
     await page.keyboard.press('Enter');
@@ -168,15 +171,16 @@ try {
     await page.keyboard.press('Control+x');
     await ligneExplorateur('sous').click();
     await page.keyboard.press('Control+v');
-    await page.waitForTimeout(2000);
+    await attendre(() => fs.existsSync(`${dossier}/sous/ancien.txt`), 10000);
     verifier(fs.existsSync(`${dossier}/sous/ancien.txt`) && !fs.existsSync(`${dossier}/ancien.txt`), 'explorateur : déplacer un fichier (couper / coller)');
   });
   await essai('supprimer', async () => {
     await ligneExplorateur('a-supprimer.txt').click();
     await page.keyboard.press('Delete');
     await page.waitForSelector('.monaco-dialog-box', { timeout: 10000 });
-    await page.locator('.monaco-dialog-box .monaco-button').first().click();
-    await page.waitForTimeout(1500);
+    log('boutons de la boîte : ' + (await page.locator('.monaco-dialog-box .monaco-button').allInnerTexts()).join(' / '));
+    await page.locator('.monaco-dialog-box .monaco-button', { hasText: /^(Delete|Move to Trash|Supprimer)/ }).first().click();
+    await attendre(() => !fs.existsSync(`${dossier}/a-supprimer.txt`), 10000);
     verifier(!fs.existsSync(`${dossier}/a-supprimer.txt`), 'explorateur : supprimer un fichier');
   });
   await essai('recherche-globale', async () => {

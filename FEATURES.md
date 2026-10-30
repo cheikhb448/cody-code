@@ -10,36 +10,36 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 
 ## 1. Éditeur
 - ✅ Ouvrir un fichier (Ctrl+P), écrire et sauvegarder (Ctrl+S) — testé automatiquement, version web (phase 1)
-- ⬜ Édition de texte multi-fichiers avec onglets
-- ⬜ Coloration syntaxique
-- ⬜ Numéros de ligne, fil d'Ariane (breadcrumbs)
-- ⬜ Recherche et remplacement (fichier et dossier, avec expressions régulières)
-- ⬜ Multi-curseurs et sélection multiple
-- ⬜ Plier / déplier le code
-- ⬜ Mini-carte (minimap)
-- ⬜ Annuler / rétablir
-- ⬜ Éditeur divisé (plusieurs volets côte à côte)
-- ⬜ Comparaison de fichiers (diff)
-- ⬜ Formatage automatique
+- ✅ Édition de texte multi-fichiers avec onglets — testé automatiquement, version web (phase 5)
+- ✅ Coloration syntaxique — testé automatiquement, version web (phase 5)
+- ✅ Numéros de ligne, fil d'Ariane (breadcrumbs) — testé automatiquement, version web (phase 5)
+- ✅ Recherche et remplacement (fichier et dossier, avec expressions régulières) — testé automatiquement, version web (phase 5)
+- ✅ Multi-curseurs et sélection multiple — testé automatiquement, version web (phase 5)
+- ✅ Plier / déplier le code — testé automatiquement, version web (phase 5)
+- ✅ Mini-carte (minimap) — testé automatiquement, version web (phase 5)
+- ✅ Annuler / rétablir — testé automatiquement, version web (phase 5)
+- ✅ Éditeur divisé (plusieurs volets côte à côte) — testé automatiquement, version web (phase 5)
+- ✅ Comparaison de fichiers (diff) — testé automatiquement, version web (phase 5)
+- ✅ Formatage automatique — testé automatiquement, version web (phase 5)
 - ⬜ Enregistrement automatique
 
 ## 2. Intelligence du code
-- ⬜ Autocomplétion (IntelliSense)
-- ⬜ Aide sur les paramètres de fonction
-- ⬜ Aller à la définition / aux références
+- ✅ Autocomplétion (IntelliSense) — testé automatiquement, version web (phase 5)
+- ✅ Aide sur les paramètres de fonction — testé automatiquement, version web (phase 5)
+- ✅ Aller à la définition / aux références — testé automatiquement, version web (phase 5)
 - ⬜ Renommage intelligent de symboles
-- ⬜ Détection d'erreurs et avertissements en direct
-- ⬜ Corrections rapides
-- ⬜ Extraits de code (snippets)
-- ⬜ Prise en charge des langages via le protocole LSP
+- ✅ Détection d'erreurs et avertissements en direct — testé automatiquement, version web (phase 5)
+- ✅ Corrections rapides — testé automatiquement, version web (phase 5)
+- ✅ Extraits de code (snippets) — testé automatiquement, version web (phase 5)
+- ✅ Prise en charge des langages via le protocole LSP — testé automatiquement, version web (phase 5)
 
 ## 3. Explorateur et navigation
 - ⬜ Explorateur de fichiers (créer, renommer, déplacer, supprimer)
-- ⬜ Ouverture de dossiers et d'espaces de travail multiples
-- ⬜ Recherche globale dans le projet
-- ⬜ Accès rapide aux fichiers et à la palette de commandes (Ctrl+P / Ctrl+Shift+P)
+- ✅ Ouverture de dossiers et d'espaces de travail multiples — testé automatiquement, version web (phase 5)
+- ✅ Recherche globale dans le projet — testé automatiquement, version web (phase 5)
+- ✅ Accès rapide aux fichiers et à la palette de commandes (Ctrl+P / Ctrl+Shift+P) — testé automatiquement, version web (phase 5)
 - ⬜ Vue Structure (symboles du fichier)
-- ⬜ Historique local des fichiers (timeline)
+- ✅ Historique local des fichiers (timeline) — testé automatiquement, version web (phase 5)
 
 ## 4. Terminal intégré
 - ⬜ Terminal dans l'éditeur (PowerShell, cmd, bash, zsh)

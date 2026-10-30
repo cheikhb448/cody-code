@@ -156,6 +156,10 @@ jobs:
         if: always()
         run: node cody-tests/phase5-terminal-git.mjs
 
+      - name: Test - outils, personnalisation, productivité (phase 5.4)
+        if: always()
+        run: node cody-tests/phase5-outils.mjs
+
       - name: Vérification du code Cody (types TypeScript)
         if: always()
         continue-on-error: true

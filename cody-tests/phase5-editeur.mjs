@@ -198,18 +198,15 @@ try {
     verifier(lignesJson >= 5, `formater le document (${lignesJson} lignes après formatage)`);
   });
 
-  // 12. Enregistrement automatique
+  // 12. Enregistrement automatique (actif par défaut sur la version web : on vérifie d'abord sans rien activer)
   await essai('auto-save', async () => {
     await ouvrir('notes.txt');
     await cliquerEditeur();
-    await commande('Toggle Auto Save');
-    await cliquerEditeur();
     await page.keyboard.press('Control+End');
     await page.keyboard.type('AUTO', { delay: 30 });
-    log('texte de l\'éditeur : « ' + (await texte()).replace(/\n/g, '|').slice(0, 60) + ' »');
     for (let i = 0; i < 14 && !fs.readFileSync(`${dossier}/notes.txt`, 'utf8').includes('AUTO'); i++) await page.waitForTimeout(500);
     const disque = fs.readFileSync(`${dossier}/notes.txt`, 'utf8');
-    verifier(disque.includes('AUTO'), `enregistrement automatique sur le disque : « ${disque.trim().slice(0, 40)} »`);
+    verifier(disque.includes('AUTO'), `enregistrement automatique sur le disque : « ${disque.replace(/\n/g, '|').slice(0, 40)} »`);
   });
 
   await page.screenshot({ path: '/tmp/cody-logs/p5-1-editeur.png' });

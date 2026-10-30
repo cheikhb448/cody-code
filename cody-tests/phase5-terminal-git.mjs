@@ -67,9 +67,15 @@ try {
   };
   const commande = async (nom, suite) => {
     await palette('F1', nom);
+    const premier = await page.locator('.quick-input-widget .monaco-list-row').first().innerText().catch(() => '?');
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(1500);
-    if (suite) { await page.keyboard.type(suite, { delay: 30 }); await page.waitForTimeout(1200); await page.keyboard.press('Enter'); await page.waitForTimeout(2500); }
+    await page.waitForTimeout(2000);
+    if (suite) {
+      const etat = await page.evaluate(() => { const w = document.querySelector('.quick-input-widget'); return w && !w.classList.contains('hidden') ? ((w.querySelector('.quick-input-title')?.textContent || '') + ' / ' + (w.querySelector('input')?.placeholder || '') + ' / ' + [...w.querySelectorAll('.monaco-list-row')].slice(0, 4).map(r => r.textContent.slice(0, 25)).join(' ; ')) : 'fermé'; });
+      log(`[${nom}] 1er résultat « ${premier.replace(/\n/g, ' ').slice(0, 40)} », puis boîte : ${etat.slice(0, 160)}`);
+      await page.keyboard.type(suite, { delay: 30 }); await page.waitForTimeout(1500);
+      await page.keyboard.press('Enter'); await page.waitForTimeout(3000);
+    }
   };
   const essai = async (nom, fn) => {
     try { await fn(); } catch (e) { verifier(false, `${nom} (erreur : ${String(e.message).split('\n')[0].slice(0, 120)})`); }
@@ -96,10 +102,12 @@ try {
     const rangee = page.locator('.xterm-rows > div', { hasText: /lien\.txt/ }).last();
     await rangee.waitFor({ timeout: 10000 });
     const b = await rangee.boundingBox();
-    await page.mouse.move(b.x + 120, b.y + b.height / 2);
-    await page.waitForTimeout(500);
+    await page.mouse.move(b.x + 20, b.y + b.height / 2);
+    await page.mouse.move(b.x + 110, b.y + b.height / 2, { steps: 8 });
+    await page.waitForTimeout(1500);
+    log('survol du lien : ' + (await page.locator('.monaco-hover, .xterm-hover').allInnerTexts()).join(' | ').replace(/\n/g, ' ').slice(0, 120));
     await page.keyboard.down('Control');
-    await page.mouse.click(b.x + 120, b.y + b.height / 2);
+    await page.mouse.click(b.x + 110, b.y + b.height / 2);
     await page.keyboard.up('Control');
     await page.waitForTimeout(2500);
     const ouvert = await page.locator('.tabs-container .tab', { hasText: 'lien.txt' }).count();
@@ -123,7 +131,7 @@ try {
     await ouvrir('h.txt');
     await cliquerEditeur();
     await page.keyboard.press('Control+Home');
-    await page.keyboard.press('Down');
+    await page.keyboard.press('ArrowDown');
     await page.keyboard.type('MODIFIE', { delay: 30 });
     await page.waitForTimeout(2500);
     const n = await page.locator('.monaco-editor [class*="dirty-diff"]').count();

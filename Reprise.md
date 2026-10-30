@@ -44,7 +44,7 @@
 - Les extensions intégrées ne sont PAS compilées dans ce run (messages « Cannot find module extensions/…/out ») : à traiter en phase 5/6 (`npm run gulp compile-extensions`).
 - Dans les tests, taper avec `delay: 30` ms sinon le texte est perdu.
 
-**Prochaine action exacte :** Phase 5 en cours. 5.1 (éditeur) : test `cody-tests/phase5-editeur.mjs` poussé (commit 782ae8b9), run CI en attente → lire les annotations « Test phase 5.1 éditeur », corriger les ÉCHEC, cocher dans FEATURES.md seulement les lignes OK. Ensuite 5.2 (intelligence du code, explorateur, recherche globale, palette), 5.3 (terminal, Git), 5.4 (débogage, extensions, personnalisation, productivité), 5.5 (nettoyage « Hello »/« Layout: us », rapport court). Le rapport de phase 4 a été envoyé à Cheikh. Les extensions intégrées SONT compilées en CI (`build-fast-extensions`).
+**Prochaine action exacte :** Phase 5 en cours. Run 41015324533 (5.1) : 16 OK, 2 échecs corrigés (remplacer tout, enregistrement auto → diagnostic ajouté). Nouveau run lancé avec 3 tests : `phase5-editeur.mjs`, `phase5-code-explorateur.mjs` (5.2), `phase5-terminal-git.mjs` (5.3). Lire les annotations « Test phase 5.x » (`gh api repos/cheikhb448/cody-code/check-runs/<job>/annotations`), corriger les ÉCHEC, puis cocher dans FEATURES.md seulement les lignes OK. Ensuite 5.4 (débogage, tâches, extensions, personnalisation, productivité), 5.5 (nettoyage « Hello »/« Layout: us », rapport court). Les extensions intégrées SONT compilées en CI.
 
 **Règles GitHub apprises :**
 - Le token collé dans le chat NE sert PAS (refusé) et ne doit jamais être écrit dans un fichier. Dépôt accessible via l'outil `add_repo` (push), déjà fait ; au besoin le refaire.
