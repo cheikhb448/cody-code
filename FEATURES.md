@@ -42,35 +42,35 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Historique local des fichiers (timeline) — testé automatiquement, version web (phase 5)
 
 ## 4. Terminal intégré
-- ⬜ Terminal dans l'éditeur (PowerShell, cmd, bash, zsh)
-- ⬜ Plusieurs terminaux, terminal divisé
-- ⬜ Liens cliquables dans la sortie
+- ✅ Terminal dans l'éditeur (bash testé ; PowerShell/cmd/zsh dépendent de l'ordinateur) — testé automatiquement, version web (phase 5)
+- ✅ Plusieurs terminaux, terminal divisé — testé automatiquement, version web (phase 5)
+- ✅ Liens cliquables dans la sortie (chemin de fichier détecté et ouvert) — testé automatiquement, version web (phase 5)
 
 ## 5. Contrôle de version (Git)
-- ⬜ Vue Git : changements, ajout, commit
-- ⬜ Branches (créer, changer, fusionner)
-- ⬜ Comparaison visuelle des changements
-- ⬜ Résolution de conflits de fusion
-- ⬜ Push / pull / clone
-- ⬜ Indicateurs de modification dans la marge
+- ✅ Vue Git : changements, ajout, commit — testé automatiquement, version web (phase 5)
+- ✅ Branches (créer, changer, fusionner) — testé automatiquement, version web (phase 5)
+- ✅ Comparaison visuelle des changements — testé automatiquement, version web (phase 5)
+- ✅ Résolution de conflits de fusion — testé automatiquement, version web (phase 5)
+- ✅ Push / pull (testés avec un dépôt distant) — 🚧 clone pas encore testé
+- ✅ Indicateurs de modification dans la marge — testé automatiquement, version web (phase 5)
 
 ## 6. Exécution et débogage
 - ✅ Lancer et déboguer un programme — testé avec Node.js (phase 5)
-- ⬜ Points d'arrêt (simples, conditionnels)
-- ⬜ Pile d'appels, variables, expressions surveillées
-- ⬜ Console de débogage
+- ✅ Points d'arrêt (simples, conditionnels) — testé automatiquement, version web (phase 5)
+- ✅ Pile d'appels et variables — 🚧 expressions surveillées pas encore testées — testé automatiquement, version web (phase 5)
+- ✅ Console de débogage — testé automatiquement, version web (phase 5)
 - ⬜ Configurations de lancement (`launch.json`)
-- ⬜ Tâches (`tasks.json`)
+- ✅ Tâches (`tasks.json`) — testé automatiquement, version web (phase 5)
 
 ## 7. Extensions
 - ⬜ Vue Extensions (installer, désactiver, désinstaller)
 - ⬜ Magasin d'extensions libre (Open VSX) et autres services similaires
-- ⬜ Extensions recommandées par projet
+- ✅ Extensions recommandées par projet (liste affichée depuis Open VSX) — testé automatiquement, version web (phase 5)
 - ⬜ Thèmes d'icônes et de couleurs via extensions
 
 ## 8. Personnalisation
 - ⬜ Paramètres (interface graphique + `settings.json`)
-- ⬜ Raccourcis clavier personnalisables
+- ✅ Raccourcis clavier personnalisables — testé automatiquement, version web (phase 5)
 - ✅ Thèmes de couleurs (thème sombre Cody par défaut, clair disponible) — couleurs vérifiées automatiquement (phase 3)
 - ⬜ Profils d'utilisateur
 - ⬜ Synchronisation des paramètres
@@ -94,16 +94,16 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Aucune donnée envoyée sans accord de l'utilisateur — testé : accord demandé par service avant tout envoi, refus = 0 envoi, accord retirable, projet piégé sans effet, pas de redirection, http seulement vers localhost
 
 ## 11. Productivité
-- ⬜ Emmet (écriture rapide HTML/CSS)
-- ⬜ Éditeur de notebooks
-- ⬜ Aperçu Markdown
+- ✅ Emmet (écriture rapide HTML/CSS) — testé automatiquement, version web (phase 5)
+- ✅ Éditeur de notebooks (ouverture d'un .ipynb) — testé automatiquement, version web (phase 5)
+- ✅ Aperçu Markdown — testé automatiquement, version web (phase 5)
 - ⬜ Mode sans distraction (Zen) et plein écran
 - ⬜ Espaces de travail de confiance (Workspace Trust)
 - ⬜ Développement à distance (SSH, conteneurs, WSL)
 
 ## 12. Accessibilité et sécurité
 - ⬜ Compatibilité lecteurs d'écran
-- ⬜ Contraste élevé
+- ✅ Contraste élevé — testé automatiquement, version web (phase 5)
 - ⬜ Mode restreint pour dossiers non fiables
 - ⬜ Télémétrie désactivée par défaut
 - ⬜ Audit de sécurité des dépendances
