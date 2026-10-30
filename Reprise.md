@@ -10,7 +10,7 @@
 
 | Élément | Valeur |
 |---|---|
-| Dernière mise à jour | 2026-10-26 |
+| Dernière mise à jour | 2026-10-30 |
 | Phase en cours | **Phase 4 terminée côté code** (tests verts : run 40586277812, commit ee7be618) → il reste le rapport court à Cheikh, puis **Phase 5 — Parité des fonctionnalités** (tester chaque ligne de FEATURES.md) |
 | Fait en phase 4 | panneau Cody Assistant à droite (480 px max, remplace le Chat de VS Code, masqué via `config.cody.enableVSCodeChat`), en-tête logo + IA, 4 onglets, accueil, 4 cartes, saisie, connexion IA compatible OpenAI avec accord obligatoire par service, commandes « configurer le service d'IA » / « retirer mes accords », réglages `cody.assistant.endpoint/model` (portée APPLICATION : un projet ne peut pas les changer), pas de redirection, http seulement vers localhost, clé dans le stockage sécurisé, CSP web ouverte à localhost |
 | Écarts à dire à Cheikh | prénom dans « Salut ! » = réglage `cody.assistant.userName` (vide par défaut) ; aucun service d'IA choisi par défaut (il doit en brancher un) ; Codebase pas encore disponible ; images pas encore envoyées ; pas de réponse en direct (flux) ; Phase 8 : CSP du bureau à ouvrir à localhost |
@@ -44,7 +44,7 @@
 - Les extensions intégrées ne sont PAS compilées dans ce run (messages « Cannot find module extensions/…/out ») : à traiter en phase 5/6 (`npm run gulp compile-extensions`).
 - Dans les tests, taper avec `delay: 30` ms sinon le texte est perdu.
 
-**Prochaine action exacte :** envoyer le rapport court de phase 4 à Cheikh, puis phase 5 : découper en petites étapes (une section de FEATURES.md à la fois : éditeur, intelligence du code, explorateur, terminal, git, débogage, extensions, personnalisation…), écrire un test réel par ligne, corriger, cocher seulement ce qui est testé. Penser aussi : nettoyer « Hello » (extension de test) et « Layout: us » de la barre d'état.
+**Prochaine action exacte :** Phase 5 en cours. 5.1 (éditeur) : test `cody-tests/phase5-editeur.mjs` poussé (commit 782ae8b9), run CI en attente → lire les annotations « Test phase 5.1 éditeur », corriger les ÉCHEC, cocher dans FEATURES.md seulement les lignes OK. Ensuite 5.2 (intelligence du code, explorateur, recherche globale, palette), 5.3 (terminal, Git), 5.4 (débogage, extensions, personnalisation, productivité), 5.5 (nettoyage « Hello »/« Layout: us », rapport court). Le rapport de phase 4 a été envoyé à Cheikh. Les extensions intégrées SONT compilées en CI (`build-fast-extensions`).
 
 **Règles GitHub apprises :**
 - Le token collé dans le chat NE sert PAS (refusé) et ne doit jamais être écrit dans un fichier. Dépôt accessible via l'outil `add_repo` (push), déjà fait ; au besoin le refaire.
