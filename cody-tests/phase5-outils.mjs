@@ -33,7 +33,7 @@ try {
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
   await page.waitForTimeout(5000);
 
-  const texte = async () => (await page.locator('.monaco-editor .view-lines').first().innerText().catch(() => '?')).replace(/ /g, ' ');
+  const texte = async () => (await page.locator('.part.editor .monaco-editor .view-lines').first().innerText().catch(() => '?')).replace(/ /g, ' ');
   const palette = async (prefixe, saisie) => {
     await page.keyboard.press(prefixe);
     await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 20000 });
@@ -46,12 +46,24 @@ try {
     await page.locator('.tabs-container .tab.active', { hasText: nom }).first().waitFor({ timeout: 20000 });
     await page.waitForTimeout(1500);
   };
-  const commande = async (nom) => { await palette('F1', nom); await page.keyboard.press('Enter'); await page.waitForTimeout(1500); };
+  const choisirCommande = async (nom) => {
+    const rows = page.locator('.quick-input-widget .monaco-list-row');
+    const n = await rows.count();
+    for (let i = 0; i < n; i++) {
+      const t = (await rows.nth(i).locator('.label-name').first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+      if (t === nom) { await rows.nth(i).click(); return true; }
+    }
+    await page.keyboard.press('Enter');
+    return false;
+  };
+  const commande = async (nom) => { await palette('F1', nom); await choisirCommande(nom); await page.waitForTimeout(1500); };
   const essai = async (nom, fn) => {
+    // Une boîte de dialogue restée ouverte bloquerait tout : on la ferme avant chaque vérification
+    for (const b of await page.locator('.monaco-dialog-box .monaco-button', { hasText: /^Cancel$/ }).all()) await b.click().catch(() => {});
     try { await fn(); } catch (e) { verifier(false, `${nom} (erreur : ${String(e.message).split('\n')[0].slice(0, 120)})`); }
     await page.keyboard.press('Escape').catch(() => {});
   };
-  const cliquerEditeur = async () => { await page.click('.monaco-editor .view-lines'); };
+  const cliquerEditeur = async () => { await page.click('.part.editor .monaco-editor .view-lines'); };
   const attendre = async (cond, ms = 15000) => { const t = Date.now(); while (Date.now() - t < ms) { if (await cond()) return true; await page.waitForTimeout(500); } return false; };
 
   // ===== Section 6 : exécution et débogage =====
@@ -59,9 +71,11 @@ try {
     await commande('Tasks: Run Task');
     await page.keyboard.type('ecrire', { delay: 30 });
     await page.waitForTimeout(1500);
+    log('tâches proposées : ' + (await page.locator('.quick-input-widget .monaco-list-row').allInnerTexts()).join(' ; ').replace(/\n/g, ' ').slice(0, 150));
     await page.keyboard.press('Enter');
     await page.waitForTimeout(2500);
-    if (await page.locator('.quick-input-widget:not(.hidden)').count()) { await page.keyboard.press('Enter'); }
+    const boite = await page.locator('.quick-input-widget:not(.hidden)').count();
+    if (boite) { log('2e boîte : ' + (await page.locator('.quick-input-widget').innerText()).replace(/\n/g, ' ').slice(0, 150)); await page.keyboard.press('Enter'); }
     const ok = await attendre(() => fs.existsSync(`${dossier}/tache.txt`), 20000);
     verifier(ok, 'tâches (tasks.json) : la tâche « ecrire » s\'exécute');
   });
@@ -76,10 +90,10 @@ try {
     await ouvrir('app.js');
     await cliquerEditeur();
     await page.keyboard.press('Control+Home');
-    await page.keyboard.press('Down');
+    await page.keyboard.press('ArrowDown');
     await page.keyboard.press('F9');
     await page.waitForTimeout(1000);
-    const n = await page.locator('.monaco-editor [class*="codicon-debug-breakpoint"]').count();
+    const n = await page.locator('.part.editor .monaco-editor [class*="codicon-debug-breakpoint"]').count();
     verifier(n >= 1, `point d'arrêt simple posé (${n})`);
     await commande('Debug: Add Conditional Breakpoint');
     await page.waitForTimeout(1500);

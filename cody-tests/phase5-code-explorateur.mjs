@@ -171,8 +171,19 @@ try {
     await page.keyboard.press('Control+x');
     await ligneExplorateur('sous').click();
     await page.keyboard.press('Control+v');
-    await attendre(() => fs.existsSync(`${dossier}/sous/ancien.txt`), 10000);
-    verifier(fs.existsSync(`${dossier}/sous/ancien.txt`) && !fs.existsSync(`${dossier}/ancien.txt`), 'explorateur : déplacer un fichier (couper / coller)');
+    await page.waitForTimeout(1500);
+    const dialogue = await page.locator('.monaco-dialog-box').allInnerTexts();
+    if (dialogue.length) { log('boîte pendant le collage : ' + dialogue.join(' | ').replace(/\n/g, ' ').slice(0, 150)); await page.locator('.monaco-dialog-box .monaco-button', { hasText: /^(Move|Paste|Yes|OK)/ }).first().click().catch(() => {}); }
+    let ok = await attendre(() => fs.existsSync(`${dossier}/sous/ancien.txt`), 8000);
+    log('après couper/coller : racine=' + fs.readdirSync(dossier).join(',') + ' sous=' + fs.readdirSync(`${dossier}/sous`).join(','));
+    if (!ok) {
+      await ligneExplorateur('ancien.txt').dragTo(ligneExplorateur('sous'));
+      await page.waitForTimeout(1500);
+      for (const b of await page.locator('.monaco-dialog-box .monaco-button', { hasText: /^(Move|Yes|OK)/ }).all()) await b.click().catch(() => {});
+      ok = await attendre(() => fs.existsSync(`${dossier}/sous/ancien.txt`), 8000);
+      log('après glisser-déposer : ' + (ok ? 'déplacé' : 'pas déplacé'));
+    }
+    verifier(ok && !fs.existsSync(`${dossier}/ancien.txt`), 'explorateur : déplacer un fichier');
   });
   await essai('supprimer', async () => {
     await ligneExplorateur('a-supprimer.txt').click();

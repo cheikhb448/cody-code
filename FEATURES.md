@@ -21,13 +21,13 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Éditeur divisé (plusieurs volets côte à côte) — testé automatiquement, version web (phase 5)
 - ✅ Comparaison de fichiers (diff) — testé automatiquement, version web (phase 5)
 - ✅ Formatage automatique — testé automatiquement, version web (phase 5)
-- ⬜ Enregistrement automatique
+- ✅ Enregistrement automatique — testé automatiquement, version web (phase 5)
 
 ## 2. Intelligence du code
 - ✅ Autocomplétion (IntelliSense) — testé automatiquement, version web (phase 5)
 - ✅ Aide sur les paramètres de fonction — testé automatiquement, version web (phase 5)
 - ✅ Aller à la définition / aux références — testé automatiquement, version web (phase 5)
-- ⬜ Renommage intelligent de symboles
+- ✅ Renommage intelligent de symboles — testé automatiquement, version web (phase 5)
 - ✅ Détection d'erreurs et avertissements en direct — testé automatiquement, version web (phase 5)
 - ✅ Corrections rapides — testé automatiquement, version web (phase 5)
 - ✅ Extraits de code (snippets) — testé automatiquement, version web (phase 5)
@@ -38,7 +38,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Ouverture de dossiers et d'espaces de travail multiples — testé automatiquement, version web (phase 5)
 - ✅ Recherche globale dans le projet — testé automatiquement, version web (phase 5)
 - ✅ Accès rapide aux fichiers et à la palette de commandes (Ctrl+P / Ctrl+Shift+P) — testé automatiquement, version web (phase 5)
-- ⬜ Vue Structure (symboles du fichier)
+- ✅ Vue Structure (symboles du fichier) — testé automatiquement, version web (phase 5)
 - ✅ Historique local des fichiers (timeline) — testé automatiquement, version web (phase 5)
 
 ## 4. Terminal intégré

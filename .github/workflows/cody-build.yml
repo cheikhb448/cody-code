@@ -80,6 +80,14 @@ jobs:
           npm run build-fast-extensions
           df -h / | cat
 
+      - name: Télécharger les extensions intégrées libres (débogage JavaScript)
+        continue-on-error: true
+        run: |
+          npm run download-builtin-extensions > /tmp/dl-ext.log 2>&1 || true
+          echo "::notice title=Extensions intégrées::$(tail -c 600 /tmp/dl-ext.log | tr '\n' ' ') | $(ls .build/builtInExtensions 2>/dev/null | tr '\n' ' ')"
+          # Les extensions de test de Microsoft ne font pas partie du produit final (exclues à l'empaquetage) : on les retire aussi pour le test
+          rm -rf extensions/vscode-api-tests extensions/vscode-colorize-tests extensions/vscode-colorize-perf-tests extensions/vscode-test-resolver
+
       - name: Récupérer Node pour le serveur
         run: npm run gulp node
 

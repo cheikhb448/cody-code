@@ -52,7 +52,7 @@ try {
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
   await page.waitForTimeout(5000);
 
-  const texte = async () => (await page.locator('.monaco-editor .view-lines').first().innerText().catch(() => '?')).replace(/ /g, ' ');
+  const texte = async () => (await page.locator('.part.editor .monaco-editor .view-lines').first().innerText().catch(() => '?')).replace(/ /g, ' ');
   const palette = async (prefixe, saisie) => {
     await page.keyboard.press(prefixe);
     await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 20000 });
@@ -65,10 +65,21 @@ try {
     await page.locator('.tabs-container .tab.active', { hasText: nom }).first().waitFor({ timeout: 20000 });
     await page.waitForTimeout(1500);
   };
+  const choisirCommande = async (nom) => {
+    const rows = page.locator('.quick-input-widget .monaco-list-row');
+    const n = await rows.count();
+    for (let i = 0; i < n; i++) {
+      const t = (await rows.nth(i).locator('.label-name').first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
+      if (t === nom) { await rows.nth(i).click(); return true; }
+    }
+    await page.keyboard.press('Enter');
+    return false;
+  };
   const commande = async (nom, suite) => {
     await palette('F1', nom);
     const premier = await page.locator('.quick-input-widget .monaco-list-row').first().innerText().catch(() => '?');
-    await page.keyboard.press('Enter');
+    const exact = await choisirCommande(nom);
+    if (suite && !exact) log(`[${nom}] commande exacte introuvable dans la liste`);
     await page.waitForTimeout(2000);
     if (suite) {
       const etat = await page.evaluate(() => { const w = document.querySelector('.quick-input-widget'); return w && !w.classList.contains('hidden') ? ((w.querySelector('.quick-input-title')?.textContent || '') + ' / ' + (w.querySelector('input')?.placeholder || '') + ' / ' + [...w.querySelectorAll('.monaco-list-row')].slice(0, 4).map(r => r.textContent.slice(0, 25)).join(' ; ')) : 'fermé'; });
@@ -81,7 +92,7 @@ try {
     try { await fn(); } catch (e) { verifier(false, `${nom} (erreur : ${String(e.message).split('\n')[0].slice(0, 120)})`); }
     await page.keyboard.press('Escape').catch(() => {});
   };
-  const cliquerEditeur = async () => { await page.click('.monaco-editor .view-lines'); };
+  const cliquerEditeur = async () => { await page.click('.part.editor .monaco-editor .view-lines'); };
   const attendre = async (cond, ms = 15000) => { const t = Date.now(); while (Date.now() - t < ms) { if (cond()) return true; await page.waitForTimeout(500); } return false; };
 
   // ===== Section 4 : terminal =====
@@ -134,7 +145,7 @@ try {
     await page.keyboard.press('ArrowDown');
     await page.keyboard.type('MODIFIE', { delay: 30 });
     await page.waitForTimeout(2500);
-    const n = await page.locator('.monaco-editor [class*="dirty-diff"]').count();
+    const n = await page.locator('.part.editor .monaco-editor [class*="dirty-diff"]').count();
     verifier(n >= 1, `indicateurs de modification dans la marge (${n})`);
     await page.keyboard.press('Control+s');
     await page.waitForTimeout(800);
