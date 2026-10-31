@@ -29,6 +29,8 @@ try {
   browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1500, height: 900 }, locale: 'en-US' });
   page.on('pageerror', e => log('ERREUR PAGE: ' + e.message.slice(0, 150)));
+  const erreursConsole = [];
+  page.on('console', m => { if (m.type() === 'error') erreursConsole.push(m.text().slice(0, 160)); });
   await page.goto(`http://127.0.0.1:8080/?folder=${dossier}`, { waitUntil: 'load' });
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
   await page.waitForTimeout(5000);
@@ -151,6 +153,7 @@ try {
       log('onglets : ' + onglets.slice(0, 200));
       const notifs = (await page.locator('.notifications-toasts .notification-list-item, .notification-toast').allInnerTexts()).join(' | ').replace(/\n/g, ' ').slice(0, 250);
       log('notifications : ' + (notifs || 'aucune') + ' ; groupes d\'éditeur : ' + await page.locator('.editor-group-container').count() + ' ; éditeur actif : ' + (await page.locator('.part.editor .editor-instance, .part.editor .monaco-editor').first().getAttribute('data-uri').catch(() => '?')));
+      log('erreurs console récentes : ' + erreursConsole.slice(-4).join(' || '));
       if (/settings\.json/i.test(onglets)) break;
     }
     verifier(/settings\.json/i.test(onglets), 'paramètres : fichier settings.json');

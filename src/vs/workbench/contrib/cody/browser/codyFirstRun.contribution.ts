@@ -44,6 +44,13 @@ class CodyFirstRunContribution extends Disposable implements IWorkbenchContribut
 		if (!layoutService.isVisible(Parts.PANEL_PART)) {
 			layoutService.setPartHidden(false, Parts.PANEL_PART);
 		}
+		// Hauteur de la maquette (environ 190 px) : on laisse d'abord la mise en page se terminer
+		setTimeout(() => {
+			const taille = layoutService.getSize(Parts.PANEL_PART);
+			if (taille.height > 220) {
+				layoutService.setSize(Parts.PANEL_PART, { width: taille.width, height: 190 });
+			}
+		}, 1500);
 	}
 }
 
