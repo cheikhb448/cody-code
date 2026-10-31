@@ -259,7 +259,9 @@
 		"breadcrumbs.enabled": true,
 		"editor.fontSize": 13,
 		"editor.lineHeight": 19,
-		"cody.assistant.userName": "Cheikh"
+		"cody.assistant.userName": "Cheikh",
+		"workbench.navigationControl.enabled": false,
+		"git.blame.statusBarItem.enabled": false
 	},
 	"codyVersion": "1.0.0",
 	"extensionsGallery": {

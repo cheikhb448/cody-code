@@ -15,7 +15,8 @@ const ELEMENTS_MASQUES = [
 	'status.editor.selection',
 	'status.editor.indentation',
 	'status.workbench.keyboardLayout',
-	'status.problems'
+	'status.problems',
+	'status.notifications'
 ];
 
 class CodyFirstRunContribution extends Disposable implements IWorkbenchContribution {

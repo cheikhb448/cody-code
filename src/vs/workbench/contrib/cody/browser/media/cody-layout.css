@@ -18,3 +18,13 @@
 .monaco-workbench .part.panel > .title .composite-bar .action-item .action-label {
 	font-size: 12px;
 }
+
+/* Racine du projet dans l'explorateur (« DropLink ») : nom normal, en blanc, comme la maquette */
+.monaco-workbench .part.sidebar .pane:has(> .pane-body.explorer-folders-view) > .pane-header .title,
+.monaco-workbench .part.sidebar .pane:has(> .pane-body.explorer-folders-view) > .pane-header h3.title {
+	text-transform: none !important;
+	letter-spacing: 0;
+	font-size: 14px !important;
+	font-weight: 600;
+	color: var(--vscode-foreground);
+}
