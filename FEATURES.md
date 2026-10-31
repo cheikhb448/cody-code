@@ -59,7 +59,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Points d'arrêt (simples, conditionnels) — testé automatiquement, version web (phase 5)
 - ✅ Pile d'appels et variables — 🚧 expressions surveillées pas encore testées — testé automatiquement, version web (phase 5)
 - ✅ Console de débogage — testé automatiquement, version web (phase 5)
-- ⬜ Configurations de lancement (`launch.json`)
+- ✅ Configurations de lancement (`launch.json`) — testé automatiquement, version web (phase 5)
 - ✅ Tâches (`tasks.json`) — testé automatiquement, version web (phase 5)
 
 ## 7. Extensions
@@ -69,7 +69,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ⬜ Thèmes d'icônes et de couleurs via extensions
 
 ## 8. Personnalisation
-- ⬜ Paramètres (interface graphique + `settings.json`)
+- 🚧 Paramètres : interface graphique testée ✅ ; ouverture de `settings.json` à corriger
 - ✅ Raccourcis clavier personnalisables — testé automatiquement, version web (phase 5)
 - ✅ Thèmes de couleurs (thème sombre Cody par défaut, clair disponible) — couleurs vérifiées automatiquement (phase 3)
 - ⬜ Profils d'utilisateur
@@ -97,7 +97,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Emmet (écriture rapide HTML/CSS) — testé automatiquement, version web (phase 5)
 - ✅ Éditeur de notebooks (ouverture d'un .ipynb) — testé automatiquement, version web (phase 5)
 - ✅ Aperçu Markdown — testé automatiquement, version web (phase 5)
-- ⬜ Mode sans distraction (Zen) et plein écran
+- ✅ Mode sans distraction (Zen) — 🚧 plein écran non testé — testé automatiquement, version web (phase 5)
 - ⬜ Espaces de travail de confiance (Workspace Trust)
 - ⬜ Développement à distance (SSH, conteneurs, WSL)
 

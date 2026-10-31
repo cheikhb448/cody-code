@@ -149,6 +149,8 @@ try {
       await page.waitForTimeout(3000);
       onglets = (await page.locator('.tabs-container .tab').allInnerTexts()).map(o => o.replace(/\n/g, ' ')).join(' | ');
       log('onglets : ' + onglets.slice(0, 200));
+      const notifs = (await page.locator('.notifications-toasts .notification-list-item, .notification-toast').allInnerTexts()).join(' | ').replace(/\n/g, ' ').slice(0, 250);
+      log('notifications : ' + (notifs || 'aucune') + ' ; groupes d\'éditeur : ' + await page.locator('.editor-group-container').count() + ' ; éditeur actif : ' + (await page.locator('.part.editor .editor-instance, .part.editor .monaco-editor').first().getAttribute('data-uri').catch(() => '?')));
       if (/settings\.json/i.test(onglets)) break;
     }
     verifier(/settings\.json/i.test(onglets), 'paramètres : fichier settings.json');
