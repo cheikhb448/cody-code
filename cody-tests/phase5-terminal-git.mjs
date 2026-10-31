@@ -97,7 +97,7 @@ try {
 
   // ===== Section 4 : terminal =====
   await essai('terminal', async () => {
-    await page.keyboard.press('Control+`');
+    if (!(await page.locator('.terminal-wrapper .xterm').count())) await page.keyboard.press('Control+`');
     await page.waitForSelector('.terminal-wrapper .xterm', { timeout: 40000 });
     await page.waitForTimeout(3000);
     await page.keyboard.type(`echo bonjour > ${dossier}/terminal.txt`, { delay: 20 });

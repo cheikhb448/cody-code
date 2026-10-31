@@ -8,8 +8,8 @@
 .monaco-workbench .part.auxiliarybar > .title > .composite-bar-container > .composite-bar > .monaco-action-bar .action-item .action-label[aria-label^="Cody Assistant"]:hover {
 	display: inline-flex;
 	align-items: center;
-	gap: 8px;
-	font-size: 15px;
+	gap: 10px;
+	font-size: 18px;
 	font-weight: 600;
 	text-transform: none;
 	color: var(--vscode-foreground);
@@ -26,8 +26,8 @@
 	flex: none;
 	margin: 0;
 	border: none;
-	width: 20px;
-	height: 20px;
+	width: 28px;
+	height: 28px;
 	background-color: #4d8dff;
 	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5c.5 5.2 2.2 7.5 8 8.5-5.8 1-7.5 3.3-8 8.5-.5-5.2-2.2-7.5-8-8.5 5.8-1 7.5-3.3 8-8.5zM19 15c.25 2.6 1.1 3.7 4 4.2-2.9.5-3.75 1.6-4 4.3-.25-2.7-1.1-3.8-4-4.3 2.9-.5 3.75-1.6 4-4.2z'/%3E%3C/svg%3E") center / contain no-repeat;
 	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5c.5 5.2 2.2 7.5 8 8.5-5.8 1-7.5 3.3-8 8.5-.5-5.2-2.2-7.5-8-8.5 5.8-1 7.5-3.3 8-8.5zM19 15c.25 2.6 1.1 3.7 4 4.2-2.9.5-3.75 1.6-4 4.3-.25-2.7-1.1-3.8-4-4.3 2.9-.5 3.75-1.6 4-4.2z'/%3E%3C/svg%3E") center / contain no-repeat;
@@ -58,8 +58,8 @@
 .cody-assistant-tabs {
 	display: flex;
 	overflow: hidden;
-	gap: 6px;
-	padding: 4px 14px 0;
+	gap: 12px;
+	padding: 6px 14px 0;
 	border-bottom: 1px solid var(--vscode-panel-border, rgba(255, 255, 255, 0.08));
 }
 
@@ -68,8 +68,8 @@
 	border: none;
 	border-bottom: 2px solid transparent;
 	color: var(--vscode-descriptionForeground);
-	font-size: 14px;
-	padding: 8px 10px;
+	font-size: 14.5px;
+	padding: 10px 12px;
 	cursor: pointer;
 }
 
@@ -91,15 +91,16 @@
 }
 
 .cody-assistant-hello {
-	font-size: 22px;
+	font-size: 26px;
 	font-weight: 600;
 	margin: 6px 0 10px;
 }
 
 .cody-assistant-intro {
 	color: var(--vscode-descriptionForeground);
-	line-height: 1.55;
-	margin: 0 0 18px;
+	line-height: 1.6;
+	font-size: 14.5px;
+	margin: 0 0 22px;
 }
 
 .cody-assistant-intro strong {
@@ -117,7 +118,7 @@
 	align-items: center;
 	gap: 10px;
 	text-align: left;
-	padding: 12px;
+	padding: 14px 12px;
 	border-radius: 10px;
 	border: 1px solid var(--vscode-widget-border, rgba(255, 255, 255, 0.08));
 	background: var(--vscode-editorWidget-background);
@@ -134,10 +135,10 @@
 	align-items: center;
 	justify-content: center;
 	flex: none;
-	width: 34px;
-	height: 34px;
-	border-radius: 9px;
-	font-size: 18px;
+	width: 40px;
+	height: 40px;
+	border-radius: 10px;
+	font-size: 22px;
 }
 
 .cody-assistant-card-icon.generer { color: #4d8dff; background: rgba(77, 141, 255, 0.18); }
@@ -154,12 +155,12 @@
 }
 
 .cody-assistant-card-title {
-	font-size: 13px;
+	font-size: 13.5px;
 	font-weight: 600;
 }
 
 .cody-assistant-card-desc {
-	font-size: 11px;
+	font-size: 10.5px;
 	color: var(--vscode-descriptionForeground);
 }
 

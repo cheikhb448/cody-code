@@ -15,6 +15,9 @@ const dossier = '/tmp/DropLink';
 fs.rmSync(dossier, { recursive: true, force: true });
 fs.cpSync('cody-tests/fixtures/DropLink', dossier, { recursive: true });
 fs.mkdirSync('/tmp/cody-logs', { recursive: true });
+// Le projet d'exemple est un dépôt Git sur la branche « main » (comme la maquette)
+import { execSync } from 'node:child_process';
+execSync('git init -q -b main && git config user.email t@cody.local && git config user.name Test && git add -A && git commit -q -m depart', { cwd: dossier });
 
 const rgb = (hex) => { const n = parseInt(hex.slice(1), 16); return `rgb(${n >> 16}, ${(n >> 8) & 255}, ${n & 255})`; };
 const attendus = {
@@ -46,8 +49,10 @@ try {
     await page.keyboard.press('Enter');
     await page.waitForTimeout(2500);
   };
-  await ouvrir('public/index.php');
   await ouvrir('HomeController.php');
+  await ouvrir('public/index.php');
+  await page.locator('.tabs-container .tab', { hasText: 'HomeController.php' }).first().click();
+  await page.waitForTimeout(800);
   await page.keyboard.press('Control+g');
   await page.waitForTimeout(500);
   await page.keyboard.type('10', { delay: 30 });
@@ -55,9 +60,22 @@ try {
   await page.waitForTimeout(2000);
   await page.screenshot({ path: '/tmp/cody-logs/p3-1-ecran.png' });
 
-  // Panneau du bas : terminal
-  await page.keyboard.press('Control+`');
-  await page.waitForTimeout(6000);
+  // Panneau du bas : le terminal doit être ouvert dès le démarrage (comme sur la maquette)
+  const terminalOuvert = await page.locator('.part.panel .xterm, .part.panel .terminal-wrapper').count();
+  verifier(terminalOuvert >= 1, 'panneau du bas ouvert avec le terminal au démarrage');
+  const styles = await page.evaluate(() => {
+    const t = document.querySelector('.part.sidebar .title-label h2');
+    const b = document.querySelector('.part.sidebar .pane-header .title');
+    const ed = document.querySelector('.monaco-editor .view-line');
+    return { titre: t ? getComputedStyle(t).textTransform : null, section: b ? getComputedStyle(b).textTransform : null, hauteurLigne: ed ? ed.getBoundingClientRect().height : null };
+  });
+  log('styles : ' + JSON.stringify(styles));
+  verifier(styles.titre === 'uppercase' && styles.section === 'uppercase', 'titres de la barre latérale en majuscules');
+  verifier(styles.hauteurLigne && styles.hauteurLigne < 21, `lignes de code serrées (${styles.hauteurLigne}px)`);
+  const barre = (await page.locator('.part.statusbar').innerText()).replace(/\n/g, ' | ');
+  log('barre d\'état : ' + barre);
+  verifier(!/Layout/.test(barre) && !/Espaces|Spaces/.test(barre), 'barre d\'état épurée (sans disposition clavier ni espaces)');
+  await page.waitForTimeout(3000);
   await page.screenshot({ path: '/tmp/cody-logs/p3-2-terminal.png' });
 
   const cls = await page.evaluate(() => [document.documentElement, document.body, document.querySelector('.monaco-workbench')].map(e => e?.className ?? '').join(' | '));

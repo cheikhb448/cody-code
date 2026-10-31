@@ -257,8 +257,9 @@
 		"workbench.colorTheme": "Cody Dark",
 		"workbench.activityBar.location": "default",
 		"breadcrumbs.enabled": true,
-		"editor.fontSize": 14,
-		"editor.lineHeight": 24
+		"editor.fontSize": 13,
+		"editor.lineHeight": 19,
+		"cody.assistant.userName": "Cheikh"
 	},
 	"codyVersion": "1.0.0",
 	"extensionsGallery": {

@@ -1,0 +1,49 @@
+/*---------------------------------------------------------------------------------------------
+ *  Cody Code - disposition au premier démarrage (panneau du bas ouvert, barre d'état épurée)
+ *  Basé sur Code - OSS (Microsoft Corporation, licence MIT).
+ *--------------------------------------------------------------------------------------------*/
+
+import './media/cody-layout.css';
+import { Disposable } from '../../../../base/common/lifecycle.js';
+import { IWorkbenchContribution, WorkbenchPhase, registerWorkbenchContribution2 } from '../../../common/contributions.js';
+import { IStatusbarService } from '../../../services/statusbar/browser/statusbar.js';
+import { IWorkbenchLayoutService, Parts } from '../../../services/layout/browser/layoutService.js';
+import { IStorageService, StorageScope, StorageTarget } from '../../../../platform/storage/common/storage.js';
+
+/** Éléments de la barre d'état absents de la maquette : masqués au premier démarrage (réaffichables par un clic droit sur la barre). */
+const ELEMENTS_MASQUES = [
+	'status.editor.selection',
+	'status.editor.indentation',
+	'status.workbench.keyboardLayout',
+	'status.problems'
+];
+
+class CodyFirstRunContribution extends Disposable implements IWorkbenchContribution {
+
+	static readonly ID = 'workbench.contrib.codyFirstRun';
+
+	constructor(
+		@IStorageService storageService: IStorageService,
+		@IStatusbarService statusbarService: IStatusbarService,
+		@IWorkbenchLayoutService layoutService: IWorkbenchLayoutService
+	) {
+		super();
+
+		// Une seule fois : ensuite, les choix de la personne sont respectés
+		if (storageService.getBoolean('cody.firstRunLayoutDone', StorageScope.PROFILE, false)) {
+			return;
+		}
+		storageService.store('cody.firstRunLayoutDone', true, StorageScope.PROFILE, StorageTarget.USER);
+
+		for (const id of ELEMENTS_MASQUES) {
+			statusbarService.updateEntryVisibility(id, false);
+		}
+
+		// Comme sur la maquette : le panneau du bas (Terminal en premier) est ouvert
+		if (!layoutService.isVisible(Parts.PANEL_PART)) {
+			layoutService.setPartHidden(false, Parts.PANEL_PART);
+		}
+	}
+}
+
+registerWorkbenchContribution2(CodyFirstRunContribution.ID, CodyFirstRunContribution, WorkbenchPhase.AfterRestored);
