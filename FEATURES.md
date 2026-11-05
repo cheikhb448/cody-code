@@ -112,7 +112,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ⬜ Windows
 - ⬜ macOS
 - ⬜ Linux
-- ⬜ Version navigateur (web)
+- ✅ Version navigateur (web) — c'est la version testée automatiquement à chaque étape
 
 ---
 
