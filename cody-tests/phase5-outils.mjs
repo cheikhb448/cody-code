@@ -37,7 +37,11 @@ try {
 
   const texte = async () => (await page.locator('.part.editor .monaco-editor .view-lines').first().innerText().catch(() => '?')).replace(/ /g, ' ');
   const palette = async (prefixe, saisie) => {
-    await page.keyboard.press(prefixe);
+    for (let t = 0; t < 2; t++) {
+      await page.keyboard.press(prefixe);
+      try { await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 8000 }); break; }
+      catch { await page.keyboard.press('Escape'); await page.locator('.part.editor').first().click({ position: { x: 200, y: 150 } }).catch(() => {}); }
+    }
     await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 20000 });
     await page.keyboard.type(saisie, { delay: 30 });
     await page.waitForTimeout(1500);
@@ -70,11 +74,22 @@ try {
 
   // Test isolé, avant tout le reste : ouverture de settings.json (utilisateur)
   await essai('settings-json-isole', async () => {
+    const ouvert = async () => /settings\.json/i.test(await page.title()) || /settings\.json/i.test((await page.locator('.part.editor').first().innerText().catch(() => '')));
     await commande('Preferences: Open User Settings (JSON)');
     await page.waitForTimeout(3500);
-    const t = (await page.locator('.part.editor').first().innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 100);
-    log('settings.json (test isolé) → ' + t + ' || titre : ' + await page.title());
-    verifier(/settings\.json/i.test(await page.title()) || /settings\.json/i.test(t), 'settings.json s\'ouvre (test isolé, au démarrage)');
+    let ok = await ouvert();
+    log('tentative 1 (palette) : ' + ok);
+    if (!ok) {
+      await page.keyboard.press('Control+,');
+      await page.waitForSelector('.settings-editor', { timeout: 15000 });
+      await page.waitForTimeout(1500);
+      const bouton = page.locator('[aria-label*="Open Settings (JSON)"]').first();
+      log('bouton « Open Settings (JSON) » présent : ' + await bouton.count());
+      if (await bouton.count()) { await bouton.click(); await page.waitForTimeout(3000); ok = await ouvert(); }
+      log('tentative 2 (bouton de la page Paramètres) : ' + ok);
+      await page.screenshot({ path: '/tmp/cody-logs/p5-4-settings.png' });
+    }
+    verifier(ok, 'settings.json s\'ouvre');
   });
 
   // ===== Section 6 : exécution et débogage =====

@@ -38,7 +38,11 @@ try {
 
   const texte = async () => (await page.locator('.monaco-editor .view-lines').first().innerText().catch(() => '?')).replace(/ /g, ' ');
   const palette = async (prefixe, saisie) => {
-    await page.keyboard.press(prefixe);
+    for (let t = 0; t < 2; t++) {
+      await page.keyboard.press(prefixe);
+      try { await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 8000 }); break; }
+      catch { await page.keyboard.press('Escape'); await page.locator('.part.editor').first().click({ position: { x: 200, y: 150 } }).catch(() => {}); }
+    }
     await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 20000 });
     await page.keyboard.type(saisie, { delay: 30 });
     await page.waitForTimeout(1500);
@@ -236,6 +240,8 @@ try {
     await p2.goto('http://127.0.0.1:8080/?workspace=/tmp/multi52.code-workspace', { waitUntil: 'load' });
     await p2.waitForSelector('.monaco-workbench', { timeout: 120000 });
     await p2.waitForTimeout(5000);
+    await p2.locator('.explorer-folders-view .monaco-list-row').first().click().catch(() => {});
+    await p2.waitForTimeout(1500);
     const noms = await p2.locator('.explorer-folders-view .monaco-list-row').allInnerTexts();
     const ok = noms.some(n => /ws52b/.test(n)) && noms.some(n => /ws52\b/.test(n));
     verifier(ok, `espace de travail avec plusieurs dossiers : ${noms.slice(0, 4).map(n => n.replace(/\n/g, ' ')).join(' | ')}`);

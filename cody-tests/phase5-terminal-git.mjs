@@ -54,7 +54,11 @@ try {
 
   const texte = async () => (await page.locator('.part.editor .monaco-editor .view-lines').first().innerText().catch(() => '?')).replace(/ /g, ' ');
   const palette = async (prefixe, saisie) => {
-    await page.keyboard.press(prefixe);
+    for (let t = 0; t < 2; t++) {
+      await page.keyboard.press(prefixe);
+      try { await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 8000 }); break; }
+      catch { await page.keyboard.press('Escape'); await page.locator('.part.editor').first().click({ position: { x: 200, y: 150 } }).catch(() => {}); }
+    }
     await page.waitForSelector('.quick-input-widget:not(.hidden)', { timeout: 20000 });
     await page.keyboard.type(saisie, { delay: 30 });
     await page.waitForTimeout(1500);
@@ -99,7 +103,8 @@ try {
   await essai('terminal', async () => {
     if (!(await page.locator('.terminal-wrapper .xterm').count())) await page.keyboard.press('Control+`');
     await page.waitForSelector('.terminal-wrapper .xterm', { timeout: 40000 });
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(4000);
+    await page.locator('.terminal-wrapper .xterm').first().click();
     await page.keyboard.type(`echo bonjour > ${dossier}/terminal.txt`, { delay: 20 });
     await page.keyboard.press('Enter');
     const ok = await attendre(() => fs.existsSync(`${dossier}/terminal.txt`));
@@ -107,6 +112,7 @@ try {
   });
   await essai('liens', async () => {
     fs.writeFileSync(`${dossier}/lien.txt`, 'cible du lien\n');
+    await page.locator('.terminal-wrapper .xterm').first().click();
     await page.keyboard.type(`echo "${dossier}/lien.txt"`, { delay: 20 });
     await page.keyboard.press('Enter');
     await page.waitForTimeout(2500);
