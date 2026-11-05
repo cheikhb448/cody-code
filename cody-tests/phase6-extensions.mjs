@@ -26,6 +26,8 @@ try {
   browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1500, height: 900 }, locale: 'en-US' });
   page.on('pageerror', e => log('ERREUR PAGE: ' + e.message.slice(0, 150)));
+  const erreursConsole = [];
+  page.on('console', m => { if (m.type() === 'error') erreursConsole.push(m.text().slice(0, 220)); });
   const hotes = new Set();
   page.on('request', r => { try { hotes.add(new URL(r.url()).host); } catch { /* ignore */ } });
   await page.goto(`http://127.0.0.1:8080/?folder=${dossier}`, { waitUntil: 'load' });
@@ -90,7 +92,14 @@ try {
     await ouvrirExtension(id);
     log(`[${id}] boutons visibles : ` + (await boutons()).join(' | ').slice(0, 250));
     await cliquer(/^Install$/);
-    const ok = await attendre(async () => presente(prefixeDisque), 90000);
+    const avantErr = erreursConsole.length;
+    for (let i = 0; i < 12 && !presente(prefixeDisque); i++) {
+      await page.waitForTimeout(1500);
+      const notifs = (await page.locator('.notifications-toasts .notification-list-item, .notification-toast, .monaco-dialog-box').allInnerTexts()).join(' | ').replace(/\s+/g, ' ').slice(0, 300);
+      if (notifs) { log(`[${id}] notification : ` + notifs); break; }
+    }
+    if (erreursConsole.length > avantErr) log(`[${id}] erreurs console : ` + erreursConsole.slice(avantErr, avantErr + 4).join(' || '));
+    const ok = await attendre(async () => presente(prefixeDisque), 60000);
     await page.waitForTimeout(2500);
     return ok;
   };
