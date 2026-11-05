@@ -168,6 +168,10 @@ jobs:
         if: always()
         run: node cody-tests/phase5-outils.mjs
 
+      - name: Test - extensions Open VSX (phase 6)
+        if: always()
+        run: node cody-tests/phase6-extensions.mjs
+
       - name: Vérification du code Cody (types TypeScript)
         if: always()
         continue-on-error: true
