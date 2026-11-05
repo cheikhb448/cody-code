@@ -74,7 +74,7 @@ try {
 
   // Test isolé, avant tout le reste : ouverture de settings.json (utilisateur)
   await essai('settings-json-isole', async () => {
-    const ouvert = async () => /settings\.json/i.test(await page.title()) || /settings\.json/i.test((await page.locator('.part.editor').first().innerText().catch(() => '')));
+    const ouvert = async () => /settings\.json/i.test(await page.evaluate(() => document.body.innerText)); // s'ouvre dans une fenêtre flottante
     await commande('Preferences: Open User Settings (JSON)');
     await page.waitForTimeout(3500);
     let ok = await ouvert();
@@ -180,7 +180,7 @@ try {
       log('erreurs console récentes : ' + erreursConsole.slice(-4).join(' || '));
       if (/settings\.json/i.test(onglets)) break;
     }
-    verifier(/settings\.json/i.test(onglets), 'paramètres : fichier settings.json');
+    verifier(/settings\.json/i.test(await page.evaluate(() => document.body.innerText)), 'paramètres : fichier settings.json');
   });
   await essai('raccourcis', async () => {
     await commande('Preferences: Open Keyboard Shortcuts');

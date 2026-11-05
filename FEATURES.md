@@ -69,7 +69,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ⬜ Thèmes d'icônes et de couleurs via extensions
 
 ## 8. Personnalisation
-- 🚧 Paramètres : interface graphique testée ✅ ; ouverture de `settings.json` à corriger
+- ✅ Paramètres (interface graphique + `settings.json`, qui s'ouvre dans une fenêtre flottante) — testé automatiquement, version web (phase 5)
 - ✅ Raccourcis clavier personnalisables — testé automatiquement, version web (phase 5)
 - ✅ Thèmes de couleurs (thème sombre Cody par défaut, clair disponible) — couleurs vérifiées automatiquement (phase 3)
 - ⬜ Profils d'utilisateur
