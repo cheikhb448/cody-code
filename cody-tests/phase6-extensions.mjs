@@ -57,10 +57,19 @@ try {
     try { await fn(); } catch (e) { verifier(false, `${nom} (erreur : ${String(e.message).split('\n')[0].slice(0, 140)})`); }
     await page.keyboard.press('Escape').catch(() => {});
   };
-  const boutons = async () => (await page.locator('.extension-editor .action-label').allInnerTexts()).map(t => t.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  // Seuls les boutons réellement visibles de la page de l'extension comptent
+  const boutons = async () => page.evaluate(() => [...document.querySelectorAll('.extension-editor .action-label')]
+    .filter(e => e.getBoundingClientRect().width > 0 && getComputedStyle(e).visibility !== 'hidden')
+    .map(e => (e.textContent || '').replace(/\s+/g, ' ').trim() + (e.classList.contains('disabled') ? '(inactif)' : ''))
+    .filter(t => t && t !== '(inactif)'));
   const cliquer = async (regex) => {
-    const l = page.locator('.extension-editor .action-label').filter({ hasText: regex }).first();
-    await l.click({ timeout: 10000 });
+    const index = await page.evaluate((src) => {
+      const re = new RegExp(src);
+      const tous = [...document.querySelectorAll('.extension-editor .action-label')];
+      return tous.findIndex(e => e.getBoundingClientRect().width > 0 && !e.classList.contains('disabled') && re.test((e.textContent || '').replace(/\s+/g, ' ').trim()));
+    }, regex.source);
+    if (index < 0) throw new Error('bouton introuvable : ' + regex + ' parmi ' + (await boutons()).join(' | ').slice(0, 200));
+    await page.locator('.extension-editor .action-label').nth(index).click({ timeout: 10000 });
   };
   // Cherche une extension par son identifiant et ouvre sa page de détails
   const ouvrirExtension = async (id) => {
@@ -79,7 +88,7 @@ try {
   };
   const installer = async (id, prefixeDisque) => {
     await ouvrirExtension(id);
-    log(`[${id}] boutons : ` + (await boutons()).join(' | ').slice(0, 150));
+    log(`[${id}] boutons visibles : ` + (await boutons()).join(' | ').slice(0, 250));
     await cliquer(/^Install$/);
     const ok = await attendre(async () => presente(prefixeDisque), 90000);
     await page.waitForTimeout(2500);
