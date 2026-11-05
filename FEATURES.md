@@ -64,7 +64,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 
 ## 7. Extensions
 - ⬜ Vue Extensions (installer, désactiver, désinstaller)
-- ⬜ Magasin d'extensions libre (Open VSX) et autres services similaires
+- 🚧 Magasin d'extensions libre (Open VSX) : recherche testée ✅, aucune requête vers le magasin Microsoft ✅ ; autres services similaires à étudier
 - ✅ Extensions recommandées par projet (liste affichée depuis Open VSX) — testé automatiquement, version web (phase 5)
 - ⬜ Thèmes d'icônes et de couleurs via extensions
 
