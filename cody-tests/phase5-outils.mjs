@@ -68,6 +68,15 @@ try {
   const cliquerEditeur = async () => { await page.click('.part.editor .monaco-editor .view-lines'); };
   const attendre = async (cond, ms = 15000) => { const t = Date.now(); while (Date.now() - t < ms) { if (await cond()) return true; await page.waitForTimeout(500); } return false; };
 
+  // Test isolé, avant tout le reste : ouverture de settings.json (utilisateur)
+  await essai('settings-json-isole', async () => {
+    await commande('Preferences: Open User Settings (JSON)');
+    await page.waitForTimeout(3500);
+    const t = (await page.locator('.part.editor').first().innerText().catch(() => '')).replace(/\s+/g, ' ').slice(0, 100);
+    log('settings.json (test isolé) → ' + t + ' || titre : ' + await page.title());
+    verifier(/settings\.json/i.test(await page.title()) || /settings\.json/i.test(t), 'settings.json s\'ouvre (test isolé, au démarrage)');
+  });
+
   // ===== Section 6 : exécution et débogage =====
   await essai('tâches', async () => {
     await commande('Tasks: Run Task');
