@@ -92,6 +92,13 @@ try {
     await ouvrirExtension(id);
     log(`[${id}] boutons visibles : ` + (await boutons()).join(' | ').slice(0, 250));
     await cliquer(/^Install$/);
+    // Une fenêtre peut demander de faire confiance à l'éditeur de l'extension : on la lit puis on accepte
+    await page.waitForTimeout(3000);
+    if (await page.locator('.monaco-dialog-box').count()) {
+      log(`[${id}] fenêtre : ` + (await page.locator('.monaco-dialog-box').first().innerText()).replace(/\s+/g, ' ').slice(0, 260));
+      log(`[${id}] boutons de la fenêtre : ` + (await page.locator('.monaco-dialog-box .monaco-button').allInnerTexts()).join(' / '));
+      await page.locator('.monaco-dialog-box .monaco-button', { hasText: /Trust|Install/i }).first().click().catch(() => {});
+    }
     const avantErr = erreursConsole.length;
     for (let i = 0; i < 12 && !presente(prefixeDisque); i++) {
       await page.waitForTimeout(1500);
