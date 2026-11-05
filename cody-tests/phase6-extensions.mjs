@@ -108,6 +108,14 @@ try {
   await essai('installer', async () => {
     const ok = await installer('pkief.material-icon-theme', 'pkief.material-icon-theme');
     verifier(ok, 'installer une extension depuis Open VSX (Material Icon Theme)');
+    if (!ok) {
+      const { execSync } = await import('node:child_process');
+      const sh = (c) => { try { return execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 20000 }).trim(); } catch (e) { return 'erreur ' + String(e.message).slice(0, 80); } };
+      log('dossier extensions : ' + sh(`ls ${dossierExt} 2>&1 | head -12`).replace(/\n/g, ' ; '));
+      log('autres dossiers : ' + sh('ls /tmp/cody-data /tmp/cody-data/data 2>&1 | head -20').replace(/\n/g, ' ; '));
+      log('journal serveur : ' + sh(`grep -i "xtension\\|rror\\|install\\|gallery" /tmp/cody-logs/server.log | tail -12`).replace(/\n/g, ' ¦ ').slice(0, 1200));
+      log('journaux détaillés : ' + sh(`grep -rih "install\\|gallery\\|signature\\|verify" /tmp/cody-data/data/logs 2>/dev/null | tail -10`).replace(/\n/g, ' ¦ ').slice(0, 1200));
+    }
     log('boutons après installation : ' + (await boutons()).join(' | ').slice(0, 150));
   });
   await essai('désactiver', async () => {
