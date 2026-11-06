@@ -147,11 +147,10 @@ try {
     await page.keyboard.type('Material Icon', { delay: 30 });
     await page.waitForTimeout(1500);
     await page.keyboard.press('Enter');
-    await page.waitForTimeout(4000);
-    const ok = await page.evaluate(() => {
+    const ok = await attendre(() => page.evaluate(() => {
       const css = [...document.querySelectorAll('style')].map(s => s.textContent || '').join(' ');
       return /material-icon-theme/i.test(css) || /pkief/i.test(css);
-    });
+    }), 25000);
     verifier(ok, 'thème d\'icônes fourni par une extension (Material Icon Theme appliqué)');
   });
   await essai('désinstaller', async () => {
