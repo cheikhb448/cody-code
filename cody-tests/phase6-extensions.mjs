@@ -91,7 +91,7 @@ try {
   const installer = async (id, prefixeDisque) => {
     await ouvrirExtension(id);
     log(`[${id}] boutons visibles : ` + (await boutons()).join(' | ').slice(0, 250));
-    await cliquer(/^Install$/);
+    await cliquer(/^Install( Pre-Release)?$/);
     // Une fenêtre peut demander de faire confiance à l'éditeur de l'extension : on la lit puis on accepte
     await page.waitForTimeout(3000);
     if (await page.locator('.monaco-dialog-box').count()) {
@@ -157,8 +157,9 @@ try {
   await essai('désinstaller', async () => {
     await ouvrirExtension('pkief.material-icon-theme');
     await cliquer(/^Uninstall/);
-    const ok = await attendre(async () => !presente('pkief.material-icon-theme'), 30000);
-    verifier(ok, 'désinstaller une extension');
+    // Les fichiers sont effacés plus tard par un nettoyage : on vérifie que la page propose de nouveau « Install »
+    const ok = await attendre(async () => (await boutons()).some(b => /^Install/.test(b)), 30000);
+    verifier(ok, 'désinstaller une extension (la page propose de nouveau « Install »)');
   });
 
   // ===== 2. Thème de couleurs =====
