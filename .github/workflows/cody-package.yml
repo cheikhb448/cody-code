@@ -196,6 +196,7 @@ jobs:
         run: node cody-tests/phase8-bureau.mjs "$(dirname "$GITHUB_WORKSPACE")/VSCode-win32-x64" "Cody Code.exe"
 
       - name: Fabriquer l'installateur Windows
+        if: always()
         continue-on-error: true
         run: |
           SIGNDIR=$(ls -d "/c/Program Files (x86)/Windows Kits/10/bin/"*/x64 | sort -V | tail -1)
@@ -205,6 +206,7 @@ jobs:
           ls -la .build/win32-x64/user-setup | head
 
       - name: Archiver la version Windows (zip)
+        if: always()
         run: |
           cd "$(dirname "$GITHUB_WORKSPACE")"
           powershell -NoProfile -Command "Compress-Archive -Path VSCode-win32-x64 -DestinationPath '$GITHUB_WORKSPACE/cody-code-win32-x64.zip'"

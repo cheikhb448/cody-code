@@ -43,6 +43,8 @@ try {
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
   await page.waitForTimeout(8000);
   await page.screenshot({ path: `${LOGS}/p8-bureau${process.platform === 'win32' ? '-win' : ''}.png` });
+  // Sur une machine lente, le panneau de l'assistant peut arriver un peu plus tard : on patiente jusqu'à 40 s
+  for (let i = 0; i < 40 && !/Cody Assistant/.test(await page.evaluate(() => document.body.innerText)); i++) await page.waitForTimeout(1000);
   const texte = await page.evaluate(() => document.body.innerText);
   const classes = await page.evaluate(() => document.querySelector('.monaco-workbench')?.className ?? '');
   verifier(/Cody Assistant/.test(texte), 'panneau « Cody Assistant » affiché');
