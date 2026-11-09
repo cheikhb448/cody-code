@@ -35,6 +35,8 @@ import { RemoteFileSystemProviderClient } from '../services/remote/common/remote
 import { ConfigurationCache } from '../services/configuration/common/configurationCache.js';
 import { ISignService } from '../../platform/sign/common/sign.js';
 import { IProductService } from '../../platform/product/common/productService.js';
+import { Registry } from '../../platform/registry/common/platform.js';
+import { IConfigurationRegistry, Extensions as ConfigurationExtensions } from '../../platform/configuration/common/configurationRegistry.js';
 import { IUriIdentityService } from '../../platform/uriIdentity/common/uriIdentity.js';
 import { UriIdentityService } from '../../platform/uriIdentity/common/uriIdentityService.js';
 import { INativeKeyboardLayoutService, NativeKeyboardLayoutService } from '../services/keybinding/electron-browser/nativeKeyboardLayoutService.js';
@@ -382,6 +384,10 @@ export class DesktopMain extends Disposable {
 		policyService: IPolicyService
 	): Promise<WorkspaceService> {
 		const configurationCache = new ConfigurationCache([Schemas.file, Schemas.vscodeUserData] /* Cache all non native resources */, environmentService, fileService);
+		// Cody Code : les réglages par défaut du produit (product.json) s'appliquent aussi sur le bureau, comme sur le web
+		if (productService.configurationDefaults) {
+			Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerDefaultConfigurations([{ overrides: productService.configurationDefaults as Record<string, Record<string, unknown>> }]);
+		}
 		const workspaceService = new WorkspaceService({ remoteAuthority: environmentService.remoteAuthority, configurationCache }, environmentService, userDataProfileService, userDataProfilesService, fileService, remoteAgentService, uriIdentityService, logService, policyService);
 
 		try {

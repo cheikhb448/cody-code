@@ -122,6 +122,7 @@ export interface IProductConfiguration {
 	readonly sharedDataFolderName: string; // location for shared data (e.g. ~/.vscode-insiders-shared)
 
 	readonly builtInExtensions?: IBuiltInExtension[];
+	readonly configurationDefaults?: Record<string, unknown>; // Cody Code : réglages par défaut du produit
 	readonly walkthroughMetadata?: IProductWalkthrough[];
 	readonly featuredExtensions?: IFeaturedExtension[];
 

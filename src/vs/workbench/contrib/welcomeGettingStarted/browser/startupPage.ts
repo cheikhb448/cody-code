@@ -234,6 +234,11 @@ export class StartupPageRunnerContribution extends Disposable implements IWorkbe
 	}
 
 	private tryShowOnboarding(): void {
+		// Cody Code : pas d'écran d'accueil « GitHub Copilot » (Cody Code n'inclut pas Copilot)
+		if (true as boolean) {
+			return;
+		}
+
 		if (this.environmentService.skipWelcome) {
 			return; // skip welcome flag is set
 		}

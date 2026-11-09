@@ -44,6 +44,8 @@ try {
   verifier(/Cody Assistant/.test(texte), 'panneau « Cody Assistant » affiché');
   verifier(/DropLink/i.test(texte), 'le dossier ouvert est affiché dans l\'explorateur');
   verifier(/vs-dark|dark/.test(await page.evaluate(() => document.body.className)) || /dark/i.test(classes), 'thème sombre Cody par défaut');
+  verifier(!/Copilot|Sign In|Open in Agents|Continue with GitHub/i.test(texte), 'aucune trace de Copilot / connexion GitHub dans l\'interface');
+  verifier(await page.locator('.monaco-dialog-box, .onboarding-a').count() === 0, 'aucune fenêtre de bienvenue Copilot');
   log('interface : ' + texte.replace(/\s+/g, ' ').slice(0, 220));
   const titre = await page.title();
   log('titre de la fenêtre : ' + titre);

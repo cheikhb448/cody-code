@@ -8,6 +8,7 @@ on:
       - '.github/workflows/cody-package.yml'
       - 'cody-tests/phase8-bureau.mjs'
       - 'build/gulpfile.vscode.ts'
+      - 'src/vs/workbench/electron-browser/**'
 
 permissions:
   contents: write   # uniquement pour publier les captures d'écran sur la branche ci-captures
