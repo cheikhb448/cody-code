@@ -52,8 +52,19 @@ try {
   }
   const texte = await page.evaluate(() => document.body.innerText);
   verifier(/Restricted Mode/i.test(texte), 'mode restreint toujours actif après refus');
-  const terminaux = await page.locator('.part.panel .xterm').count();
-  verifier(terminaux === 0, `aucun terminal lancé sans confiance (terminaux : ${terminaux})`);
+  const sortie = await page.evaluate(() => [...document.querySelectorAll('.part.panel .xterm-rows')].map(e => e.innerText).join('').replace(/\s+/g, ''));
+  verifier(sortie === '', `aucun programme lancé dans le terminal sans confiance (texte : « ${sortie.slice(0, 40)} »)`);
+  // Demander un nouveau terminal : la confiance est de nouveau exigée
+  await page.keyboard.press('F1');
+  await page.waitForSelector('.quick-input-widget', { timeout: 10000 });
+  await page.keyboard.type('Terminal: Create New Terminal', { delay: 30 });
+  await page.waitForTimeout(800);
+  await page.keyboard.press('Enter');
+  let encore = false;
+  for (let i = 0; i < 10 && !encore; i++) { encore = await dialogue.filter({ hasText: /trust the authors/i }).count().then(n => n > 0); if (!encore) await page.waitForTimeout(1000); }
+  verifier(encore, 'un nouveau terminal exige aussi la confiance');
+  if (encore) await dialogue.locator('.monaco-button', { hasText: /^Cancel$/ }).first().click();
+  await page.waitForTimeout(1500);
   await page.screenshot({ path: '/tmp/cody-logs/p7-confiance-2.png' });
 
   // 3. En mode restreint, le terminal demande confiance avant d'ouvrir un terminal et un fichier s'édite quand même
