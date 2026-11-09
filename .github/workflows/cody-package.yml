@@ -62,7 +62,7 @@ jobs:
 
       - name: Retirer ce qui ne fait pas partie de Cody Code (Copilot, extensions de test Microsoft)
         run: |
-          rm -rf extensions/copilot extensions/vscode-api-tests extensions/vscode-colorize-tests extensions/vscode-colorize-perf-tests extensions/vscode-test-resolver
+          rm -rf extensions/copilot   # les extensions de test Microsoft sont exclues par l'empaquetage lui-même
           node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('product.json','utf8'));p.commit=process.env.GITHUB_SHA;fs.writeFileSync('product.json',JSON.stringify(p,null,2))"
 
       - name: Télécharger les extensions intégrées libres
@@ -71,6 +71,7 @@ jobs:
 
       - name: Construire la version Linux
         run: |
+          set -o pipefail
           mkdir -p /tmp/cody-logs
           npm run gulp vscode-linux-x64 2>&1 | tee /tmp/cody-logs/build-linux.log | tail -n 60
           ls "$(dirname "$GITHUB_WORKSPACE")/VSCode-linux-x64" | head -30
