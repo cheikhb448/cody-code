@@ -148,10 +148,10 @@ export function createWorkbenchContentSecurityPolicy(scriptNonce: string, nlsBas
 		'media-src \'self\';',
 		`script-src 'self' 'unsafe-eval' ${nlsBaseUrl ?? ''} blob: 'nonce-${scriptNonce}' '${webWorkerExtensionHostIframeScriptSHA}' 'sha256-/r7rqQ+yrxt57sxLuQ6AMYcy/lUpvAIzHjIJt/OeLWU=' ${useTestResolver ? '' : `http://${remoteAuthority}`};`,  // the sha is the same as in src/vs/workbench/services/extensions/worker/webWorkerExtensionHostIframe.html
 		'child-src \'self\';',
-		`frame-src 'self' https://*.vscode-cdn.net data:;`,
+		`frame-src 'self' http://*.localhost:* data:;`, // Cody Code : aperçus servis localement (plus de CDN Microsoft)
 		'worker-src \'self\' data: blob:;',
 		'style-src \'self\' \'unsafe-inline\';',
-		'connect-src \'self\' ws: wss: https: http://localhost:* http://127.0.0.1:* http://[::1]:*;', // Cody Code : + services d'IA tournant sur cet ordinateur (ex. Ollama)
+		'connect-src \'self\' ws: wss: https: http://localhost:* http://127.0.0.1:*;', // Cody Code : + services d'IA tournant sur cet ordinateur (ex. Ollama)
 		'font-src \'self\' blob:;',
 		'manifest-src \'self\';'
 	].join(' ');
@@ -395,7 +395,6 @@ export class WebClientServer {
 
 		const productConfiguration: Partial<Mutable<IProductConfiguration>> = {
 			embedderIdentifier: 'server-distro',
-			voiceWsUrl: this._productService.voiceWsUrl,
 			...({ codyVersion: (this._productService as unknown as { codyVersion?: string }).codyVersion } as object),
 			extensionsGallery: this._webExtensionResourceUrlTemplate && this._productService.extensionsGallery ? {
 				...this._productService.extensionsGallery,
@@ -414,8 +413,18 @@ export class WebClientServer {
 			} catch (err) {/* Ignore Error */ }
 		}
 
+		// Cody Code : les aperçus (Markdown, extensions…) sont servis par ce serveur local
+		// au lieu du CDN de Microsoft. Possible seulement sans jeton de connexion et quand
+		// on accède par « localhost » (les sous-domaines *.localhost pointent vers cet ordinateur).
+		let webviewEndpoint: string | undefined;
+		const localHost = /^(?:localhost|127\.0\.0\.1)(:\d+)?$/i.exec(remoteAuthority);
+		if (this._connectionToken.type === ServerConnectionTokenType.None && localHost) {
+			webviewEndpoint = `http://{{uuid}}.localhost${localHost[1] ?? ''}${staticRoute}/out/vs/workbench/contrib/webview/browser/pre/`;
+		}
+
 		const workbenchWebConfiguration = {
 			remoteAuthority,
+			webviewEndpoint,
 			serverBasePath: basePath,
 			_wrapWebWorkerExtHostInIframe,
 			developmentOptions: { enableSmokeTestDriver: this._environmentService.args['enable-smoke-test-driver'] ? true : undefined, logLevel: this._logService.getLevel() },

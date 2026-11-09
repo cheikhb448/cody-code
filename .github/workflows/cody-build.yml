@@ -172,6 +172,10 @@ jobs:
         if: always()
         run: node cody-tests/phase6-extensions.mjs
 
+      - name: Test - sécurité réseau, aucun contact inattendu (phase 7)
+        if: always()
+        run: node cody-tests/phase7-reseau.mjs
+
       - name: Vérification du code Cody (types TypeScript)
         if: always()
         continue-on-error: true
