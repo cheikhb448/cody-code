@@ -1,0 +1,130 @@
+name: Cody Code - Version installable (Linux)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [cody-main]
+    paths:
+      - '.github/workflows/cody-package.yml'
+      - 'cody-tests/phase8-bureau.mjs'
+
+permissions:
+  contents: write   # uniquement pour publier les captures d'écran sur la branche ci-captures
+
+jobs:
+  linux:
+    name: Construire Cody Code pour Linux (x64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      VSCODE_SKIP_PRELAUNCH: '1'
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+      NPM_CONFIG_FUND: 'false'
+      NPM_CONFIG_AUDIT: 'false'
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Libérer de la place sur le disque
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/boost /opt/hostedtoolcache/CodeQL /usr/local/.ghcup /usr/share/swift
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
+          df -h / | cat
+
+      - name: Ajouter de la mémoire de secours (swap)
+        run: |
+          sudo fallocate -l 8G /mnt/swapfile
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          free -h
+
+      - name: Installer Node (version exigée par le projet)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Installer les bibliothèques système
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libxkbfile-dev libsecret-1-dev libkrb5-dev libx11-dev libgbm1 \
+            xvfb fakeroot dpkg-dev libgtk-3-0t64 libnss3 libasound2t64 libxss1 libatk-bridge2.0-0t64 libxkbfile1 libsecret-1-0 libdrm2 libxdamage1 libcups2t64
+
+      - name: Installer les dépendances
+        run: |
+          set -e
+          for i in 1 2 3; do
+            npm ci && break
+            if [ "$i" -eq 3 ]; then echo "npm ci a échoué 3 fois" >&2; exit 1; fi
+          done
+          npm cache clean --force || true
+
+      - name: Retirer ce qui ne fait pas partie de Cody Code (Copilot, extensions de test Microsoft)
+        run: |
+          rm -rf extensions/copilot extensions/vscode-api-tests extensions/vscode-colorize-tests extensions/vscode-colorize-perf-tests extensions/vscode-test-resolver
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('product.json','utf8'));p.commit=process.env.GITHUB_SHA;fs.writeFileSync('product.json',JSON.stringify(p,null,2))"
+
+      - name: Télécharger les extensions intégrées libres
+        continue-on-error: true
+        run: npm run download-builtin-extensions
+
+      - name: Construire la version Linux
+        run: |
+          mkdir -p /tmp/cody-logs
+          npm run gulp vscode-linux-x64 2>&1 | tee /tmp/cody-logs/build-linux.log | tail -n 60
+          ls "$(dirname "$GITHUB_WORKSPACE")/VSCode-linux-x64" | head -30
+          df -h / | cat
+
+      - name: Installer le navigateur de test
+        run: npm install --no-save --prefix /tmp/pw playwright
+
+      - name: Test - la version installée démarre
+        run: xvfb-run -a node cody-tests/phase8-bureau.mjs "$(dirname "$GITHUB_WORKSPACE")/VSCode-linux-x64"
+
+      - name: Fabriquer le paquet .deb
+        continue-on-error: true
+        run: |
+          npm run gulp vscode-linux-x64-prepare-deb
+          npm run gulp vscode-linux-x64-build-deb
+          find .build/linux -name '*.deb' | head
+
+      - name: Archiver la version Linux
+        run: |
+          cd "$(dirname "$GITHUB_WORKSPACE")"
+          tar -czf "$GITHUB_WORKSPACE/cody-code-linux-x64.tar.gz" VSCode-linux-x64
+          ls -lh "$GITHUB_WORKSPACE/cody-code-linux-x64.tar.gz"
+
+      - name: Publier les captures d'écran (branche ci-captures)
+        if: always()
+        run: |
+          set -e
+          mkdir -p /tmp/captures
+          cp /tmp/cody-logs/*.png /tmp/captures/ 2>/dev/null || true
+          cd /tmp/captures
+          git init -q
+          git checkout -q -b ci-captures
+          git config user.name "Cody CI"
+          git config user.email "ci@cody-code.local"
+          git add -A
+          git commit -q -m "Captures du paquet ${{ github.run_id }}" || exit 0
+          git fetch -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ci-captures || true
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ci-captures
+
+      - name: Envoyer le paquet
+        uses: actions/upload-artifact@v4
+        with:
+          name: cody-code-linux-x64
+          path: |
+            cody-code-linux-x64.tar.gz
+            .build/linux/deb/**/*.deb
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Envoyer les journaux
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: journaux-paquet
+          path: /tmp/cody-logs
+          if-no-files-found: ignore
