@@ -35,21 +35,25 @@ try {
   await page.goto(`http://127.0.0.1:8081/?folder=${dossier}`, { waitUntil: 'load' });
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
 
-  // 1. La fenêtre « faites-vous confiance ? » apparaît
-  const dialogue = page.locator('.monaco-dialog-box');
-  let vu = false;
-  for (let i = 0; i < 30 && !vu; i++) { vu = await dialogue.filter({ hasText: /trust the authors/i }).count().then(n => n > 0); if (!vu) await page.waitForTimeout(1000); }
-  verifier(vu, 'fenêtre de confiance du dossier affichée au premier ouverture');
+  // 1. Dossier inconnu = mode restreint dès l'ouverture (bandeau + barre d'état)
+  await page.waitForTimeout(6000);
+  const texte0 = await page.evaluate(() => document.body.innerText);
+  verifier(/Restricted Mode/i.test(texte0), 'dossier inconnu : mode restreint actif dès l\'ouverture');
   await page.screenshot({ path: '/tmp/cody-logs/p7-confiance-1.png' });
 
-  // 2. Refuser : le mode restreint s'active
+  // 2. Le terminal (qui exécute du code) demande la confiance ; refuser le garde fermé
+  const dialogue = page.locator('.monaco-dialog-box');
+  let vu = false;
+  for (let i = 0; i < 20 && !vu; i++) { vu = await dialogue.filter({ hasText: /trust the authors/i }).count().then(n => n > 0); if (!vu) await page.waitForTimeout(1000); }
+  verifier(vu, 'le terminal demande la confiance du dossier avant de lancer du code');
   if (vu) {
-    await dialogue.locator('.monaco-button', { hasText: /don.t trust/i }).first().click();
-    await page.waitForTimeout(3000);
+    await dialogue.locator('.monaco-button', { hasText: /^Cancel$/ }).first().click();
+    await page.waitForTimeout(2500);
   }
   const texte = await page.evaluate(() => document.body.innerText);
-  const restreint = /Restricted Mode/i.test(texte);
-  verifier(restreint, 'mode restreint actif après refus de confiance');
+  verifier(/Restricted Mode/i.test(texte), 'mode restreint toujours actif après refus');
+  const terminaux = await page.locator('.part.panel .xterm').count();
+  verifier(terminaux === 0, `aucun terminal lancé sans confiance (terminaux : ${terminaux})`);
   await page.screenshot({ path: '/tmp/cody-logs/p7-confiance-2.png' });
 
   // 3. En mode restreint, le terminal demande confiance avant d'ouvrir un terminal et un fichier s'édite quand même
