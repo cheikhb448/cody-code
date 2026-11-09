@@ -180,6 +180,10 @@ jobs:
         if: always()
         run: node cody-tests/phase7-confiance.mjs
 
+      - name: Test - cloner un dépôt (phase 8.1)
+        if: always()
+        run: node cody-tests/phase8-clone.mjs
+
       - name: Vérification du code Cody (types TypeScript)
         if: always()
         continue-on-error: true
