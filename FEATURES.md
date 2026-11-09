@@ -98,15 +98,15 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Éditeur de notebooks (ouverture d'un .ipynb) — testé automatiquement, version web (phase 5)
 - ✅ Aperçu Markdown — testé automatiquement, version web (phase 5)
 - ✅ Mode sans distraction (Zen) — 🚧 plein écran non testé — testé automatiquement, version web (phase 5)
-- ⬜ Espaces de travail de confiance (Workspace Trust)
+- ✅ Espaces de travail de confiance (Workspace Trust)
 - ⬜ Développement à distance (SSH, conteneurs, WSL)
 
 ## 12. Accessibilité et sécurité
 - ⬜ Compatibilité lecteurs d'écran
 - ✅ Contraste élevé — testé automatiquement, version web (phase 5)
-- ⬜ Mode restreint pour dossiers non fiables
-- ✅ Télémétrie désactivée par défaut
-- ⬜ Audit de sécurité des dépendances
+- ✅ Mode restreint pour dossiers non fiables — testé automatiquement (phase 7)
+- ✅ Télémétrie désactivée par défaut — aucun contact Microsoft vérifié (phase 7)
+- ✅ Audit de sécurité des dépendances — failles corrigées ; 7 restantes sans correctif, dans des paquets non utilisés (phase 7)
 
 ## 13. Plateformes
 - ⬜ Windows
