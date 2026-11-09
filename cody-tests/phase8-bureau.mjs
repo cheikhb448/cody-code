@@ -45,7 +45,9 @@ try {
   verifier(/DropLink/i.test(texte), 'le dossier ouvert est affiché dans l\'explorateur');
   verifier(/vs-dark|dark/.test(await page.evaluate(() => document.body.className)) || /dark/i.test(classes), 'thème sombre Cody par défaut');
   verifier(!/Copilot|Sign In|Open in Agents|Continue with GitHub/i.test(texte), 'aucune trace de Copilot / connexion GitHub dans l\'interface');
-  verifier(await page.locator('.monaco-dialog-box, .onboarding-a').count() === 0, 'aucune fenêtre de bienvenue Copilot');
+  // La seule fenêtre permise au démarrage : la demande de confiance du dossier (le terminal exécute du code)
+  const fenetres = await page.locator('.monaco-dialog-box').allInnerTexts();
+  verifier(fenetres.every(t => !/Copilot|GitHub|Sign in/i.test(t)) && await page.locator('.onboarding-a').count() === 0, `aucune fenêtre de bienvenue Copilot (fenêtres : ${fenetres.map(t => t.slice(0, 40).replace(/\s+/g, ' ')).join(' | ') || 'aucune'})`);
   log('interface : ' + texte.replace(/\s+/g, ' ').slice(0, 220));
   const titre = await page.title();
   log('titre de la fenêtre : ' + titre);
