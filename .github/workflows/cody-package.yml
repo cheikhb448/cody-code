@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/cody-package.yml'
       - 'cody-tests/phase8-bureau.mjs'
+      - 'build/gulpfile.vscode.ts'
 
 permissions:
   contents: write   # uniquement pour publier les captures d'écran sur la branche ci-captures

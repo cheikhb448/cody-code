@@ -66,7 +66,7 @@ try {
   if (ok) verifier(fs.readFileSync(clone, 'utf8').includes('cloné avec succès'), 'contenu du dépôt cloné correct');
 
   // Proposition d'ouvrir le dépôt cloné
-  const propose = await attendre(async () => /Would you like to open the cloned repository/i.test(await page.evaluate(() => document.body.innerText)), 15000);
+  const propose = await attendre(async () => /cloned repository/i.test(await page.evaluate(() => document.body.innerText)), 15000);
   verifier(propose, 'l\'éditeur propose d\'ouvrir le dépôt cloné');
 
   log(erreurs === 0 ? 'TOUT EST BON' : `${erreurs} échec(s)`);

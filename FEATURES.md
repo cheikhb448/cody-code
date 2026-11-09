@@ -51,7 +51,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Branches (créer, changer, fusionner) — testé automatiquement, version web (phase 5)
 - ✅ Comparaison visuelle des changements — testé automatiquement, version web (phase 5)
 - ✅ Résolution de conflits de fusion — testé automatiquement, version web (phase 5)
-- ✅ Push / pull (testés avec un dépôt distant) — 🚧 clone pas encore testé
+- ✅ Push / pull (testés avec un dépôt distant) — clone testé (phase 8)
 - ✅ Indicateurs de modification dans la marge — testé automatiquement, version web (phase 5)
 
 ## 6. Exécution et débogage
