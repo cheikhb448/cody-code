@@ -385,8 +385,8 @@ export class DesktopMain extends Disposable {
 	): Promise<WorkspaceService> {
 		const configurationCache = new ConfigurationCache([Schemas.file, Schemas.vscodeUserData] /* Cache all non native resources */, environmentService, fileService);
 		// Cody Code : les réglages par défaut du produit (product.json) s'appliquent aussi sur le bureau, comme sur le web
-		if (productService.configurationDefaults) {
-			Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerDefaultConfigurations([{ overrides: productService.configurationDefaults as Record<string, Record<string, unknown>> }]);
+		if (product.configurationDefaults) {
+			Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration).registerDefaultConfigurations([{ overrides: product.configurationDefaults as Record<string, Record<string, unknown>> }]);
 		}
 		const workspaceService = new WorkspaceService({ remoteAuthority: environmentService.remoteAuthority, configurationCache }, environmentService, userDataProfileService, userDataProfilesService, fileService, remoteAgentService, uriIdentityService, logService, policyService);
 
