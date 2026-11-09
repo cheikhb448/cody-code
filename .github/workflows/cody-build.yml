@@ -176,6 +176,10 @@ jobs:
         if: always()
         run: node cody-tests/phase7-reseau.mjs
 
+      - name: Test - confiance du dossier et mode restreint (phase 7)
+        if: always()
+        run: node cody-tests/phase7-confiance.mjs
+
       - name: Vérification du code Cody (types TypeScript)
         if: always()
         continue-on-error: true

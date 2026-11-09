@@ -24,14 +24,18 @@ let browser;
 try {
   browser = await chromium.launch();
   const context = await browser.newContext({ viewport: { width: 1671, height: 941 }, locale: 'en-US' });
+  // Adresses « virtuelles » (répondues sur place par l'éditeur, jamais envoyées sur internet) : on ne compte que les vraies sorties
   const hotes = new Map();
-  context.on('request', r => {
+  const virtuelles = new Map();
+  const noter = (carte, url) => {
     try {
-      const u = new URL(r.url());
+      const u = new URL(url);
       if (u.protocol === 'data:' || u.protocol === 'blob:') return;
-      hotes.set(u.hostname, (hotes.get(u.hostname) ?? 0) + 1);
+      carte.set(u.hostname, (carte.get(u.hostname) ?? 0) + 1);
     } catch { /* ignoré */ }
-  });
+  };
+  context.on('response', r => { if (r.fromServiceWorker()) noter(virtuelles, r.url()); else noter(hotes, r.url()); });
+  context.on('requestfailed', r => noter(hotes, r.url()));
   const page = await context.newPage();
   page.on('pageerror', e => log('ERREUR PAGE: ' + e.message.slice(0, 160)));
   await page.goto(`http://127.0.0.1:8080/?folder=${dossier}`, { waitUntil: 'load' });
@@ -68,7 +72,7 @@ try {
 
   // 2. Catalogue d'extensions (Open VSX)
   try {
-    await page.keyboard.press('Control+Shift+x');
+    await commande('View: Show Extensions');
     await page.waitForSelector('.extensions-viewlet', { timeout: 15000 });
     await page.waitForTimeout(500);
     await page.keyboard.type('yaml', { delay: 30 });
@@ -78,6 +82,7 @@ try {
   await page.waitForTimeout(8000);
   const liste = [...hotes.entries()].map(([h, n]) => `${h} (${n})`).join(', ');
   log('serveurs contactés : ' + liste);
+  log('adresses virtuelles (réponse sur place) : ' + [...virtuelles.keys()].map(h => h.replace(/^.*?\./, '…')).join(', '));
   const intrus = [...hotes.keys()].filter(h => !autorise(h));
   verifier(intrus.length === 0, intrus.length === 0 ? 'aucun serveur inattendu contacté' : 'serveurs inattendus : ' + intrus.join(', '));
   verifier(![...hotes.keys()].some(h => /microsoft|vscode-cdn|visualstudio|github|aka\.ms|applicationinsights|vsassets/i.test(h)), 'aucun contact avec Microsoft ni GitHub');

@@ -65,7 +65,8 @@ try {
   verifier(terminalOuvert >= 1, 'panneau du bas ouvert avec le terminal au démarrage');
   const styles = await page.evaluate(() => {
     const t = document.querySelector('.part.sidebar .title-label h2');
-    const b = document.querySelector('.part.sidebar .pane-header .title');
+    // Les autres sections (BRANCHES…) en majuscules ; la racine du projet (DropLink) garde son nom normal comme sur la maquette
+    const b = [...document.querySelectorAll('.part.sidebar .pane')].find(p => !p.querySelector('.explorer-folders-view'))?.querySelector('.pane-header .title');
     const ed = document.querySelector('.monaco-editor .view-line');
     return { titre: t ? getComputedStyle(t).textTransform : null, section: b ? getComputedStyle(b).textTransform : null, hauteurLigne: ed ? ed.getBoundingClientRect().height : null };
   });
