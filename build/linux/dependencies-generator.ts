@@ -12,6 +12,7 @@ import { referenceGeneratedDepsByArch as rpmGeneratedDeps } from './rpm/dep-list
 import { type DebianArchString, isDebianArchString } from './debian/types.ts';
 import { isRpmArchString, type RpmArchString } from './rpm/types.ts';
 import product from '../../product.json' with { type: 'json' };
+import * as fs from 'fs';
 
 // A flag that can easily be toggled.
 // Make sure to compile the build directory after toggling the value.
@@ -57,7 +58,11 @@ export async function getDependencies(packageType: 'deb' | 'rpm', buildDir: stri
 	// Add the native modules
 	const files = findResult.stdout.toString().trimEnd().split('\n');
 	// Add the tunnel binary.
-	files.push(path.join(buildDir, 'bin', product.tunnelApplicationName));
+	// Cody Code : pas de programme « tunnel » Microsoft, on ne l'ajoute que s'il existe
+	const tunnelPath = path.join(buildDir, 'bin', product.tunnelApplicationName);
+	if (fs.existsSync(tunnelPath)) {
+		files.push(tunnelPath);
+	}
 	// Add the main executable.
 	files.push(appPath);
 	// Add chrome sandbox and crashpad handler.

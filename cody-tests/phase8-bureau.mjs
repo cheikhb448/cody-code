@@ -1,6 +1,8 @@
 // Test Phase 8 : la version installable (bureau) démarre et affiche Cody Code.
-import { _electron as electron } from '/tmp/pw/node_modules/playwright/index.mjs';
 import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
+
+const { _electron: electron } = await import(pathToFileURL(process.env.PW_PATH || '/tmp/pw/node_modules/playwright/index.mjs').href);
 
 const lignes = [];
 const log = m => { console.log(m); lignes.push(m); };
@@ -12,12 +14,14 @@ let erreurs = 0;
 const verifier = (ok, msg) => { log((ok ? 'OK ' : 'ÉCHEC ') + msg); if (!ok) erreurs++; };
 
 const racine = process.argv[2] || '/home/runner/work/VSCode-linux-x64';
-const exe = `${racine}/cody-code`;
-const dossier = '/tmp/DropLink8';
+const exe = `${racine}/${process.argv[3] || 'cody-code'}`;
+const TMP = process.env.CODY_TMP || '/tmp';
+const LOGS = process.env.CODY_LOGS || '/tmp/cody-logs';
+const dossier = `${TMP}/DropLink8`;
 fs.rmSync(dossier, { recursive: true, force: true });
 fs.cpSync('cody-tests/fixtures/DropLink', dossier, { recursive: true });
-fs.mkdirSync('/tmp/cody-logs', { recursive: true });
-fs.rmSync('/tmp/cody-desk', { recursive: true, force: true });
+fs.mkdirSync(LOGS, { recursive: true });
+fs.rmSync(`${TMP}/cody-desk`, { recursive: true, force: true });
 
 verifier(fs.existsSync(exe), `programme présent (${exe})`);
 const ext = `${racine}/resources/app/extensions`;
@@ -31,14 +35,14 @@ let app;
 try {
   app = await electron.launch({
     executablePath: exe,
-    args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--user-data-dir=/tmp/cody-desk/data', '--extensions-dir=/tmp/cody-desk/ext', dossier],
+    args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', `--user-data-dir=${TMP}/cody-desk/data`, `--extensions-dir=${TMP}/cody-desk/ext`, dossier],
     timeout: 120000
   });
   const page = await app.firstWindow();
   page.on('pageerror', e => log('ERREUR PAGE: ' + e.message.slice(0, 160)));
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
   await page.waitForTimeout(8000);
-  await page.screenshot({ path: '/tmp/cody-logs/p8-bureau.png' });
+  await page.screenshot({ path: `${LOGS}/p8-bureau${process.platform === 'win32' ? '-win' : ''}.png` });
   const texte = await page.evaluate(() => document.body.innerText);
   const classes = await page.evaluate(() => document.querySelector('.monaco-workbench')?.className ?? '');
   verifier(/Cody Assistant/.test(texte), 'panneau « Cody Assistant » affiché');

@@ -1,4 +1,4 @@
-name: Cody Code - Version installable (Linux)
+name: Cody Code - Versions installables
 
 on:
   workflow_dispatch:
@@ -9,13 +9,14 @@ on:
       - 'cody-tests/phase8-bureau.mjs'
       - 'build/gulpfile.vscode.ts'
       - 'src/vs/workbench/electron-browser/**'
+      - 'build/linux/**'
 
 permissions:
   contents: write   # uniquement pour publier les captures d'écran sur la branche ci-captures
 
 jobs:
   linux:
-    name: Construire Cody Code pour Linux (x64)
+    name: Linux (x64)
     runs-on: ubuntu-24.04
     timeout-minutes: 150
     env:
@@ -130,4 +131,93 @@ jobs:
         with:
           name: journaux-paquet
           path: /tmp/cody-logs
+          if-no-files-found: ignore
+
+  windows:
+    name: Windows (x64)
+    runs-on: windows-2022
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: bash
+    env:
+      VSCODE_SKIP_PRELAUNCH: '1'
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+      NPM_CONFIG_FUND: 'false'
+      NPM_CONFIG_AUDIT: 'false'
+      CODY_TMP: C:/cody-tmp
+      CODY_LOGS: C:/cody-tmp/logs
+      PW_PATH: C:/cody-tmp/pw/node_modules/playwright/index.mjs
+    steps:
+      - name: Autoriser les chemins longs
+        run: git config --system core.longpaths true
+
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node (version exigée par le projet)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Installer les dépendances
+        run: |
+          set -e
+          for i in 1 2 3; do
+            npm ci && break
+            if [ "$i" -eq 3 ]; then echo "npm ci a échoué 3 fois" >&2; exit 1; fi
+          done
+
+      - name: Retirer Copilot et fixer la version
+        run: |
+          rm -rf extensions/copilot
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('product.json','utf8'));p.commit=process.env.GITHUB_SHA;fs.writeFileSync('product.json',JSON.stringify(p,null,2))"
+
+      - name: Télécharger les extensions intégrées libres
+        continue-on-error: true
+        run: npm run download-builtin-extensions
+
+      - name: Construire la version Windows
+        run: |
+          set -o pipefail
+          mkdir -p "$CODY_LOGS"
+          npm run gulp vscode-win32-x64 2>&1 | tee "$CODY_LOGS/build-win.log" | tail -n 60
+          ls "$(dirname "$GITHUB_WORKSPACE")/VSCode-win32-x64" | head -30
+
+      - name: Installer le navigateur de test
+        run: npm install --no-save --prefix C:/cody-tmp/pw playwright
+
+      - name: Test - la version Windows démarre
+        run: node cody-tests/phase8-bureau.mjs "$(dirname "$GITHUB_WORKSPACE")/VSCode-win32-x64" "Cody Code.exe"
+
+      - name: Fabriquer l'installateur Windows
+        continue-on-error: true
+        run: |
+          npm run gulp vscode-win32-x64-inno-updater
+          npm run gulp vscode-win32-x64-user-setup
+          ls -la .build/win32-x64/user-setup | head
+
+      - name: Archiver la version Windows (zip)
+        run: |
+          cd "$(dirname "$GITHUB_WORKSPACE")"
+          powershell -NoProfile -Command "Compress-Archive -Path VSCode-win32-x64 -DestinationPath '$GITHUB_WORKSPACE/cody-code-win32-x64.zip'"
+          ls -la "$GITHUB_WORKSPACE/cody-code-win32-x64.zip"
+
+      - name: Envoyer le paquet Windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: cody-code-win32-x64
+          path: |
+            cody-code-win32-x64.zip
+            .build/win32-x64/user-setup/*.exe
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Envoyer les journaux Windows
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: journaux-windows
+          path: C:/cody-tmp/logs
           if-no-files-found: ignore
