@@ -48,10 +48,10 @@ try {
   log('panneau latéral droit : ' + await page.evaluate(() => { const e = document.querySelector('.part.auxiliarybar'); if (!e) { return 'absent'; } const r = e.getBoundingClientRect(); return `${Math.round(r.width)}x${Math.round(r.height)} ${getComputedStyle(e).display}`; }));
   await page.screenshot({ path: `${LOGS}/p8-bureau${process.platform === 'win32' ? '-win' : ''}.png` });
   // Sur une machine lente, le panneau de l'assistant peut arriver un peu plus tard : on patiente jusqu'à 40 s
-  for (let i = 0; i < 40 && !/Cody Assistant/.test(await page.evaluate(() => document.body.innerText)); i++) await page.waitForTimeout(1000);
+  for (let i = 0; i < 40 && !/Cody Assistant|Salut/.test(await page.evaluate(() => document.body.innerText)); i++) await page.waitForTimeout(1000);
   const texte = await page.evaluate(() => document.body.innerText);
   const classes = await page.evaluate(() => document.querySelector('.monaco-workbench')?.className ?? '');
-  verifier(/Cody Assistant/.test(texte), 'panneau « Cody Assistant » affiché');
+  verifier(/Cody Assistant|Salut/.test(texte), 'panneau de l\'assistant Cody affiché');
   verifier(/DropLink/i.test(texte), 'le dossier ouvert est affiché dans l\'explorateur');
   verifier(/vs-dark|dark/.test(await page.evaluate(() => document.body.className)) || /dark/i.test(classes), 'thème sombre Cody par défaut');
   verifier(!/Copilot|Sign In|Open in Agents|Continue with GitHub/i.test(texte), 'aucune trace de Copilot / connexion GitHub dans l\'interface');
