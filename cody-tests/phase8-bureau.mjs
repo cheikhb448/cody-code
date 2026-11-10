@@ -41,7 +41,11 @@ try {
   const page = await app.firstWindow();
   page.on('pageerror', e => log('ERREUR PAGE: ' + e.message.slice(0, 160)));
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
+  // Écran de test parfois petit (Windows) : on agrandit la fenêtre comme sur un vrai ordinateur
+  await app.evaluate(({ BrowserWindow }) => { const w = BrowserWindow.getAllWindows()[0]; w.setSize(1400, 900); w.center(); }).catch(() => {});
   await page.waitForTimeout(8000);
+  log('taille de la fenêtre : ' + await page.evaluate(() => `${window.innerWidth}x${window.innerHeight}`));
+  log('panneau latéral droit : ' + await page.evaluate(() => { const e = document.querySelector('.part.auxiliarybar'); if (!e) { return 'absent'; } const r = e.getBoundingClientRect(); return `${Math.round(r.width)}x${Math.round(r.height)} ${getComputedStyle(e).display}`; }));
   await page.screenshot({ path: `${LOGS}/p8-bureau${process.platform === 'win32' ? '-win' : ''}.png` });
   // Sur une machine lente, le panneau de l'assistant peut arriver un peu plus tard : on patiente jusqu'à 40 s
   for (let i = 0; i < 40 && !/Cody Assistant/.test(await page.evaluate(() => document.body.innerText)); i++) await page.waitForTimeout(1000);

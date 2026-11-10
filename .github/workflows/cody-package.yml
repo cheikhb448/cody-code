@@ -212,6 +212,20 @@ jobs:
           powershell -NoProfile -Command "Compress-Archive -Path VSCode-win32-x64 -DestinationPath '$GITHUB_WORKSPACE/cody-code-win32-x64.zip'"
           ls -la "$GITHUB_WORKSPACE/cody-code-win32-x64.zip"
 
+      - name: Publier les captures d'écran Windows (branche ci-captures-win)
+        if: always()
+        run: |
+          set -e
+          mkdir -p C:/cody-tmp/captures-w && cp C:/cody-tmp/logs/*.png C:/cody-tmp/captures-w/ 2>/dev/null || exit 0
+          cd C:/cody-tmp/captures-w
+          git init -q
+          git checkout -q -b ci-captures-win
+          git config user.name "Cody CI"
+          git config user.email "ci@cody-code.local"
+          git add -A
+          git commit -q -m "Captures Windows ${{ github.run_id }}" || exit 0
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ci-captures-win || true
+
       - name: Envoyer le paquet Windows
         uses: actions/upload-artifact@v4
         with:
