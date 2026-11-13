@@ -123,3 +123,10 @@ Cody Code est basé sur [Code - OSS](https://github.com/microsoft/vscode), publi
 - Cody Assistant : brancher n'importe quel service « compatible OpenAI » (Ollama sur son ordinateur, ou un service en ligne avec sa propre clé) via la commande « Cody Assistant : configurer le service d'IA ». Aucun service n'est choisi par défaut. Pas encore de réponses « en direct » (flux) ni d'analyse du projet entier (Codebase).
 - Le raccourci affiché dans la barre de recherche est Ctrl + P (celui de VS Code), pas Ctrl + K.
 - Français : le paquet de langue libre (Open VSX) couvre environ 76 % des textes ; le reste reste en anglais.
+
+## Améliorations d'après les plaintes des développeurs (phase 9)
+- ⬜ Mémoire de l'éditeur affichée dans la barre d'état (clic = extensions actives) — en test
+- ⬜ Recherche et surveillance de fichiers qui ignorent node_modules, dist, .next, .venv… — en test
+- ✅ Aucune IA imposée (pas de Copilot, jamais d'envoi sans accord)
+- ✅ Télémétrie coupée, pas de mise à jour automatique qui change l'interface
+- ⬜ Terminal sans suggestions intempestives, mémoire de TypeScript limitée (PC modestes) — réglages par défaut posés, à confirmer

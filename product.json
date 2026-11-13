@@ -251,7 +251,31 @@
 		"editor.lineHeight": 19,
 		"cody.assistant.userName": "Cheikh",
 		"workbench.navigationControl.enabled": false,
-		"git.blame.statusBarItem.enabled": false
+		"git.blame.statusBarItem.enabled": false,
+		"files.watcherExclude": {
+			"**/.git/objects/**": true,
+			"**/.git/subtree-cache/**": true,
+			"**/.hg/store/**": true,
+			"**/node_modules/**": true,
+			"**/dist/**": true,
+			"**/.next/**": true,
+			"**/__pycache__/**": true,
+			"**/.venv/**": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/bower_components": true,
+			"**/*.code-search": true,
+			"**/dist": true,
+			"**/.next": true,
+			"**/__pycache__": true,
+			"**/.venv": true
+		},
+		"search.followSymlinks": false,
+		"editor.stickyScroll.enabled": false,
+		"terminal.integrated.suggest.enabled": false,
+		"typescript.tsserver.maxTsServerMemory": 1536,
+		"extensions.ignoreRecommendations": true
 	},
 	"codyVersion": "1.0.0",
 	"extensionsGallery": {

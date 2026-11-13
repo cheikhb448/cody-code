@@ -184,6 +184,10 @@ jobs:
         if: always()
         run: node cody-tests/phase8-clone.mjs
 
+      - name: Test - améliorations demandées par les développeurs (phase 9)
+        if: always()
+        run: node cody-tests/phase9-ameliorations.mjs
+
       - name: Vérification du code Cody (types TypeScript)
         if: always()
         continue-on-error: true

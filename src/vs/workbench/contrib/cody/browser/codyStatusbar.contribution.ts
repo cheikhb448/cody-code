@@ -3,7 +3,8 @@
  *  Basé sur Code - OSS (Microsoft Corporation, licence MIT).
  *--------------------------------------------------------------------------------------------*/
 
-import { Disposable } from '../../../../base/common/lifecycle.js';
+import { Disposable, MutableDisposable } from '../../../../base/common/lifecycle.js';
+import { mainWindow } from '../../../../base/browser/window.js';
 import { IWorkbenchContribution, WorkbenchPhase, registerWorkbenchContribution2 } from '../../../common/contributions.js';
 import { IStatusbarService, StatusbarAlignment } from '../../../services/statusbar/browser/statusbar.js';
 import { IProductService } from '../../../../platform/product/common/productService.js';
@@ -40,7 +41,40 @@ class CodyStatusbarContribution extends Disposable implements IWorkbenchContribu
 			ariaLabel: 'Prêt',
 			color: '#17f5cc'
 		}, 'cody.statusbar.ready', StatusbarAlignment.RIGHT, -10000));
+
+		// À droite : mémoire utilisée par l'éditeur (utile sur un PC modeste). Un clic ouvre la liste des
+		// extensions actives, pour repérer celles qui consomment trop.
+		const lireMemoireMo = (): number | undefined => {
+			const memoire = (mainWindow.performance as unknown as { memory?: { usedJSHeapSize?: number } }).memory;
+			return memoire?.usedJSHeapSize ? Math.round(memoire.usedJSHeapSize / (1024 * 1024)) : undefined;
+		};
+		if (lireMemoireMo() !== undefined) {
+			const entree = this._register(new MutableDisposable());
+			const afficher = () => {
+				const mo = lireMemoireMo();
+				if (mo === undefined) {
+					return;
+				}
+				const texte = `$(pulse) ${mo} Mo`;
+				if (this.dernierTexte === texte) {
+					return;
+				}
+				this.dernierTexte = texte;
+				entree.value = statusbarService.addEntry({
+					name: 'Cody Code mémoire',
+					text: texte,
+					ariaLabel: `Mémoire utilisée par l'éditeur : ${mo} Mo`,
+					tooltip: 'Mémoire utilisée par l\'éditeur. Clique pour voir les extensions actives et trouver celles qui consomment trop.',
+					command: 'workbench.action.showRuntimeExtensions'
+				}, 'cody.statusbar.memory', StatusbarAlignment.RIGHT, -9000);
+			};
+			afficher();
+			const minuteur = mainWindow.setInterval(afficher, 15000);
+			this._register({ dispose: () => mainWindow.clearInterval(minuteur) });
+		}
 	}
+
+	private dernierTexte: string | undefined;
 }
 
 registerWorkbenchContribution2(CodyStatusbarContribution.ID, CodyStatusbarContribution, WorkbenchPhase.AfterRestored);
