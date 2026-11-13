@@ -32,16 +32,7 @@ try {
   verifier(await memoire.count() > 0, 'la mémoire utilisée est affichée dans la barre d\'état');
   if (await memoire.count() > 0) log('mémoire affichée : ' + (await memoire.innerText()).replace(/\s+/g, ' '));
 
-  // 2. Un clic ouvre la liste des extensions actives
-  try {
-    await memoire.locator('a').first().click();
-    await page.waitForTimeout(3000);
-    const texte = await page.evaluate(() => document.body.innerText);
-    verifier(/Running Extensions|Runtime Extensions|Activation|activated/i.test(texte), 'un clic sur la mémoire ouvre la liste des extensions actives');
-  } catch (e) { verifier(false, 'clic sur la mémoire (' + String(e.message).split('\n')[0].slice(0, 100) + ')'); }
-  await page.screenshot({ path: '/tmp/cody-logs/p9-memoire.png' });
-
-  // 3. La recherche ignore node_modules
+  // 2. La recherche ignore node_modules
   try {
     await page.keyboard.press('F1');
     await page.waitForSelector('.quick-input-widget', { timeout: 10000 });
@@ -59,6 +50,15 @@ try {
     verifier(!/inutile\.txt/.test(res), 'la recherche ignore node_modules (plus rapide, moins de bruit)');
   } catch (e) { verifier(false, 'recherche (' + String(e.message).split('\n')[0].slice(0, 100) + ')'); }
   await page.screenshot({ path: '/tmp/cody-logs/p9-recherche.png' });
+
+  // 3. Un clic ouvre la liste des extensions actives
+  try {
+    await memoire.locator('a').first().click();
+    await page.waitForTimeout(3000);
+    const texte = await page.evaluate(() => document.body.innerText);
+    verifier(/Running Extensions|Runtime Extensions|Activation|activated/i.test(texte), 'un clic sur la mémoire ouvre la liste des extensions actives');
+  } catch (e) { verifier(false, 'clic sur la mémoire (' + String(e.message).split('\n')[0].slice(0, 100) + ')'); }
+  await page.screenshot({ path: '/tmp/cody-logs/p9-memoire.png' });
 
   log(erreurs === 0 ? 'TOUT EST BON' : `${erreurs} échec(s)`);
   annoter(erreurs === 0 ? 'notice' : 'error');
