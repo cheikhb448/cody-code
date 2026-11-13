@@ -43,7 +43,11 @@ try {
 
   // 3. La recherche ignore node_modules
   try {
-    await page.keyboard.press('Control+Shift+f');
+    await page.keyboard.press('F1');
+    await page.waitForSelector('.quick-input-widget', { timeout: 10000 });
+    await page.keyboard.type('View: Show Search', { delay: 30 });
+    await page.waitForTimeout(800);
+    await page.keyboard.press('Enter');
     await page.waitForSelector('.search-view', { timeout: 15000 });
     await page.waitForTimeout(800);
     await page.keyboard.type('MOTUNIQUE9', { delay: 30 });
