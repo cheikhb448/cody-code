@@ -57,6 +57,10 @@ try {
 	fs.mkdirSync(DOSSIER, { recursive: true });
 	const n = await extraire(buffer, DOSSIER);
 	const manifeste = JSON.parse(fs.readFileSync(path.join(DOSSIER, 'package.json'), 'utf8'));
+	// Le paquet publié contient déjà ses bibliothèques (dans dist/) : on retire la liste « dependencies »
+	// pour que la construction n'en cherche pas dans node_modules.
+	for (const cle of ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies']) { delete manifeste[cle]; }
+	fs.writeFileSync(path.join(DOSSIER, 'package.json'), JSON.stringify(manifeste, null, '\t'));
 	const theme = manifeste.contributes?.iconThemes?.[0];
 	console.log(`${n} fichiers extraits ; thème d'icônes : ${theme?.id} (${theme?.path})`);
 	if (!theme) { throw new Error('aucun thème d\'icônes dans l\'extension'); }
