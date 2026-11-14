@@ -87,6 +87,11 @@ jobs:
           ls "$(dirname "$GITHUB_WORKSPACE")/VSCode-linux-x64" | head -30
           df -h / | cat
 
+      - name: Mettre l'interface en français par défaut
+        run: |
+          for i in 1 2 3; do node build/cody/fetch-language-pack-fr.mjs /tmp/pack-fr && break; if [ "$i" -eq 3 ]; then echo "paquet français indisponible" >&2; exit 1; fi; sleep 10; done
+          node build/cody/make-nls-fr.mjs /tmp/pack-fr "$(dirname "$GITHUB_WORKSPACE")/VSCode-linux-x64/resources/app/out" --remplacer
+
       - name: Installer le navigateur de test
         run: npm install --no-save --prefix /tmp/pw playwright
 
@@ -199,6 +204,11 @@ jobs:
           export PATH="$SIGNDIR:$PATH"
           npm run gulp vscode-win32-x64 2>&1 | tee "$CODY_LOGS/build-win.log" | tail -n 60
           ls "$(dirname "$GITHUB_WORKSPACE")/VSCode-win32-x64" | head -30
+
+      - name: Mettre l'interface en français par défaut
+        run: |
+          for i in 1 2 3; do node build/cody/fetch-language-pack-fr.mjs C:/cody-tmp/pack-fr && break; if [ "$i" -eq 3 ]; then echo "paquet français indisponible" >&2; exit 1; fi; sleep 10; done
+          node build/cody/make-nls-fr.mjs C:/cody-tmp/pack-fr "$(dirname "$GITHUB_WORKSPACE")/VSCode-win32-x64/resources/app/out" --remplacer
 
       - name: Installer le navigateur de test
         run: npm install --no-save --prefix C:/cody-tmp/pw playwright

@@ -78,6 +78,34 @@ try {
   const fenetres = await page.locator('.monaco-dialog-box').allInnerTexts();
   verifier(fenetres.every(t => !/Copilot|GitHub|Sign in/i.test(t)) && await page.locator('.onboarding-a').count() === 0, `aucune fenêtre de bienvenue Copilot (fenêtres : ${fenetres.map(t => t.slice(0, 40).replace(/\s+/g, ' ')).join(' | ') || 'aucune'})`);
   log('interface : ' + texte.replace(/\s+/g, ' ').slice(0, 220));
+  // Français par défaut sur la version installée (même sur un ordinateur réglé en anglais)
+  verifier(/Explorateur/i.test(texte), 'interface en français : « Explorateur » affiché');
+  verifier(!/\bExplorer\b/i.test(texte) && !/Restricted Mode/.test(texte), 'plus de texte anglais d\'origine (Explorer, Restricted Mode)');
+  verifier(/mode restreint/i.test(texte), 'bandeau « mode restreint » en français');
+  // Stabilité : quelques actions simples, puis on vérifie que rien n'a planté et on mesure la mémoire
+  let plantage = null;
+  page.on('crash', () => { plantage = 'la fenêtre a planté'; });
+  app.on('close', () => { plantage = plantage || 'l\'application s\'est fermée'; });
+  try {
+    await page.keyboard.press('Control+Shift+X'); // extensions
+    await page.waitForTimeout(3000);
+    await page.keyboard.press('Control+Shift+E'); // explorateur
+    await page.waitForTimeout(1500);
+    await page.keyboard.press('Control+,'); // paramètres
+    await page.waitForTimeout(3000);
+    await page.keyboard.press('Control+w');
+    await page.keyboard.press('Control+`'); // terminal
+    await page.waitForTimeout(6000);
+    await page.keyboard.type('echo bonjour', { delay: 30 });
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(3000);
+    await page.waitForTimeout(15000); // on laisse tourner un moment
+  } catch (e) { log('action ignorée : ' + String(e.message).slice(0, 120)); }
+  const memoire = await app.evaluate(({ app: a }) => a.getAppMetrics().map(m => ({ type: m.type, mo: Math.round((m.memory.workingSetSize || 0) / 1024) }))).catch(() => []);
+  const total = memoire.reduce((n, m) => n + m.mo, 0);
+  log('mémoire (Mo) : ' + memoire.map(m => `${m.type}=${m.mo}`).join(' ') + ` | total=${total}`);
+  verifier(!plantage, 'aucun plantage pendant l\'utilisation' + (plantage ? ' (' + plantage + ')' : ''));
+  verifier(total > 0 && total < 2000, `mémoire totale raisonnable pour un petit PC (${total} Mo)`);
   const titre = await page.title();
   log('titre de la fenêtre : ' + titre);
   verifier(/Cody Code/.test(titre) || /DropLink/.test(titre), 'titre de la fenêtre');
