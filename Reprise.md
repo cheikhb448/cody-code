@@ -12,10 +12,10 @@
 
 | Élément | Valeur |
 |---|---|
-| Dernière mise à jour | 2026-11-14 |
+| Dernière mise à jour | 2026-11-14 (soir) |
 | Phases terminées | 0 à 10 (identité, design, assistant, parité, extensions, sécurité, Windows + Linux, améliorations, 5 remarques) |
-| Dernier état vert | run web 43616456597 (commit 119d0388) ; Release **test-14** (zip, CodyCodeSetup.exe, tar.gz) |
-| Tâche en cours | **Français par défaut sur la version installée** (rien de codé encore ; piste dans le dossier §13-A) |
+| Dernier état vert | Windows : run 43643814871 (commit 1b63eef6), Release **test-15** (zip + CodyCodeSetup.exe, en français) ; web : run 43616456597 ; Linux : dernier OK = test-14 |
+| Tâche en cours | **Français par défaut sur la version installée : FAIT et testé sur Windows** (Release test-15). Linux à reconstruire (le serveur GitHub a perdu la connexion, ce n'est pas notre code). Ensuite : alléger l'appli pour petit PC (mémoire ≈ 1 Go au repos sur Windows) |
 | Ensuite | titre de l'assistant tronqué ; écarts de design (« + » des onglets, barre d'activités, Ctrl+K) ; connexion GitHub par jeton ; macOS ; publication (accord de Cheikh avant public) ; idées « PC modeste » |
 | Bloqué ? | Non |
 
@@ -159,6 +159,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 
 | Date | Ce qui a été fait | Résultat |
 |---|---|---|
+| 2026-11-14 (soir) | Français par défaut sur la version installée : `build/cody/fetch-language-pack-fr.mjs` + `make-nls-fr.mjs --remplacer` (remplace `nls.messages.json` du paquet), étape ajoutée dans `cody-package.yml` (Windows et Linux) ; test `phase8-bureau.mjs` exige « Explorateur » / « mode restreint » et mesure la mémoire / les plantages. Windows : tout vert, mémoire totale ≈ 1052 Mo au repos | ✅ Windows OK ; Linux relancé (échec serveur GitHub) |
 | 2026-11-14 | Phases 9–10 : améliorations développeurs, 5 remarques (carré, CodyCodeSetup, icônes, couleurs, licence), Release test-14, run web vert 43616456597 ; dossier de reprise écrit | ✅ OK |
 | 2026-10-27 | Phase 4 terminée côté code : Cody Assistant (panneau, onglets, accueil, saisie, connexion IA avec accord) ; tests verts (run 40586277812) | ✅ OK |
 | 2026-10-26 | Phase 3 terminée côté code : français, BRANCHES, soleil clair/sombre, tests verts (run 40411800007) | ✅ OK |

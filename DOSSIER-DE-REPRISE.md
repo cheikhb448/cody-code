@@ -13,7 +13,7 @@
 2. Dépôt : `cheikhb448/cody-code` (privé), branche de travail **`cody-main`**. Code local : `/home/claude/cody-code` (à recloner via l'outil `add_repo` si la session est neuve).
 3. Rien ne se compile sur place : **tout se construit et se teste sur GitHub Actions** (30–50 min par run).
 4. Dernier état vert : run web `43616456597` (commit `119d0388`) ; dernière version installable : Release **`test-14`**.
-5. **Prochaine tâche : mettre l'application installée en français par défaut** (voir §13, tâche A).
+5. **Français par défaut sur l'application installée : FAIT (Windows testé, Release test-15).** Prochaine tâche : alléger l'appli pour petit PC (mémoire ≈ 1 Go au repos, voir §13-K « PC modeste »).
 
 ---
 
@@ -62,7 +62,7 @@
 | 8 | Paquets : Windows (zip + installateur), Linux (tar.gz + deb), clone Git | ✅ Windows et Linux ; **macOS ⬜** |
 | 9 | Améliorations d'après les plaintes des développeurs (mémoire visible, recherche légère, réglages légers) | ✅ (une ligne à confirmer) |
 | 10 | 5 remarques de Cheikh (carré, installateur, icônes, couleurs, licence) | ✅ |
-| 11 | **Français par défaut sur la version installée** | 🚧 **à faire maintenant** |
+| 11 | **Français par défaut sur la version installée** | ✅ Windows (test-15) ; Linux à reconstruire |
 | 12 | Publication GitHub (README, licence, nettoyage, public) | ⬜ |
 
 (Attention : le numéro des phases dans le plan initial de `Reprise.md` était différent — la phase 9 « publication » est devenue la 12 ici ; les « améliorations » et les « 5 remarques » sont venues s'insérer.)
@@ -197,7 +197,9 @@ Releases (pré-versions) sur `cheikhb448/cody-code` : `test-11`, `test-12`, **`t
 
 ## 13. CE QUI RESTE À FAIRE (par priorité)
 
-### A. 🚧 Français par défaut sur la version installée (PRIORITÉ — en cours, rien de codé encore)
+### A. ✅ Français par défaut sur la version installée (FAIT le 14 nov. soir)
+- Réalisé : `build/cody/fetch-language-pack-fr.mjs` (télécharge le paquet libre sur Open VSX) + `make-nls-fr.mjs --remplacer` (met le français dans `resources/app/out/nls.messages.json`, anglais gardé dans `nls.messages.en.json`), étape « Mettre l'interface en français par défaut » dans `cody-package.yml`. Les textes des extensions intégrées (menus Git, etc.) restent en partie en anglais.
+- Ancien plan, gardé pour mémoire :
 - Constat : l'app Windows/Linux affiche encore « EXPLORER », « Restricted Mode… ».
 - Ce que j'ai repéré : au démarrage bureau, `src/bootstrap-esm.ts` lit la variable `VSCODE_NLS_CONFIG` (préparée par le processus principal) et charge `languagePack.messagesFile` ou `defaultMessagesFile`.
 - **Piste (non réalisée)** : à la construction du paquet bureau, fabriquer le fichier de traductions françaises avec `build/cody/make-nls-fr.mjs` (même méthode que le web) ou embarquer le paquet `MS-CEINTL.vscode-language-pack-fr` (Open VSX) comme extension intégrée, et forcer la langue `fr` par défaut dans la résolution NLS du processus principal (`src/vs/base/node/nls.ts` / réglage de langue par défaut) ; ajouter l'étape dans `cody-package.yml`.

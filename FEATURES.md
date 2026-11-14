@@ -74,7 +74,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Thèmes de couleurs (thème sombre Cody par défaut, clair disponible) — couleurs vérifiées automatiquement (phase 3)
 - ⬜ Profils d'utilisateur
 - ⬜ Synchronisation des paramètres
-- ✅ Langue de l'interface : français affiché automatiquement (testé, version web ; une partie des textes reste en anglais, voir notes) (phase 3)
+- ✅ Langue de l'interface : français affiché automatiquement (testé sur la version web ET sur la version installée Windows ; une partie des textes reste en anglais, voir notes) (phases 3 et 11)
 
 ## 9. Interface Cody (design propre)
 - ✅ Identité : nom « Cody Code », logo et icônes propres (titre, icône web, manifest, fenêtre « À propos ») — testé automatiquement, version web (phase 2)
