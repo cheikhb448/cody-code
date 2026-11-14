@@ -130,3 +130,6 @@ Cody Code est basé sur [Code - OSS](https://github.com/microsoft/vscode), publi
 - ✅ Aucune IA imposée (pas de Copilot, jamais d'envoi sans accord)
 - ✅ Télémétrie coupée, pas de mise à jour automatique qui change l'interface
 - ⬜ Terminal sans suggestions intempestives, mémoire de TypeScript limitée (PC modestes) — réglages par défaut posés, à confirmer
+- ✅ Icônes colorées avec les vrais logos (Python, PDF, Docker, dossiers…) — Material Icon Theme intégré, testé sur Windows et Linux
+- ✅ Couleurs du code variées (15 couleurs, mots-clés violets/bleus, chaînes orange…) — testé
+- ✅ Installateur « CodyCodeSetup.exe », sans page de licence ; mentions légales gardées dans le dossier du logiciel
