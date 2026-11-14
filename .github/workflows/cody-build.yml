@@ -86,6 +86,10 @@ jobs:
           npm run download-builtin-extensions > /tmp/dl-ext.log 2>&1 || true
           echo "::notice title=Extensions intégrées::$(tail -c 600 /tmp/dl-ext.log | tr '\n' ' ') | $(ls .build/builtInExtensions 2>/dev/null | tr '\n' ' ')"
 
+      - name: Ajouter le thème d'icônes colorées (Material Icon Theme, licence MIT)
+        continue-on-error: true
+        run: node build/cody/fetch-icon-theme.mjs 2>&1 | tee /tmp/dl-icones.log; echo "::notice title=Thème d'icônes::$(tail -c 500 /tmp/dl-icones.log | tr '\n' ' ')"
+
       - name: Récupérer Node pour le serveur
         run: npm run gulp node
 

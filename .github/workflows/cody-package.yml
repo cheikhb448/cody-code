@@ -72,6 +72,10 @@ jobs:
         continue-on-error: true
         run: npm run download-builtin-extensions
 
+      - name: Ajouter le thème d'icônes colorées (Material Icon Theme, licence MIT)
+        continue-on-error: true
+        run: node build/cody/fetch-icon-theme.mjs
+
       - name: Construire la version Linux
         run: |
           set -o pipefail
@@ -177,6 +181,10 @@ jobs:
       - name: Télécharger les extensions intégrées libres
         continue-on-error: true
         run: npm run download-builtin-extensions
+
+      - name: Ajouter le thème d'icônes colorées (Material Icon Theme, licence MIT)
+        continue-on-error: true
+        run: node build/cody/fetch-icon-theme.mjs
 
       - name: Construire la version Windows
         run: |

@@ -66,7 +66,7 @@ try {
     const av = getComputedStyle(lab, '::before');
     const police = av.fontFamily;
     const contenu = av.content;
-    const image = av.backgroundImage !== 'none' || av.maskImage !== 'none' && av.maskImage !== undefined && av.maskImage !== '';
+    const image = (av.backgroundImage !== 'none' ? av.backgroundImage : (av.maskImage || '')).slice(-70);
     return { nom, contenu: contenu.slice(0, 6), police: police.slice(0, 40), largeur: av.width, image, classes: lab.className.replace('monaco-icon-label ', '').slice(0, 80) };
   }));
   for (const i of icones.slice(0, 40)) log('ICONE ' + JSON.stringify(i));

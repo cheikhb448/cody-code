@@ -17,6 +17,7 @@ fs.cpSync('cody-tests/fixtures/DropLink', dossier, { recursive: true });
 fs.mkdirSync(`${dossier}/node_modules/lib`, { recursive: true });
 fs.writeFileSync(`${dossier}/node_modules/lib/inutile.txt`, 'MOTUNIQUE9 dans une bibliothèque\n');
 fs.writeFileSync(`${dossier}/app/exemple.txt`, 'MOTUNIQUE9 dans mon code\n');
+for (const nom of ['exemple.py', 'document.pdf', 'notes.txt', 'Dockerfile']) fs.writeFileSync(`${dossier}/${nom}`, 'x\n');
 fs.mkdirSync('/tmp/cody-logs', { recursive: true });
 
 let browser;
@@ -26,6 +27,23 @@ try {
   await page.goto(`http://127.0.0.1:8080/?folder=${dossier}`, { waitUntil: 'load' });
   await page.waitForSelector('.monaco-workbench', { timeout: 120000 });
   await page.waitForTimeout(8000);
+
+  // 0. Icônes de fichiers : vrais logos (Python, PDF, texte, Docker) au lieu de simples pastilles
+  try {
+    const icones = await page.evaluate(() => Object.fromEntries([...document.querySelectorAll('.part.sidebar .explorer-folders-view .monaco-list-row')].map(r => {
+      const lab = r.querySelector('.monaco-icon-label');
+      const nom = (r.querySelector('.label-name')?.textContent ?? '').trim();
+      const av = lab ? getComputedStyle(lab, '::before') : null;
+      const url = av ? (av.backgroundImage !== 'none' ? av.backgroundImage : (av.maskImage || '')) : '';
+      return [nom, url];
+    })));
+    log('icônes : ' + JSON.stringify(Object.fromEntries(Object.entries(icones).map(([k, v]) => [k, v.slice(-45)]))));
+    verifier(/python/i.test(icones['exemple.py'] ?? ''), 'icône Python : logo propre');
+    verifier(/pdf/i.test(icones['document.pdf'] ?? ''), 'icône PDF présente');
+    verifier(/docker/i.test(icones['Dockerfile'] ?? ''), 'icône Docker présente');
+    verifier(/document|text|txt/i.test(icones['notes.txt'] ?? ''), 'icône fichier texte présente');
+    await page.locator('.part.sidebar').screenshot({ path: '/tmp/cody-logs/p9-icones.png' }).catch(() => {});
+  } catch (e) { verifier(false, 'icônes (' + String(e.message).split('\n')[0].slice(0, 100) + ')'); }
 
   // 1. Indicateur de mémoire dans la barre d'état
   const memoire = page.locator('.statusbar .statusbar-item', { hasText: /\d+\s*Mo/ }).first();
