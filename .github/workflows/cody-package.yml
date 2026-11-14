@@ -286,6 +286,11 @@ jobs:
           find paquets -type f | head -20
           TAG="test-${{ github.run_number }}"
           FILES=$(find paquets -type f \( -name '*.zip' -o -name '*.tar.gz' -o -name '*.deb' -o -name '*.exe' \))
+          # Si on relance une partie de la construction, la publication existe déjà : on y ajoute les fichiers au lieu d'échouer
+          if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$TAG" $FILES --repo "${{ github.repository }}" --clobber
+            exit 0
+          fi
           gh release create "$TAG" $FILES --repo "${{ github.repository }}" --target "${{ github.sha }}" --prerelease \
             --title "Cody Code - version de test $TAG" \
             --notes "Version de test construite automatiquement. Windows : télécharge le .zip, extrais-le, ouvre « Cody Code.exe » (Windows peut afficher un avertissement car la version n'est pas signée). Linux : .tar.gz."
