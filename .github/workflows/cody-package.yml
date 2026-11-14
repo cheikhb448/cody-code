@@ -10,6 +10,9 @@ on:
       - 'build/gulpfile.vscode.ts'
       - 'src/vs/workbench/electron-browser/**'
       - 'build/linux/**'
+      - 'build/cody/**'
+      - 'product.json'
+      - 'extensions/theme-defaults/**'
 
 permissions:
   contents: write   # captures d écran (branches ci-captures) et publication des fichiers de test
