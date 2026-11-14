@@ -122,8 +122,8 @@ try {
     verifier(ok, `magasin Open VSX : recherche « icon theme » → ${noms}`);
   });
   await essai('installer', async () => {
-    const ok = await installer('pkief.material-icon-theme', 'pkief.material-icon-theme');
-    verifier(ok, 'installer une extension depuis Open VSX (Material Icon Theme)');
+    const ok = await installer('vscode-icons-team.vscode-icons', 'vscode-icons-team.vscode-icons');
+    verifier(ok, 'installer une extension depuis Open VSX (VSCode Icons)');
     if (!ok) {
       const { execSync } = await import('node:child_process');
       const sh = (c) => { try { return execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 20000 }).trim(); } catch (e) { return 'erreur ' + String(e.message).slice(0, 80); } };
@@ -144,17 +144,17 @@ try {
   });
   await essai('theme-icones', async () => {
     await commande('Preferences: File Icon Theme');
-    await page.keyboard.type('Material Icon', { delay: 30 });
+    await page.keyboard.type('VSCode Icons', { delay: 30 });
     await page.waitForTimeout(1500);
     await page.keyboard.press('Enter');
     const ok = await attendre(() => page.evaluate(() => {
       const css = [...document.querySelectorAll('style')].map(s => s.textContent || '').join(' ');
-      return /material-icon-theme/i.test(css) || /pkief/i.test(css);
+      return /vscode-icons/i.test(css);
     }), 25000);
-    verifier(ok, 'thème d\'icônes fourni par une extension (Material Icon Theme appliqué)');
+    verifier(ok, 'thème d\'icônes fourni par une extension (VSCode Icons appliqué)');
   });
   await essai('désinstaller', async () => {
-    await ouvrirExtension('pkief.material-icon-theme');
+    await ouvrirExtension('vscode-icons-team.vscode-icons');
     await cliquer(/^Uninstall/);
     // Les fichiers sont effacés plus tard par un nettoyage : on vérifie que la page propose de nouveau « Install »
     const ok = await attendre(async () => (await boutons()).some(b => /^Install/.test(b)), 30000);
