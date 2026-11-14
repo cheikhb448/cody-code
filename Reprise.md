@@ -8,16 +8,15 @@
 
 ## 1. État actuel (à lire en premier)
 
+> **Le fichier `DOSSIER-DE-REPRISE.md` fait foi** (état complet, où est quoi, ce qui reste). Ce fichier-ci garde le journal.
+
 | Élément | Valeur |
 |---|---|
-| Dernière mise à jour | 2026-10-30 |
-| Phase en cours | **Phase 4 terminée côté code** (tests verts : run 40586277812, commit ee7be618) → il reste le rapport court à Cheikh, puis **Phase 5 — Parité des fonctionnalités** (tester chaque ligne de FEATURES.md) |
-| Fait en phase 4 | panneau Cody Assistant à droite (480 px max, remplace le Chat de VS Code, masqué via `config.cody.enableVSCodeChat`), en-tête logo + IA, 4 onglets, accueil, 4 cartes, saisie, connexion IA compatible OpenAI avec accord obligatoire par service, commandes « configurer le service d'IA » / « retirer mes accords », réglages `cody.assistant.endpoint/model` (portée APPLICATION : un projet ne peut pas les changer), pas de redirection, http seulement vers localhost, clé dans le stockage sécurisé, CSP web ouverte à localhost |
-| Écarts à dire à Cheikh | prénom dans « Salut ! » = réglage `cody.assistant.userName` (vide par défaut) ; aucun service d'IA choisi par défaut (il doit en brancher un) ; Codebase pas encore disponible ; images pas encore envoyées ; pas de réponse en direct (flux) ; Phase 8 : CSP du bureau à ouvrir à localhost |
-| Fait en phase 3 | palette + thèmes Cody (clair/sombre), barre de titre (logo, projet, recherche, soleil, cloche, compte), barre d'état, Terminal en 1er, icônes de fichiers colorées, explorateur 26px, section BRANCHES (Structure/Chronologie masquées), titres en majuscules, interface en français, tests automatiques (couleurs, français, soleil clair/sombre, Branches), vérification TypeScript en CI (0 erreur) |
-| Écarts à dire à Cheikh | Ctrl+P au lieu de Ctrl+K ; panneau droit encore « Conversation » de VS Code (phase 4) ; panneau du bas fermé au démarrage (capture : ouvert) ; onglets un peu plus petits que la capture ; français ≈76 % (paquet libre v1.131) ; « Hello » et « Layout: us » dans la barre d'état = extension de test / clavier web, à nettoyer plus tard |
-| Méthode CI (français) | `bundle --nls` dans `out-nls`, copie dans `out/` de `vs/code/browser/workbench/`, `media/`, `nls.*` ; `product.json` reçoit `commit` en CI seulement ; `webClientServer.ts` sert `workbench.html` + `nls.messages.fr.js`. Leçon : `setColorTheme` veut l'id interne du thème, pas son nom. |
-| Sécurité phase 3 | aucun secret dans nos fichiers ; pas d'innerHTML dans le code Cody ; chemins serveur fixes (pas d'entrée utilisateur) ; rappel : Cheikh doit supprimer ses anciens tokens GitHub |
+| Dernière mise à jour | 2026-11-14 |
+| Phases terminées | 0 à 10 (identité, design, assistant, parité, extensions, sécurité, Windows + Linux, améliorations, 5 remarques) |
+| Dernier état vert | run web 43616456597 (commit 119d0388) ; Release **test-14** (zip, CodyCodeSetup.exe, tar.gz) |
+| Tâche en cours | **Français par défaut sur la version installée** (rien de codé encore ; piste dans le dossier §13-A) |
+| Ensuite | titre de l'assistant tronqué ; écarts de design (« + » des onglets, barre d'activités, Ctrl+K) ; connexion GitHub par jeton ; macOS ; publication (accord de Cheikh avant public) ; idées « PC modeste » |
 | Bloqué ? | Non |
 
 **Comment je regarde le résultat visuel :** le test `cody-tests/phase3-design.mjs` prend une capture (1671×941, projet « DropLink » reconstitué dans `cody-tests/fixtures/DropLink`) ; le workflow la publie sur la branche **`ci-captures`** ; je fais `git fetch origin ci-captures && git archive FETCH_HEAD | tar -x -C /home/claude/captures` puis je lis `p3-1-ecran.png` et je compare à `cody-design/reference-capture.png`.
@@ -100,7 +99,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 - ✅ 2.5 Vérifier qu'il ne reste aucune trace visible de Microsoft / VS Code
 - ✅ 2.6 Vérification finale + rapport court
 
-### Phase 3 — Design (identique à la capture)
+### Phase 3 — Design (identique à la capture) — ✅ TERMINÉE (cases ci-dessous non mises à jour, voir DOSSIER-DE-REPRISE.md)
 - ⬜ 3.1 Relever les couleurs, polices et espacements de la capture
 - ⬜ 3.2 Thème sombre Cody (couleurs de l'éditeur et du code)
 - ⬜ 3.3 Barre de titre (nom du projet, recherche, notifications, compte)
@@ -112,7 +111,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 - ⬜ 3.9 Comparaison côte à côte avec la capture + corrections
 - ⬜ 3.10 Vérification finale + rapport court
 
-### Phase 4 — Cody Assistant (panneau IA)
+### Phase 4 — Cody Assistant (panneau IA) — ✅ TERMINÉE (voir DOSSIER-DE-REPRISE.md)
 - ⬜ 4.1 Panneau à droite (ouvrir / fermer)
 - ⬜ 4.2 Onglets Assistant · Chat · Codebase · Context
 - ⬜ 4.3 Écran d'accueil et 4 actions rapides
@@ -120,19 +119,19 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 - ⬜ 4.5 Branchement d'un service d'IA (aucune donnée envoyée sans accord)
 - ⬜ 4.6 Vérification finale + rapport court
 
-### Phase 5 — Parité des fonctionnalités avec VS Code
+### Phase 5 — Parité des fonctionnalités avec VS Code — ✅ TERMINÉE (voir DOSSIER-DE-REPRISE.md)
 - ⬜ 5.1 Tester chaque section de `FEATURES.md`, une par une
 - ⬜ 5.2 Corriger ce qui ne marche pas
 - ⬜ 5.3 Cocher dans `FEATURES.md` uniquement ce qui est testé
 - ⬜ 5.4 Vérification finale + rapport court
 
-### Phase 6 — Extensions
+### Phase 6 — Extensions — ✅ TERMINÉE (voir DOSSIER-DE-REPRISE.md)
 - ⬜ 6.1 Brancher Open VSX
 - ⬜ 6.2 Étudier d'autres services de magasins d'extensions compatibles
 - ⬜ 6.3 Tester installation / activation / désinstallation d'extensions courantes
 - ⬜ 6.4 Vérification finale + rapport court
 
-### Phase 7 — Sécurité
+### Phase 7 — Sécurité — ✅ TERMINÉE (voir DOSSIER-DE-REPRISE.md)
 - ⬜ 7.1 Chercher secrets et clés dans le code
 - ⬜ 7.2 Contrôler les dépendances (failles connues)
 - ⬜ 7.3 Retirer ou désactiver la télémétrie et les connexions Microsoft
@@ -140,14 +139,14 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 - ⬜ 7.5 Corriger puis re-tester
 - ⬜ 7.6 Rapport court
 
-### Phase 8 — Paquets d'installation
+### Phase 8 — Paquets d'installation — ✅ TERMINÉE (voir DOSSIER-DE-REPRISE.md ; macOS non fait)
 - ⬜ 8.1 Version Windows
 - ⬜ 8.2 Version Linux
 - ⬜ 8.3 Version macOS
 - ⬜ 8.4 Test d'installation propre
 - ⬜ 8.5 Vérification finale + rapport court
 
-### Phase 9 — Publication GitHub
+### Phase 9 — Publication GitHub — ⬜ À FAIRE (devenue phase 12 dans DOSSIER-DE-REPRISE.md)
 - ⬜ 9.1 README clair
 - ⬜ 9.2 Licence et crédits (MIT, mention de Microsoft)
 - ⬜ 9.3 `FEATURES.md` à jour
@@ -160,6 +159,7 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 
 | Date | Ce qui a été fait | Résultat |
 |---|---|---|
+| 2026-11-14 | Phases 9–10 : améliorations développeurs, 5 remarques (carré, CodyCodeSetup, icônes, couleurs, licence), Release test-14, run web vert 43616456597 ; dossier de reprise écrit | ✅ OK |
 | 2026-10-27 | Phase 4 terminée côté code : Cody Assistant (panneau, onglets, accueil, saisie, connexion IA avec accord) ; tests verts (run 40586277812) | ✅ OK |
 | 2026-10-26 | Phase 3 terminée côté code : français, BRANCHES, soleil clair/sombre, tests verts (run 40411800007) | ✅ OK |
 | 2026-10-24 | Phase 2 terminée : identité Cody Code, tests phase 1+2 verts (run 40094108059). Corrigés en route : manifest « Code- OSS », test phase 1 gêné par la page Welcome | ✅ OK |
