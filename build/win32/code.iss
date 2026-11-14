@@ -1,21 +1,18 @@
-#define RootLicenseFileName FileExists(RepoDir + '\LICENSE.rtf') ? 'LICENSE.rtf' : 'LICENSE.txt'
-#define LocalizedLanguageFile(Language = "") \
-    DirExists(RepoDir + "\licenses") && Language != "" \
-      ? ('; LicenseFile: "' + RepoDir + '\licenses\LICENSE-' + Language + '.rtf"') \
-      : '; LicenseFile: "' + RepoDir + '\' + RootLicenseFileName + '"'
+; Cody Code : la licence n'est plus affichée pendant l'installation (le texte légal reste dans le dossier installé : LICENSE.txt et ThirdPartyNotices.txt)
+#define LocalizedLanguageFile(Language = "") ""
 
 [Setup]
 AppId={#AppId}
 AppName={#NameLong}
 AppVerName={#NameVersion}
-AppPublisher=Microsoft Corporation
-AppPublisherURL=https://code.visualstudio.com/
-AppSupportURL=https://code.visualstudio.com/
-AppUpdatesURL=https://code.visualstudio.com/
+AppPublisher=Cody Code
+AppPublisherURL=https://github.com/cheikhb448/cody-code
+AppSupportURL=https://github.com/cheikhb448/cody-code/issues
+AppUpdatesURL=https://github.com/cheikhb448/cody-code/releases
 DefaultGroupName={#NameLong}
 AllowNoIcons=yes
 OutputDir={#OutputDir}
-OutputBaseFilename=VSCodeSetup
+OutputBaseFilename=CodyCodeSetup
 Compression=lzma
 SolidCompression=yes
 AppMutex={code:GetAppMutex}

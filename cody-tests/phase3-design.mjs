@@ -97,13 +97,15 @@ try {
   const soleil = await page.locator('.codicon-cody-theme-toggle').count();
   verifier(soleil > 0, 'bouton soleil (thème clair/sombre) présent dans la barre de titre');
 
-  // Couleur d'un mot-clé de code (class / namespace) : attendu #f4b4f6
-  const motCle = await page.evaluate(() => {
+  // Couleurs du code : variées (au moins 5 couleurs différentes) et le mot-clé namespace/class est violet ou bleu
+  const couleurs = await page.evaluate(() => {
     const spans = [...document.querySelectorAll('.monaco-editor .view-line span span')];
+    const toutes = new Set(spans.map(x => getComputedStyle(x).color));
     const s = spans.find(x => x.textContent.trim() === 'namespace' || x.textContent.trim() === 'class');
-    return s ? getComputedStyle(s).color : null;
+    return { motCle: s ? getComputedStyle(s).color : null, nombre: toutes.size, liste: [...toutes].slice(0, 12) };
   });
-  verifier(motCle === rgb('#f4b4f6'), `couleur des mots-clés ${motCle} (attendu ${rgb('#f4b4f6')})`);
+  verifier(couleurs.motCle === rgb('#c586c0') || couleurs.motCle === rgb('#569cd6'), `couleur des mots-clés ${couleurs.motCle} (violet ou bleu attendu)`);
+  verifier(couleurs.nombre >= 5, `couleurs du code variées : ${couleurs.nombre} couleurs (${couleurs.liste.join(' ')})`);
 
   // Section BRANCHES (en bas de l'explorateur)
   verifier(/Branches/i.test(texteInterface), 'section « Branches » présente dans l\'explorateur');

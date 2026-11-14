@@ -1,3 +1,12 @@
+Cody Code
+Copyright (c) 2026 Cheikh (Cody Code) - fonctionnalités, interface et assistant propres à Cody Code
+
+Cody Code est construit à partir du code source ouvert « Code - OSS ».
+La licence MIT ci-dessous oblige à conserver la mention de droits d'auteur de l'auteur d'origine.
+Cette mention reste donc dans toutes les copies de Cody Code.
+
+----------------------------------------------------------------------------------
+
 MIT License
 
 Copyright (c) 2015 - present Microsoft Corporation

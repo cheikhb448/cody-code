@@ -20,6 +20,10 @@ const LOGS = process.env.CODY_LOGS || '/tmp/cody-logs';
 const dossier = `${TMP}/DropLink8`;
 fs.rmSync(dossier, { recursive: true, force: true });
 fs.cpSync('cody-tests/fixtures/DropLink', dossier, { recursive: true });
+// Fichiers de types variés pour vérifier les icônes (Python, PDF, texte, image…)
+for (const nom of ['exemple.py', 'document.pdf', 'notes.txt', 'photo.png', 'script.js', 'page.php', 'archive.zip', 'style.css', 'donnees.json', 'index.html', 'Main.java', 'main.c', 'lisez-moi.md', 'app.ts', 'Dockerfile', '.gitignore']) {
+  fs.writeFileSync(`${dossier}/${nom}`, nom === 'exemple.py' ? 'def bonjour(nom):\n    return f"Salut {nom}"\n' : 'x\n');
+}
 fs.mkdirSync(LOGS, { recursive: true });
 fs.rmSync(`${TMP}/cody-desk`, { recursive: true, force: true });
 
@@ -54,6 +58,21 @@ try {
   verifier(/Cody Assistant|Salut/.test(texte), 'panneau de l\'assistant Cody affiché');
   verifier(/DropLink/i.test(texte), 'le dossier ouvert est affiché dans l\'explorateur');
   verifier(/vs-dark|dark/.test(await page.evaluate(() => document.body.className)) || /dark/i.test(classes), 'thème sombre Cody par défaut');
+  // Icônes de fichiers : pour chaque ligne de l'explorateur, quel glyphe / image est dessiné ?
+  const icones = await page.evaluate(() => [...document.querySelectorAll('.part.sidebar .explorer-folders-view .monaco-list-row')].map(r => {
+    const lab = r.querySelector('.monaco-icon-label');
+    const nom = (r.querySelector('.label-name')?.textContent ?? '').trim();
+    if (!lab) { return { nom, icone: 'aucun-label' }; }
+    const av = getComputedStyle(lab, '::before');
+    const police = av.fontFamily;
+    const contenu = av.content;
+    const image = av.backgroundImage !== 'none' || av.maskImage !== 'none' && av.maskImage !== undefined && av.maskImage !== '';
+    return { nom, contenu: contenu.slice(0, 6), police: police.slice(0, 40), largeur: av.width, image, classes: lab.className.replace('monaco-icon-label ', '').slice(0, 80) };
+  }));
+  for (const i of icones.slice(0, 40)) log('ICONE ' + JSON.stringify(i));
+  const police = await page.evaluate(async () => { await document.fonts.ready; return [...document.fonts].map(f => `${f.family}:${f.status}`).join(', '); });
+  log('polices chargées : ' + police);
+  await page.locator('.part.sidebar').screenshot({ path: `${LOGS}/p8-icones${process.platform === 'win32' ? '-win' : ''}.png` }).catch(() => {});
   verifier(!/Copilot|Sign In|Open in Agents|Continue with GitHub/i.test(texte), 'aucune trace de Copilot / connexion GitHub dans l\'interface');
   // La seule fenêtre permise au démarrage : la demande de confiance du dossier (le terminal exécute du code)
   const fenetres = await page.locator('.monaco-dialog-box').allInnerTexts();

@@ -248,6 +248,19 @@
 	background: rgba(124, 92, 255, 0.2);
 }
 
+/* Pas de carré autour du texte : le contour de VS Code est carré, on garde le cadre arrondi de la maquette */
+.monaco-workbench .cody-assistant-textarea,
+.monaco-workbench .cody-assistant-textarea:focus,
+.monaco-workbench .cody-assistant-textarea:focus-visible {
+	outline: none !important;
+	box-shadow: none !important;
+	border: none !important;
+}
+
+.cody-assistant-input:focus-within {
+	border-color: var(--vscode-focusBorder, rgba(124, 92, 255, 0.7));
+}
+
 .cody-assistant-textarea {
 	width: 100%;
 	box-sizing: border-box;
