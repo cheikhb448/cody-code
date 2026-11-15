@@ -13,7 +13,7 @@
 2. Dépôt : `cheikhb448/cody-code` (privé), branche de travail **`cody-main`**. Code local : `/home/claude/cody-code` (à recloner via l'outil `add_repo` si la session est neuve).
 3. Rien ne se compile sur place : **tout se construit et se teste sur GitHub Actions** (30–50 min par run).
 4. Dernier état vert : run web `43616456597` (commit `119d0388`) ; dernière version installable : Release **`test-14`**.
-5. **Français par défaut sur l'application installée : FAIT (Windows testé, Release test-15).** Prochaine tâche : alléger l'appli pour petit PC (mémoire ≈ 1 Go au repos, voir §13-K « PC modeste »).
+5. **Français par défaut sur l'application installée : FAIT (Windows testé, Release test-15).** Prochaine tâche : alléger l'appli pour petit PC (mémoire mesurée sur Linux : 1287 Mo au repos, voir §13-K « PC modeste »). Instabilité Windows : rien trouvé par les tests, à re-demander à Cheikh avec des cas précis (message d'erreur, moment du blocage).
 
 ---
 
@@ -62,7 +62,7 @@
 | 8 | Paquets : Windows (zip + installateur), Linux (tar.gz + deb), clone Git | ✅ Windows et Linux ; **macOS ⬜** |
 | 9 | Améliorations d'après les plaintes des développeurs (mémoire visible, recherche légère, réglages légers) | ✅ (une ligne à confirmer) |
 | 10 | 5 remarques de Cheikh (carré, installateur, icônes, couleurs, licence) | ✅ |
-| 11 | **Français par défaut sur la version installée** | ✅ Windows (test-15) ; Linux à reconstruire |
+| 11 | **Français par défaut sur la version installée** | ✅ Windows (test-15) ; Linux testé OK, à republier |
 | 12 | Publication GitHub (README, licence, nettoyage, public) | ⬜ |
 
 (Attention : le numéro des phases dans le plan initial de `Reprise.md` était différent — la phase 9 « publication » est devenue la 12 ici ; les « améliorations » et les « 5 remarques » sont venues s'insérer.)
