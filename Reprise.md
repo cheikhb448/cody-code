@@ -12,12 +12,12 @@
 
 | Élément | Valeur |
 |---|---|
-| Dernière mise à jour | 2026-11-14 (soir) |
+| Dernière mise à jour | 2026-11-17 |
 | Phases terminées | 0 à 10 (identité, design, assistant, parité, extensions, sécurité, Windows + Linux, améliorations, 5 remarques) |
-| Dernier état vert | Windows : run 43643814871 (commit 1b63eef6), Release **test-15** (zip + CodyCodeSetup.exe, en français) ; web : run 43616456597 ; Linux : dernier OK = test-14 |
-| Tâche en cours | **Français par défaut sur la version installée : FAIT et testé sur Windows** (Release test-15). Linux reconstruit OK (même test vert) mais pas dans la Release test-15 (l'étape de publication a échoué, corrigée depuis ; Linux = test-14 pour l'instant). Test web : toutes les phases vertes ; seule la vérif TypeScript facultative a perdu le serveur GitHub (2e fois, probablement trop de mémoire demandée). « Instabilité Windows » : aucun plantage trouvé par le test ; Cheikh dit que les choses simples marchent, le reste n'est pas vérifié par lui. Ensuite : alléger l'appli pour petit PC (Linux : mémoire totale mesurée 1287 Mo au repos) |
-| Ensuite | titre de l'assistant tronqué ; écarts de design (« + » des onglets, barre d'activités, Ctrl+K) ; connexion GitHub par jeton ; macOS ; publication (accord de Cheikh avant public) ; idées « PC modeste » |
-| Bloqué ? | Non |
+| Dernier état vert | web : run 44045977787 (commit cb801255) phases 1 à 9 + TypeScript 0 erreur ; installable : Release **test-15** (français, SANS les nouveautés du 16 nov.) |
+| Tâche en cours | **Demandes du 16 nov. (phase 13) : code ENVOYÉ (commit 6d907c2b), mais PAS ENCORE TESTÉ en entier ni empaqueté** : barre du haut sans dossier ni petite icône ; menu ☰ + boutons de disposition visibles ; extension `cody-github-auth` (connexion GitHub par jeton, sans Microsoft) ; remplacement des noms VS Code/Microsoft dans les textes (`build/cody/brand-text.mjs`, 130 textes) ; mode « PC modeste » (`codyLightMode.contribution.ts`) ; problèmes + position du curseur visibles dans la barre d'état ; tests `phase11-parite.mjs`, `phase11-github-unitaire.cjs`, `phase12-commandes.mjs` |
+| Ensuite | 1) relancer les constructions dès que GitHub Actions marche ; 2) lire phase 11 et 12 (le test 12 listera les commandes VS Code qui manquent vraiment) ; 3) réglages « incomplets » (voir test 11) ; 4) fonctions que Cheikh veut ajouter pour dépasser VS Code (il les donnera quand tout sera fini) ; 5) macOS, publication (accord de Cheikh) |
+| Bloqué ? | **OUI : GitHub Actions refuse de démarrer** (« recent account payments have failed or your spending limit needs to be increased »). Minutes gratuites du compte probablement épuisées (dépôt privé). Solutions : dépôt public (minutes gratuites, = phase 12, accord de Cheikh requis), ou limite de dépense / moyen de paiement dans Réglages > Billing, ou attendre le mois suivant. NE PAS supprimer d'artefacts sans accord (refusé par le système). Les artefacts GitHub sont aussi pleins : la publication se fait maintenant directement depuis chaque job (plus d'artefacts requis) |
 
 **Comment je regarde le résultat visuel :** le test `cody-tests/phase3-design.mjs` prend une capture (1671×941, projet « DropLink » reconstitué dans `cody-tests/fixtures/DropLink`) ; le workflow la publie sur la branche **`ci-captures`** ; je fais `git fetch origin ci-captures && git archive FETCH_HEAD | tar -x -C /home/claude/captures` puis je lis `p3-1-ecran.png` et je compare à `cody-design/reference-capture.png`.
 

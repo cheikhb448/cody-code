@@ -73,7 +73,7 @@ Cody Code est un éditeur de code basé sur le code open source de VS Code (« C
 - ✅ Raccourcis clavier personnalisables — testé automatiquement, version web (phase 5)
 - ✅ Thèmes de couleurs (thème sombre Cody par défaut, clair disponible) — couleurs vérifiées automatiquement (phase 3)
 - ⬜ Profils d'utilisateur
-- ⬜ Synchronisation des paramètres
+- ⬜ Synchronisation des paramètres (service Microsoft impossible ; alternative prévue : export du profil vers un gist GitHub)
 - ✅ Langue de l'interface : français affiché automatiquement (testé sur la version web ET sur la version installée Windows ; une partie des textes reste en anglais, voir notes) (phases 3 et 11)
 
 ## 9. Interface Cody (design propre)
@@ -130,6 +130,9 @@ Cody Code est basé sur [Code - OSS](https://github.com/microsoft/vscode), publi
 - ✅ Aucune IA imposée (pas de Copilot, jamais d'envoi sans accord)
 - ✅ Télémétrie coupée, pas de mise à jour automatique qui change l'interface
 - ⬜ Terminal sans suggestions intempestives, mémoire de TypeScript limitée (PC modestes) — réglages par défaut posés, à confirmer
+- 🚧 Mode « PC modeste » (commande + suggestion automatique ≤ 4 Go) — code envoyé, pas encore testé
+- 🚧 Connexion GitHub par jeton (extension cody-github-auth) — logique testée en local, test dans l'éditeur à relire
+- 🚧 Menu ☰ et boutons de disposition visibles ; terminal ouvrable depuis le menu — test phase 11 à relire
 - ✅ Icônes colorées avec les vrais logos (Python, PDF, Docker, dossiers…) — Material Icon Theme intégré, testé sur Windows et Linux
 - ✅ Couleurs du code variées (15 couleurs, mots-clés violets/bleus, chaînes orange…) — testé
 - ✅ Installateur « CodyCodeSetup.exe », sans page de licence ; mentions légales gardées dans le dossier du logiciel

@@ -7,6 +7,14 @@
 
 ---
 
+## ⚠️ Mise à jour du 17 nov. 2026 (lire avant le reste)
+
+- **GitHub Actions est bloqué** (compte : paiement échoué / limite de dépense). Rien ne se construit tant que Cheikh n'a pas choisi : dépôt public (gratuit), limite de dépense, ou attendre. Voir `Reprise.md`.
+- Code envoyé (commit `6d907c2b`, branche `cody-main`) mais **pas encore testé en entier ni empaqueté** : barre du haut nettoyée (plus de dossier ni petite icône), menu ☰ et boutons de disposition affichés, connexion GitHub par jeton (`extensions/cody-github-auth`, remplace `github-authentication` et `microsoft-authentication`, exclues du paquet), noms VS Code/Microsoft remplacés dans les textes à la construction (`build/cody/brand-text.mjs`), mode « PC modeste » (commande + suggestion si ≤ 4 Go), barre d'état avec problèmes et position du curseur.
+- Nouveaux tests : `phase11-parite.mjs`, `phase11-github-unitaire.cjs` (logique jeton, OK en local), `phase12-commandes.mjs` (liste les commandes VS Code qui manquent). Le test 12 de la 1re passe a signalé des « manques » qui sont surtout des commandes cachées sans fichier ouvert / sans dépôt Git : test corrigé, à relire.
+- Cheikh a demandé : ne manquer aucune fonction de VS Code, réparer les erreurs, connexion GitHub, puis il donnera **ses propres fonctions pour dépasser VS Code** (à demander quand tout est fini).
+- Remote SSH/conteneurs/WSL et Settings Sync sont des services Microsoft : impossibles tels quels (alternative : export de profil vers un gist GitHub avec la connexion GitHub).
+
 ## 0. Démarrage rapide (5 lignes)
 
 1. Cheikh écrit en français, veut des réponses **très courtes, simples, non techniques**.
