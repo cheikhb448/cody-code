@@ -39,25 +39,35 @@ try {
     verifier(t.marque === 'Cody Code' && t.logo === 1, 'le logo et le nom « Cody Code » restent');
   });
 
-  // 2. Menu visible (bouton ☰) et boutons de disposition (panneau, barre latérale)
+  // 2. Menu visible (bouton ☰ en haut de la barre d'activités) et boutons de disposition (panneau, barre latérale) en haut à droite
+  const commande = async titre => {
+    await page.keyboard.press('F1');
+    await page.waitForSelector('.quick-input-widget', { timeout: 10000 });
+    await page.keyboard.type(titre, { delay: 30 });
+    await page.waitForTimeout(900);
+    await page.keyboard.press('Enter');
+  };
   await essai('menu et boutons', async () => {
     const m = await page.evaluate(() => ({
-      menu: document.querySelectorAll('.part.titlebar .menubar .menubar-menu-button').length,
-      disposition: [...document.querySelectorAll('.part.titlebar .layout-controls-container .action-label, .part.titlebar .layout-controls-container a')].map(e => e.getAttribute('aria-label') || e.title || e.className).slice(0, 6),
+      menu: [...document.querySelectorAll('.menubar-menu-button, [aria-label="Application Menu"]')].length,
+      disposition: [...document.querySelectorAll('.part.titlebar .action-label, .part.titlebar a')].map(e => e.getAttribute('aria-label') || '').filter(a => /panel|side bar|layout|sidebar/i.test(a)).slice(0, 8),
     }));
     log('menu : ' + JSON.stringify(m));
-    verifier(m.menu > 0, 'un bouton de menu est visible dans la barre du haut');
-    verifier(m.disposition.length > 0, 'des boutons de disposition (panneau du bas, barre latérale) sont visibles');
+    verifier(m.menu > 0, 'un bouton de menu (☰) est visible');
+    verifier(m.disposition.length > 0, 'des boutons de disposition (panneau du bas, barre latérale) sont visibles en haut à droite');
   });
 
   // 3. Ouvrir le terminal depuis le menu : Terminal > New Terminal (sans rien exécuter avant)
   await essai('terminal depuis le menu', async () => {
-    await page.locator('.part.titlebar .menubar .menubar-menu-button').first().click();
+    // on ferme d'abord le terminal ouvert au démarrage, pour prouver que le menu sait l'ouvrir
+    await commande('Terminal: Kill the Active Terminal Instance');
+    await page.waitForTimeout(1500);
+    await page.locator('.menubar-menu-button, [aria-label="Application Menu"]').first().click();
     await page.waitForSelector('.monaco-menu', { timeout: 10000 });
     const entrees = await page.evaluate(() => [...document.querySelectorAll('.monaco-menu .action-label')].map(e => (e.textContent || '').trim()).filter(Boolean));
     log('menu principal : ' + entrees.join(' | '));
     verifier(entrees.some(e => /^Terminal$/.test(e)), 'le menu contient « Terminal »');
-    verifier(entrees.some(e => /^File$/.test(e)) && entrees.some(e => /^Edit$/.test(e)) && entrees.some(e => /^View$/.test(e)), 'le menu contient Fichier, Édition, Affichage');
+    verifier(['File', 'Edit', 'Selection', 'View', 'Go', 'Run', 'Help'].every(n => entrees.some(e => e === n)), 'le menu contient Fichier, Édition, Sélection, Affichage, Aller, Exécuter, Aide');
     await page.locator('.monaco-menu .action-label', { hasText: /^Terminal$/ }).first().click();
     await page.waitForTimeout(600);
     await page.locator('.monaco-menu .action-label', { hasText: /^New Terminal$/ }).first().click();
@@ -67,35 +77,33 @@ try {
     await page.screenshot({ path: '/tmp/cody-logs/p11-terminal-menu.png' });
   });
 
-  // 4. Connexion GitHub : la commande existe et demande un jeton (sans rien envoyer)
+  // 4. Connexion GitHub : la commande existe et demande un jeton masqué (rien n'est envoyé)
   await essai('connexion GitHub', async () => {
-    await page.keyboard.press('F1');
-    await page.waitForSelector('.quick-input-widget', { timeout: 10000 });
-    await page.keyboard.type('Se connecter à GitHub', { delay: 30 });
-    await page.waitForTimeout(1500);
-    const propose = await page.locator('.quick-input-list .monaco-list-row', { hasText: /Se connecter à GitHub/ }).count();
-    verifier(propose > 0, 'la commande « Cody Code : Se connecter à GitHub » existe');
-    if (propose > 0) {
-      await page.keyboard.press('Enter');
-      const dialogue = page.locator('.monaco-dialog-box', { hasText: /jeton/i });
-      let vu = false;
-      for (let i = 0; i < 15 && !vu; i++) { vu = await dialogue.count().then(n => n > 0); if (!vu) await page.waitForTimeout(1000); }
-      verifier(vu, 'une fenêtre explique comment obtenir un jeton GitHub');
-      await page.screenshot({ path: '/tmp/cody-logs/p11-github.png' });
-      if (vu) {
-        await dialogue.locator('.monaco-button', { hasText: /déjà un jeton/ }).first().click();
-        await page.waitForSelector('.quick-input-widget input[type=password]', { timeout: 10000 }).then(
-          () => verifier(true, 'la saisie du jeton est masquée (mot de passe)'),
-          () => verifier(false, 'la saisie du jeton est masquée (mot de passe)'));
-        await page.keyboard.press('Escape');
-      }
+    await commande('Se connecter à GitHub');
+    // l'éditeur peut d'abord demander l'autorisation de l'extension : on l'accepte si c'est le cas
+    const dialogue = page.locator('.monaco-dialog-box');
+    let vu = false;
+    for (let i = 0; i < 20 && !vu; i++) {
+      const autorisation = dialogue.locator('.monaco-button', { hasText: /^Allow$/ });
+      if (await autorisation.count() > 0) { log('l\'éditeur a demandé l\'autorisation de l\'extension GitHub (acceptée)'); await autorisation.first().click(); await page.waitForTimeout(800); }
+      vu = await dialogue.filter({ hasText: /jeton/i }).count().then(n => n > 0);
+      if (!vu) await page.waitForTimeout(1000);
+    }
+    verifier(vu, 'une fenêtre explique comment obtenir un jeton GitHub');
+    await page.screenshot({ path: '/tmp/cody-logs/p11-github.png' });
+    if (vu) {
+      await dialogue.locator('.monaco-button', { hasText: /déjà un jeton/ }).first().click();
+      await page.waitForSelector('.quick-input-widget input[type=password]', { timeout: 10000 }).then(
+        () => verifier(true, 'la saisie du jeton est masquée (mot de passe)'),
+        () => verifier(false, 'la saisie du jeton est masquée (mot de passe)'));
+      await page.keyboard.press('Escape');
     }
     await page.waitForTimeout(800);
   });
 
   // 5. Réglages : catégories principales présentes, plus de « Microsoft online service »
   await essai('réglages', async () => {
-    await page.keyboard.press('Control+,');
+    await commande('Preferences: Open Settings (UI)');
     await page.waitForSelector('.settings-editor', { timeout: 20000 });
     await page.waitForTimeout(3000);
     const toc = await page.evaluate(() => [...document.querySelectorAll('.settings-toc-container .monaco-list-row')].map(r => (r.innerText || '').trim().split('\n')[0]).filter(Boolean));
@@ -104,7 +112,6 @@ try {
       verifier(toc.some(t => t.includes(cat)), `réglages : catégorie « ${cat} »`);
     }
     await page.screenshot({ path: '/tmp/cody-logs/p11-reglages.png' });
-    await page.keyboard.press('Control+f');
     await page.locator('.settings-editor .suggest-input-container .monaco-editor, .settings-editor input').first().click();
     await page.keyboard.type('update.mode', { delay: 30 });
     await page.waitForTimeout(2500);

@@ -155,7 +155,11 @@
 		"mcpConnectorsUrl": "",
 		"managedSettingsUrl": ""
 	},
-	"trustedExtensionAuthAccess": {},
+	"trustedExtensionAuthAccess": {
+		"github": [
+			"cody-code.cody-github-auth"
+		]
+	},
 	"onboardingKeymaps": [
 		{
 			"id": "vscode",
