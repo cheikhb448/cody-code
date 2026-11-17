@@ -14,7 +14,7 @@ const crypto = require('crypto');
 const PROVIDER_ID = 'github';
 const SECRET_KEY = 'cody.github.session';
 const API_USER = 'https://api.github.com/user';
-const NEW_TOKEN_URL = 'https://github.com/settings/tokens/new?description=Cody%20Code&scopes=repo,read:user,user:email,workflow';
+const NEW_TOKEN_URL = 'https://github.com/settings/tokens/new?description=Cody%20Code&scopes=repo,read:user,user:email,workflow,gist';
 const DEFAULT_SCOPES = ['repo', 'read:user', 'user:email'];
 // jeton classique (ghp_…), fin (github_pat_…), ou ancien format de 40 caractères hexadécimaux
 const TOKEN_SHAPE = /^(gh[pousr]_[A-Za-z0-9]{20,255}|github_pat_[A-Za-z0-9_]{20,255}|[0-9a-f]{40})$/;

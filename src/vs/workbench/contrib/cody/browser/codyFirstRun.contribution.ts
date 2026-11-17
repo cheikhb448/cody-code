@@ -12,11 +12,15 @@ import { IStorageService, StorageScope, StorageTarget } from '../../../../platfo
 
 /** Éléments de la barre d'état absents de la maquette : masqués au premier démarrage (réaffichables par un clic droit sur la barre). */
 const ELEMENTS_MASQUES = [
-	'status.editor.selection',
 	'status.editor.indentation',
 	'status.workbench.keyboardLayout',
-	'status.problems',
 	'status.notifications'
+];
+
+/** Éléments indispensables à un développeur (position du curseur, erreurs) : toujours affichés. */
+const ELEMENTS_AFFICHES = [
+	'status.editor.selection',
+	'status.problems'
 ];
 
 class CodyFirstRunContribution extends Disposable implements IWorkbenchContribution {
@@ -31,13 +35,16 @@ class CodyFirstRunContribution extends Disposable implements IWorkbenchContribut
 		super();
 
 		// Une seule fois : ensuite, les choix de la personne sont respectés
-		if (storageService.getBoolean('cody.firstRunLayoutDone', StorageScope.PROFILE, false)) {
+		if (storageService.getBoolean('cody.firstRunLayoutDone.v2', StorageScope.PROFILE, false)) {
 			return;
 		}
-		storageService.store('cody.firstRunLayoutDone', true, StorageScope.PROFILE, StorageTarget.USER);
+		storageService.store('cody.firstRunLayoutDone.v2', true, StorageScope.PROFILE, StorageTarget.USER);
 
 		for (const id of ELEMENTS_MASQUES) {
 			statusbarService.updateEntryVisibility(id, false);
+		}
+		for (const id of ELEMENTS_AFFICHES) {
+			statusbarService.updateEntryVisibility(id, true);
 		}
 
 		// Comme sur la maquette : le panneau du bas (Terminal en premier) est ouvert
