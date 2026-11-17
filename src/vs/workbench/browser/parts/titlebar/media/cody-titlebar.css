@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------------------------
- *  Cody Code - barre de titre : logo, nom, projet, barre de recherche
+ *  Cody Code - barre de titre : logo, nom, barre de recherche
  *  Basé sur Code - OSS (Microsoft Corporation, licence MIT).
  *--------------------------------------------------------------------------------------------*/
 
@@ -25,28 +25,6 @@
 	letter-spacing: 0.2px;
 	color: var(--vscode-titleBar-activeForeground);
 	white-space: nowrap;
-}
-
-.monaco-workbench .part.titlebar .cody-project {
-	display: flex;
-	align-items: center;
-	gap: 7px;
-	margin-left: 14px;
-	padding: 5px 10px;
-	border-radius: 8px;
-	font-size: 13px;
-	color: var(--vscode-titleBar-activeForeground);
-	cursor: pointer;
-	white-space: nowrap;
-}
-
-.monaco-workbench .part.titlebar .cody-project:hover {
-	background: var(--vscode-commandCenter-activeBackground);
-}
-
-.monaco-workbench .part.titlebar .cody-project .codicon {
-	font-size: 15px;
-	color: var(--vscode-icon-foreground);
 }
 
 /* Barre de recherche centrale */

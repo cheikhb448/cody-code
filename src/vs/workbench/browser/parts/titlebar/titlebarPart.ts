@@ -54,10 +54,8 @@ import { IView } from '../../../../base/browser/ui/grid/grid.js';
 import { createInstantHoverDelegate } from '../../../../base/browser/ui/hover/hoverDelegateFactory.js';
 import { IBaseActionViewItemOptions } from '../../../../base/browser/ui/actionbar/actionViewItems.js';
 import { IHoverDelegate } from '../../../../base/browser/ui/hover/hoverDelegate.js';
-import { CommandsRegistry, ICommandService } from '../../../../platform/commands/common/commands.js';
+import { CommandsRegistry } from '../../../../platform/commands/common/commands.js';
 import { IProductService } from '../../../../platform/product/common/productService.js';
-import { ILabelService } from '../../../../platform/label/common/label.js';
-import { IWorkspaceContextService } from '../../../../platform/workspace/common/workspace.js';
 import { safeIntl } from '../../../../base/common/date.js';
 import { IsCompactTitleBarContext, TitleBarVisibleContext } from '../../../common/contextkeys.js';
 import { ServiceCollection } from '../../../../platform/instantiation/common/serviceCollection.js';
@@ -478,10 +476,8 @@ export class BrowserTitlebarPart extends Part implements ITitlebarPart {
 		this.centerContent = append(this.rootContainer, $('.titlebar-center'));
 		this.rightContent = append(this.rootContainer, $('.titlebar-right'));
 
-		// App Icon (Windows, Linux)
-		if ((isWindows || isLinux) && !hasNativeTitlebar(this.configurationService, this.titleBarStyle)) {
-			this.appIcon = prepend(this.leftContent, $('a.window-appicon'));
-		}
+		// App Icon (Windows, Linux) : Cody Code affiche déjà son logo et son nom à gauche (createCodyBrand),
+		// la petite icône supplémentaire a donc été retirée.
 
 		// Cody Code : logo, nom du produit et sélecteur de projet
 		if (!this.isAuxiliary) {
@@ -650,27 +646,10 @@ export class BrowserTitlebarPart extends Part implements ITitlebarPart {
 	private createCodyBrand(): void {
 		this.instantiationService.invokeFunction(accessor => {
 			const productService = accessor.get(IProductService);
-			const commandService = accessor.get(ICommandService);
-			const labelService = accessor.get(ILabelService);
-			const contextService = accessor.get(IWorkspaceContextService);
 
 			const brand = prepend(this.leftContent, $('div.cody-brand'));
 			append(brand, $('span.cody-brand-logo'));
 			append(brand, $('span.cody-brand-name', undefined, productService.nameShort));
-
-			const project = append(brand, $('a.cody-project', { role: 'button', tabindex: '0' }));
-			append(project, $('span.codicon.codicon-folder'));
-			const projectName = append(project, $('span.cody-project-name'));
-			append(project, $('span.codicon.codicon-chevron-down'));
-
-			const update = () => {
-				const workspace = contextService.getWorkspace();
-				projectName.textContent = workspace.folders.length ? labelService.getWorkspaceLabel(workspace) : 'Aucun dossier';
-			};
-			update();
-			this._register(contextService.onDidChangeWorkspaceName(update));
-			this._register(contextService.onDidChangeWorkbenchState(update));
-			this._register(addDisposableListener(project, EventType.CLICK, () => commandService.executeCommand('workbench.action.openRecent')));
 		});
 	}
 

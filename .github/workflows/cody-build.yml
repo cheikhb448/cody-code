@@ -90,6 +90,11 @@ jobs:
         continue-on-error: true
         run: node build/cody/fetch-icon-theme.mjs 2>&1 | tee /tmp/dl-icones.log; echo "::notice title=Thème d'icônes::$(tail -c 500 /tmp/dl-icones.log | tr '\n' ' ')"
 
+      - name: Retirer les extensions de connexion qui passent par Microsoft
+        run: |
+          rm -rf extensions/github-authentication extensions/microsoft-authentication
+          ls extensions | tr '\n' ' '
+
       - name: Récupérer Node pour le serveur
         run: npm run gulp node
 
@@ -114,6 +119,8 @@ jobs:
           echo "::notice title=Bundle fin::$(tail -3 /tmp/cody-logs/bundle.log | tr '\n' ' ')"
           node build/cody/make-nls-fr.mjs /tmp/cody-data > /tmp/cody-logs/nls-fr.log 2>&1 || true
           echo "::notice title=Génération français::$(cat /tmp/cody-logs/nls-fr.log | tr '\n' ' ')"
+          node build/cody/brand-text.mjs out extensions > /tmp/cody-logs/brand.log 2>&1 || true
+          echo "::notice title=Noms Microsoft retirés::$(tail -n 3 /tmp/cody-logs/brand.log | tr '\n' ' ')"
           # La version empaquetée connaît son numéro de commit : le serveur doit le connaître aussi (adresses identiques)
           node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('product.json','utf8'));p.commit=process.env.GITHUB_SHA;fs.writeFileSync('product.json',JSON.stringify(p,null,2))"
           # Test uniquement : pas de fenêtre de confiance (le produit garde cette protection active)
@@ -191,6 +198,12 @@ jobs:
       - name: Test - améliorations demandées par les développeurs (phase 9)
         if: always()
         run: node cody-tests/phase9-ameliorations.mjs
+
+      - name: Test - barre du haut, menus, terminal, GitHub, réglages (phase 11)
+        if: always()
+        run: |
+          node cody-tests/phase11-github-unitaire.cjs
+          node cody-tests/phase11-parite.mjs
 
       - name: Vérification du code Cody (types TypeScript)
         if: always()

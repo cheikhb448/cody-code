@@ -317,6 +317,9 @@ const nativeExtensions = [
 
 const excludedExtensions = [
 	'copilot',
+	// Cody Code : la connexion GitHub passe par extensions/cody-github-auth (jeton personnel), sans service Microsoft
+	'github-authentication',
+	'microsoft-authentication',
 	'vscode-api-tests',
 	'vscode-colorize-tests',
 	'vscode-colorize-perf-tests',

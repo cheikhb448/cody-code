@@ -61,7 +61,7 @@ registerAction2(class CodyAccountAction extends Action2 {
 	constructor() {
 		super({
 			id: 'cody.showAccount',
-			title: localize2('cody.showAccount', "Cody Code : compte"),
+			title: localize2('cody.showAccount', "Cody Code : compte GitHub"),
 			icon: Codicon.account,
 			f1: false,
 			menu: [{ id: MenuId.TitleBar, group: 'navigation', order: 3 }]
@@ -69,6 +69,12 @@ registerAction2(class CodyAccountAction extends Action2 {
 	}
 
 	async run(accessor: ServicesAccessor): Promise<void> {
-		await accessor.get(ICommandService).executeCommand('workbench.action.manageAccounts');
+		// Compte GitHub (extension intégrée cody-github-auth) ; à défaut, la liste des comptes de l'éditeur
+		const commandService = accessor.get(ICommandService);
+		try {
+			await commandService.executeCommand('cody.github.account');
+		} catch {
+			await commandService.executeCommand('workbench.action.manageAccounts');
+		}
 	}
 });

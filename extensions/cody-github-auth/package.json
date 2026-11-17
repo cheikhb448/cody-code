@@ -1,0 +1,48 @@
+{
+  "name": "cody-github-auth",
+  "displayName": "Cody Code - Connexion GitHub",
+  "description": "Connexion à un compte GitHub avec un jeton personnel, sans aucun service Microsoft.",
+  "publisher": "cody-code",
+  "license": "MIT",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [],
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "contributes": {
+    "authentication": [
+      {
+        "id": "github",
+        "label": "GitHub"
+      }
+    ],
+    "commands": [
+      {
+        "command": "cody.github.signIn",
+        "title": "Cody Code : Se connecter à GitHub"
+      },
+      {
+        "command": "cody.github.signOut",
+        "title": "Cody Code : Se déconnecter de GitHub"
+      },
+      {
+        "command": "cody.github.account",
+        "title": "Cody Code : Mon compte GitHub"
+      }
+    ]
+  }
+}
