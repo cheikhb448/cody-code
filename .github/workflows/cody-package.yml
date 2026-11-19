@@ -137,7 +137,7 @@ jobs:
         run: |
           TAG="test-${{ github.run_number }}"
           REPO="${{ github.repository }}"
-          FILES=$(ls cody-code-linux-x64.tar.gz 2>/dev/null; find .build/linux/deb -name '*.deb' 2>/dev/null)
+          FILES=$(ls cody-code-linux-x64.tar.gz 2>/dev/null; find .build/linux/deb -name '*.deb' 2>/dev/null) || true
           if [ -z "$FILES" ]; then echo "Rien à publier"; exit 0; fi
           echo "$FILES"
           for i in 1 2 3 4; do
@@ -284,7 +284,7 @@ jobs:
         run: |
           TAG="test-${{ github.run_number }}"
           REPO="${{ github.repository }}"
-          FILES=$(ls cody-code-win32-x64.zip 2>/dev/null; find .build/win32-x64/user-setup -name '*.exe' 2>/dev/null)
+          FILES=$(ls cody-code-win32-x64.zip 2>/dev/null; find .build/win32-x64/user-setup -name '*.exe' 2>/dev/null) || true
           if [ -z "$FILES" ]; then echo "Rien à publier"; exit 0; fi
           echo "$FILES"
           for i in 1 2 3 4; do
