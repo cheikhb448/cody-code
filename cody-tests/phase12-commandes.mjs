@@ -33,16 +33,17 @@ const GROUPES = [
     'Preferences: Configure Display Language|Configure Display Language', 'Preferences: Open User Tasks', 'Preferences: Open Workspace Settings',
     'Preferences: Configure Language Specific Settings', 'Notebook: Create New Notebook|Create: New Jupyter Notebook',
     'Developer: Show Running Extensions', 'Developer: Inspect Editor Tokens and Scopes', 'Help: Show All Commands|Show All Commands',
-    'Terminal: Select Default Profile', 'Terminal: Rename', 'View: Show Search', 'View: Show Source Control', 'View: Show Run and Debug',
-    'View: Show Explorer', 'View: Show Extensions', 'File: Auto Save', 'Open Timeline|Timeline: Focus on Timeline View', 'Outline: Focus on Outline View',
+    'Terminal: Select Default Profile', 'Terminal: Rename', 'View: Show Search', 'View: Show Source Control|View: Show SCM|Source Control: Focus on Source Control View', 'View: Show Run and Debug',
+    'View: Show Explorer', 'View: Show Extensions', 'File: Toggle Auto Save|File: Auto Save', 'Open Timeline|Timeline: Focus on Timeline View', 'Outline: Focus on Outline View',
     'Debug: Add Function Breakpoint', 'Debug: Toggle Breakpoint', 'Debug: Attach to Node Process',
-    'Profiles: Create Profile|Profiles: New Profile', 'Profiles: Switch Profile', 'Profiles: Export Profile', 'Profiles: Import Profile',
+    'Profiles: Create Profile|Profiles: New Profile', 'Profiles: Switch Profile', 'Profiles: Export Profile', 'Profiles: Import Profile|Profiles: Import Profile...',
   ] },
   { nom: 'fichier PHP dans un dossier Git', fichier: 'app/Controllers/HomeController.php', indispensables: [
-    'View: Toggle Word Wrap', 'Go to Definition', 'Format Document', 'Rename Symbol', 'Toggle Line Comment', 'Add Cursor Above',
+    'View: Toggle Word Wrap', 'Format Document', 'Toggle Line Comment', 'Add Cursor Above',
     'Git: Commit', 'Git: Push', 'Git: Pull', 'Git: Create Branch', 'Git: Stash', 'Git: Checkout to',
   ], souhaitees: [
-    'Git: Publish to GitHub|Git: Publish Branch', 'Git: Fetch', 'Git: Merge Branch', 'Git: Delete Branch', 'Git: View History', 'Git: Clean All',
+    'Git: Publish to GitHub|Git: Publish Branch', 'Git: Fetch', 'Git: Merge Branch|Git: Merge...', 'Git: Delete Branch', 'Git: View History|Git: View File History', 'Git: Clean All|Git: Discard All Changes',
+    'Go to Definition', 'Rename Symbol', /* ces deux-là n'apparaissent que pour un langage avec serveur (testés en TypeScript, phase 5) */
     'Compare Active File with', 'Emmet: Expand Abbreviation',
   ] },
   { nom: 'fichier Markdown', fichier: 'README.md', indispensables: ['Markdown: Open Preview', 'Markdown: Open Preview to the Side'], souhaitees: [] },
