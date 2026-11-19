@@ -256,7 +256,7 @@
 		"breadcrumbs.enabled": true,
 		"editor.fontSize": 13,
 		"editor.lineHeight": 19,
-		"cody.assistant.userName": "Cheikh",
+		"cody.assistant.userName": "",
 		"workbench.navigationControl.enabled": false,
 		"git.blame.statusBarItem.enabled": false,
 		"files.watcherExclude": {
