@@ -58,6 +58,8 @@ jobs:
             xvfb fakeroot dpkg-dev libgtk-3-0t64 libnss3 libasound2t64 libxss1 libatk-bridge2.0-0t64 libxkbfile1 libsecret-1-0 libdrm2 libxdamage1 libcups2t64
 
       - name: Installer les dépendances
+        env:
+          GITHUB_TOKEN: ${{ github.token }}   # évite la limite de téléchargements anonymes de GitHub (ripgrep, etc.)
         run: |
           set -e
           for i in 1 2 3; do
@@ -199,6 +201,8 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Installer les dépendances
+        env:
+          GITHUB_TOKEN: ${{ github.token }}   # évite la limite de téléchargements anonymes de GitHub (ripgrep, etc.)
         run: |
           set -e
           for i in 1 2 3; do
