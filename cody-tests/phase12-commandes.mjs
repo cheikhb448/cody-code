@@ -43,13 +43,13 @@ const GROUPES = [
     'Git: Commit', 'Git: Push', 'Git: Pull', 'Git: Create Branch', 'Git: Stash', 'Git: Checkout to',
   ], souhaitees: [
     'Git: Publish to GitHub|Git: Publish Branch', 'Git: Fetch', 'Git: Merge Branch|Git: Merge...', 'Git: Delete Branch', 'Git: View History|Git: View File History', 'Git: Clean All|Git: Discard All Changes',
-    'Go to Definition', 'Rename Symbol', /* ces deux-là n'apparaissent que pour un langage avec serveur (testés en TypeScript, phase 5) */
     'Compare Active File with', 'Emmet: Expand Abbreviation',
   ] },
+  { nom: 'fichier TypeScript', fichier: 'app/demo.ts', indispensables: [], souhaitees: ['Go to Definition', 'Rename Symbol', 'Go to References', 'Peek Definition|Peek: Peek Definition'] },
   { nom: 'fichier Markdown', fichier: 'README.md', indispensables: ['Markdown: Open Preview', 'Markdown: Open Preview to the Side'], souhaitees: [] },
 ];
 // Pour comprendre ce qui existe vraiment : on liste ce que la palette propose pour ces mots
-const SONDES = ['Profile', 'Language', 'Settings Sync|Backup and Sync', 'Remote'];
+const SONDES = ['Profile', 'Language', 'Settings Sync|Backup and Sync', 'Remote', 'Timeline', 'Outline', 'Source Control', 'Function Breakpoint', 'Inspect', 'User Tasks', 'History'];
 
 const dossier = '/tmp/DropLink12';
 fs.rmSync(dossier, { recursive: true, force: true });
@@ -107,7 +107,7 @@ try {
   for (const sonde of SONDES) {
     const rows = [];
     for (const m of sonde.split('|')) rows.push(...await lire(m));
-    log(`palette « ${sonde} » : ` + (rows.length ? [...new Set(rows)].slice(0, 12).map(r => r.slice(0, 60)).join(' ; ') : 'rien'));
+    log(`palette « ${sonde} » : ` + (rows.length ? [...new Set(rows)].slice(0, 7).map(r => r.slice(0, 50)).join(' ; ') : 'rien'));
   }
 
   // Aucune commande Microsoft / service en ligne Microsoft ne doit être proposée
