@@ -181,3 +181,11 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 - Design : **identique à la capture**.
 - Extensions : **Open VSX** + services similaires.
 - Travail **automatique et continu**, rapport seulement à la fin de chaque phase.
+
+
+## État du 20 nov.
+- Dépôt passé TEMPORAIREMENT en public (quota gratuit d'Actions épuisé le 19 nov). Constructions et tests tous verts (web, Windows, Linux) sur le commit 25d4763 ; Release test-24 (Windows zip + CodyCodeSetup.exe, Linux tar.gz).
+- Phase 12 : 55/55 commandes essentielles, 25/35 souhaitées (manquent surtout des noms/contextes : Inspect Editor Tokens, Open User Tasks, Timeline/Outline focus, Add Function Breakpoint, Import Profile, Git View History).
+- Prénom retiré des réglages par défaut ; aucun secret trouvé.
+- À FAIRE : Cheikh remet le dépôt en privé (Settings > Danger Zone > Change visibility) ; je ne peux pas le faire. Prochaines constructions : le repasser en public (quota remis à zéro le 1er déc.).
+- Ensuite : demander à Cheikh ses fonctionnalités en plus.

@@ -271,3 +271,7 @@ Son tableau « État actuel » en haut est **resté figé à la phase 4** et son
 2. S'assurer d'avoir le dépôt : outil `list_repos`/`add_repo` (`cheikhb448/cody-code`, accès push), puis cloner la branche `cody-main` dans `/home/claude/cody-code`.
 3. Dire à Cheikh en **une phrase** ce qu'on reprend (tâche A), puis travailler **par petites étapes vérifiées**, mettre à jour `Reprise.md` après chaque étape.
 4. Rapports : 3–5 lignes, mots simples.
+
+
+## Mise à jour du 20 nov.
+Dépôt public temporairement (quota Actions gratuit épuisé). Tout est vert sur le commit 25d4763 (web, Windows, Linux, 0 erreur TypeScript, 55/55 commandes essentielles). Release test-24. Prénom retiré des réglages par défaut. Le dépôt doit être remis en privé par Cheikh (je n'ai pas le droit de changer ce réglage). Reste : fonctions souhaitées manquantes (voir Reprise.md), puis les idées de Cheikh pour dépasser VS Code.

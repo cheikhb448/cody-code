@@ -131,8 +131,9 @@ Cody Code est basé sur [Code - OSS](https://github.com/microsoft/vscode), publi
 - ✅ Télémétrie coupée, pas de mise à jour automatique qui change l'interface
 - ⬜ Terminal sans suggestions intempestives, mémoire de TypeScript limitée (PC modestes) — réglages par défaut posés, à confirmer
 - 🚧 Mode « PC modeste » (commande + suggestion automatique ≤ 4 Go) — code envoyé, pas encore testé
-- 🚧 Connexion GitHub par jeton (extension cody-github-auth) — logique testée en local, test dans l'éditeur à relire
-- 🚧 Menu ☰ et boutons de disposition visibles ; terminal ouvrable depuis le menu — test phase 11 à relire
+- ✅ Connexion à un compte GitHub par jeton personnel (sans service Microsoft) — fenêtre d'aide, saisie masquée, logique testée (phase 11) ; connexion avec un vrai compte pas encore essayée
+- ✅ Menu ☰, boutons de disposition, terminal ouvrable depuis le menu Terminal, plus de sélecteur de dossier ni de mini-logo en haut — testé (phase 11) ; menus complets, 55/55 commandes essentielles de VS Code présentes (phase 12)
+- ✅ Plus aucun nom « VS Code » / « Microsoft » dans les textes de l'éditeur — testé (phase 12) ; restent : liens d'aide et mentions légales (obligatoires)
 - ✅ Icônes colorées avec les vrais logos (Python, PDF, Docker, dossiers…) — Material Icon Theme intégré, testé sur Windows et Linux
 - ✅ Couleurs du code variées (15 couleurs, mots-clés violets/bleus, chaînes orange…) — testé
 - ✅ Installateur « CodyCodeSetup.exe », sans page de licence ; mentions légales gardées dans le dossier du logiciel
