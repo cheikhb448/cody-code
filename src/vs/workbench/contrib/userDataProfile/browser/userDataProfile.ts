@@ -165,6 +165,7 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
 		this._register(this.userDataProfilesService.onDidChangeProfiles(() => this.registerProfilesActions()));
 
 		this._register(this.registerExportCurrentProfileAction());
+		this._register(this.registerImportProfileAction());
 
 		this.registerCreateFromCurrentProfileAction();
 		this.registerNewProfileAction();
@@ -402,6 +403,26 @@ export class UserDataProfilesWorkbenchContribution extends Disposable implements
 		}));
 
 		return disposables;
+	}
+
+	// Cody Code : commande « Profils : Importer un profil… » dans la palette (comme pour l'export)
+	private registerImportProfileAction(): IDisposable {
+		const that = this;
+		return registerAction2(class ImportProfileAction extends Action2 {
+			constructor() {
+				super({
+					id: 'workbench.profiles.actions.importProfile',
+					title: localize2('import profile', "Import Profile..."),
+					category: PROFILES_CATEGORY,
+					f1: true,
+				});
+			}
+
+			async run() {
+				const editor = await that.openProfilesEditor();
+				await editor?.importProfile();
+			}
+		});
 	}
 
 	private registerExportCurrentProfileAction(): IDisposable {

@@ -304,7 +304,7 @@ export class UserDataProfilesEditor extends EditorPane implements IUserDataProfi
 		return actions;
 	}
 
-	private async importProfile(): Promise<void> {
+	async importProfile(): Promise<void> {
 		const disposables = new DisposableStore();
 		const quickPick = disposables.add(this.quickInputService.createQuickPick());
 
