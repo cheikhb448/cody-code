@@ -189,3 +189,6 @@ Légende : ✅ fait et vérifié · 🚧 en cours · ⬜ à faire · ⛔ bloqué
 - Prénom retiré des réglages par défaut ; aucun secret trouvé.
 - À FAIRE : Cheikh remet le dépôt en privé (Settings > Danger Zone > Change visibility) ; je ne peux pas le faire. Prochaines constructions : le repasser en public (quota remis à zéro le 1er déc.).
 - Ensuite : demander à Cheikh ses fonctionnalités en plus.
+
+## 21 nov.
+- 10 « commandes secondaires » traitées : 9 existaient sous un autre nom (test aligné), 1 ajoutée (Profils : Importer un profil). Phase 12 : 55/55 essentielles, 36/37 souhaitées (la dernière existe, test à corriger). Nouvelle Release (voir tag le plus récent). Dépôt TOUJOURS PUBLIC : Cheikh doit le remettre en privé.
